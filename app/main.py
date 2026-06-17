@@ -46,24 +46,24 @@ else:
     CHART_BG="#ffffff"; CO2GB="#16a34a"; CO2BB="#dc2626"
     TAGBG="#eff6ff"; TAGC="#1d4ed8"; FOOT="#0c1535"
 
-BLUE="#2563eb" if dk else "#1d4ed8"
-BLDARK="#1d4ed8" if dk else "#1e3a8a"
+BLUE="#8b5cf6" if dk else "#7c3aed"
+BLDARK="#6d28d9" if dk else "#4c1d95"
 GREEN="#22c55e" if dk else "#16a34a"
-ACCENT="#f59e0b"
+ACCENT="#f472b6"
 
 # ── Fonts + FA ─────────────────────────────────────────────────
 components.html("""<script>
 (function(){var d=window.parent.document;
 function lnk(h){if(!d.querySelector('link[href="'+h+'"]')){var l=d.createElement('link');l.rel='stylesheet';l.href=h;d.head.appendChild(l);}}
 lnk('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
-lnk('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+lnk('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 })();
 </script>""", height=0)
 
 # ── CSS ────────────────────────────────────────────────────────
 st.markdown(f"""<style>
 *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
-html,body,[class*="css"]{{font-family:'Plus Jakarta Sans',Inter,sans-serif!important}}
+html,body,[class*="css"]{{font-family:'Space Grotesk','Plus Jakarta Sans',sans-serif!important}}
 [data-testid="stSidebar"]{{background:{SBARBG}!important;border-right:1px solid {BORDER}!important;padding-top:0!important}}
 [data-testid="stHeader"]{{display:none!important}}
 .main .block-container{{padding:0!important;max-width:100%!important}}
@@ -480,7 +480,7 @@ with st.sidebar:
           {fi("fa-solid fa-train","#fff","0.78rem")}
         </div>
         <div>
-          <div style="font-size:.92rem;font-weight:800;color:{TEXT};letter-spacing:-.02em;">TrainVoyage PDL</div>
+          <div style="font-size:.92rem;font-weight:800;color:{TEXT};letter-spacing:-.02em;">Wandrail</div>
           <div style="font-size:.62rem;color:{TEXT2};margin-top:1px;">Pays de la Loire</div>
         </div>
       </div>
@@ -588,7 +588,7 @@ user_chip = (f'<span style="background:{TAGBG};border:1px solid {BLUE}30;border-
 st.markdown(f"""<div class="tvnav">
   <div class="tv-brand">
     <div class="tv-brand-dot"></div>
-    Train<span style="color:{BLUE};">Voyage</span>
+    Wand<span style="color:{BLUE};">rail</span>
     <span style="font-weight:400;color:{TEXT2};font-size:.75rem;margin-left:4px;">Pays de la Loire</span>
   </div>
   {user_chip}
@@ -604,7 +604,7 @@ if page == "accueil":
       <div class="hero-cnt">
         <div class="hero-badge">{fi("fa-solid fa-train","rgba(255,255,255,.9)","0.7rem")} Pays de la Loire &nbsp;·&nbsp; Tourisme en train</div>
         <h1 class="hero-h1">Découvrez les Pays de la Loire<br>autrement</h1>
-        <p class="hero-sub">254 gares · 14&thinsp;979 activités recensées · Recommandations personnalisées par IA</p>
+        <p class="hero-sub">136 gares · 26&thinsp;099 lieux uniques · Votre prochain coup de coeur, à portée de train</p>
       </div>
     </div>""", unsafe_allow_html=True)
 
@@ -615,17 +615,17 @@ if page == "accueil":
             st.session_state.search_q = q_h; st.session_state.page = "destinations"; st.rerun()
 
     st.markdown(f"""<div class="stats-row">
-      <div class="stat-c"><div class="stat-n">254</div><div class="stat-l">{fi("fa-solid fa-train",TEXT2,"0.68rem")} Gares SNCF</div></div>
-      <div class="stat-c"><div class="stat-n">14 979</div><div class="stat-l">{fi("fa-solid fa-map-pin",TEXT2,"0.68rem")} Points d'intérêt</div></div>
+      <div class="stat-c"><div class="stat-n">136</div><div class="stat-l">{fi("fa-solid fa-train",TEXT2,"0.68rem")} Gares PDL</div></div>
+      <div class="stat-c"><div class="stat-n">26 099</div><div class="stat-l">{fi("fa-solid fa-map-pin",TEXT2,"0.68rem")} Lieux à explorer</div></div>
       <div class="stat-c"><div class="stat-n">−91%</div><div class="stat-l">{fi("fa-solid fa-leaf",TEXT2,"0.68rem")} CO₂ vs voiture</div></div>
-      <div class="stat-c"><div class="stat-n">5</div><div class="stat-l">{fi("fa-solid fa-users",TEXT2,"0.68rem")} Profils voyageurs IA</div></div>
+      <div class="stat-c"><div class="stat-n">5</div><div class="stat-l">{fi("fa-solid fa-users",TEXT2,"0.68rem")} Styles de voyage</div></div>
     </div>""", unsafe_allow_html=True)
 
     st.markdown(f"""<div class="sect" style="padding-bottom:0;">
       <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;">
         <div>
           <div style="font-size:1.3rem;font-weight:800;color:{TEXT};letter-spacing:-.03em;">{fi("fa-solid fa-trophy",ACCENT,"0.95rem")} Destinations incontournables</div>
-          <div style="font-size:.78rem;color:{TEXT2};margin-top:3px;">Classées par score IA · attractivité + accessibilité</div>
+          <div style="font-size:.78rem;color:{TEXT2};margin-top:3px;">Sélection sur mesure · attractivité + accessibilité train</div></div>
         </div>
       </div>
     </div>""", unsafe_allow_html=True)
@@ -670,7 +670,7 @@ if page == "accueil":
     st.markdown(f"""<div style="background:{CARD2};border-top:1px solid {BORDER};padding:2rem 2.5rem;margin-top:1.5rem;">
       <div style="max-width:1440px;margin:0 auto;">
         <div style="font-size:1.2rem;font-weight:800;color:{TEXT};letter-spacing:-.03em;margin-bottom:3px;">{fi("fa-solid fa-wand-magic-sparkles",BLUE,"0.9rem")} Quel voyageur êtes-vous ?</div>
-        <div style="font-size:.78rem;color:{TEXT2};margin-bottom:1.4rem;">Recommandations personnalisées par machine learning (KNN)</div>
+        <div style="font-size:.78rem;color:{TEXT2};margin-bottom:1.4rem;">Votre style de voyage révélé — des recommandations taillées pour vous</div>
       </div>
     </div>""", unsafe_allow_html=True)
     pc = st.columns(5)
@@ -698,7 +698,7 @@ elif page == "destinations":
 
     dc1, dc2, dc3 = st.columns([3, 2, 1])
     with dc1: q = st.text_input("", placeholder="Rechercher...", value=st.session_state.get("search_q",""), key="ds_q", label_visibility="collapsed")
-    with dc2: srt = st.selectbox("", ["Score IA", "Activités", "A → Z"], key="ds_s", label_visibility="collapsed")
+    with dc2: srt = st.selectbox("", ["Popularité", "Activités", "A → Z"], key="ds_s", label_visibility="collapsed")
     with dc3: nb = st.selectbox("", [12, 24, 48, 100], key="ds_n", label_visibility="collapsed")
 
     df_s = df_dest.copy()
@@ -708,6 +708,7 @@ elif page == "destinations":
              df_s['departement'].str.lower().str.contains(q.lower(), na=False))
         df_s = df_s[m]
     if srt == "Activités": df_s = df_s.sort_values('nb_poi_5km', ascending=False)
+    elif srt == "Popularité": pass
     elif srt == "A → Z": df_s = df_s.sort_values('commune')
     df_s = df_s.head(int(nb))
     st.markdown(f"<div style='padding:0 2.5rem .8rem;font-size:.75rem;color:{TEXT2};'>{fi('fa-solid fa-filter',TEXT2,'0.67rem')} {len(df_s)} résultats</div>", unsafe_allow_html=True)
@@ -809,7 +810,7 @@ elif page == "destination":
         df_poi = load_poi(gk)
 
     t1, t2, t3, t4, t5, t6 = st.tabs([
-        f"Activités ({len(df_poi)})", "Météo", "Carte", "Itinéraire IA", "Éco-impact", "Avis"
+        f"Activités ({len(df_poi)})", "Météo", "Carte", "Mon Itinéraire", "Éco-impact", "Avis"
     ])
 
     with t1:
