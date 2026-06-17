@@ -54,13 +54,13 @@ ACCENT="#f97316"
 SNCF="#e2001a"
 
 # ── Fonts + FA ─────────────────────────────────────────────────
-components.html("""<script>
+st.html("""<script>
 (function(){var d=window.parent.document;
 function lnk(h){if(!d.querySelector('link[href="'+h+'"]')){var l=d.createElement('link');l.rel='stylesheet';l.href=h;d.head.appendChild(l);}}
 lnk('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
 lnk('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
 })();
-</script>""", height=0)
+</script>""")
 
 # ── CSS ────────────────────────────────────────────────────────
 st.markdown(f"""<style>
@@ -720,7 +720,7 @@ if page == "accueil":
     </div>""", unsafe_allow_html=True)
 
     sc1, sc2 = st.columns([5, 1])
-    with sc1: q_h = st.text_input("", placeholder="Rechercher une destination...", key="hs", label_visibility="collapsed")
+    with sc1: q_h = st.text_input("Rechercher", placeholder="Rechercher une destination...", key="hs", label_visibility="collapsed")
     with sc2:
         if st.button("Rechercher", type="primary", use_container_width=True):
             st.session_state.search_q = q_h; st.session_state.page = "destinations"; st.rerun()
@@ -808,9 +808,9 @@ elif page == "destinations":
     </div>""", unsafe_allow_html=True)
 
     dc1, dc2, dc3 = st.columns([3, 2, 1])
-    with dc1: q = st.text_input("", placeholder="Rechercher...", value=st.session_state.get("search_q",""), key="ds_q", label_visibility="collapsed")
-    with dc2: srt = st.selectbox("", ["Popularité", "Activités", "A → Z"], key="ds_s", label_visibility="collapsed")
-    with dc3: nb = st.selectbox("", [12, 24, 48, 100], key="ds_n", label_visibility="collapsed")
+    with dc1: q = st.text_input("Rechercher", placeholder="Rechercher...", value=st.session_state.get("search_q",""), key="ds_q", label_visibility="collapsed")
+    with dc2: srt = st.selectbox("Trier", ["Popularité", "Activités", "A → Z"], key="ds_s", label_visibility="collapsed")
+    with dc3: nb = st.selectbox("Nombre", [12, 24, 48, 100], key="ds_n", label_visibility="collapsed")
 
     df_s = df_dest.copy()
     if q:
@@ -1026,8 +1026,8 @@ elif page == "destination":
             position="topleft",
             flyTo=True,
             keepCurrentZoomLevel=False,
-            strings={{"title": "Ma position", "popup": "Vous êtes ici"}},
-            locateOptions={{"maxZoom": 15, "enableHighAccuracy": True}}
+            strings={"title": "Ma position", "popup": "Vous etes ici"},
+            locateOptions={"maxZoom": 15, "enableHighAccuracy": True}
         ).add_to(m_d)
         folium.Marker([lat, lon], icon=folium.DivIcon(
             html=f'<div style="background:{BLUE};color:#fff;padding:4px 11px;border-radius:7px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.3);">Gare de {vil}</div>',
