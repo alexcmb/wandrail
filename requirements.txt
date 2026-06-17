@@ -1,22 +1,13 @@
-# Base donnees
-pandas==2.2.0
-numpy==1.26.4
-sqlalchemy==2.0.25
-psycopg2==2.9.10
-python-dotenv==1.0.0
-
-# API
-requests==2.31.0
-
-# Application Streamlit
-streamlit==1.31.0
-folium==0.15.1
-streamlit-folium==0.18.0
-plotly==5.18.0
-
-# Machine Learning
-scikit-learn==1.4.0
-
-# Visualisation
-matplotlib==3.8.2
-seaborn==0.13.2
+pandas
+numpy
+sqlalchemy
+psycopg2-binary
+python-dotenv
+requests
+streamlit
+folium
+streamlit-folium
+plotly
+scikit-learn
+matplotlib
+seaborn
