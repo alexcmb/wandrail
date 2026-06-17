@@ -3,7 +3,7 @@ import streamlit.components.v1 as components
 import pandas as pd
 import plotly.graph_objects as go
 import folium
-from folium.plugins import MarkerCluster
+from folium.plugins import MarkerCluster, LocateControl
 from streamlit_folium import st_folium
 from sqlalchemy import create_engine, text
 import numpy as np
@@ -49,7 +49,8 @@ else:
 BLUE="#8b5cf6" if dk else "#7c3aed"
 BLDARK="#6d28d9" if dk else "#4c1d95"
 GREEN="#22c55e" if dk else "#16a34a"
-ACCENT="#f472b6"
+ACCENT="#f97316"
+SNCF="#e2001a"
 
 # ── Fonts + FA ─────────────────────────────────────────────────
 components.html("""<script>
@@ -62,6 +63,19 @@ lnk('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700
 
 # ── CSS ────────────────────────────────────────────────────────
 st.markdown(f"""<style>
+@keyframes pageIn {{
+  from {{opacity:0;transform:translateY(22px)}}
+  to {{opacity:1;transform:translateY(0)}}
+}}
+@keyframes fadeUp {{
+  from {{opacity:0;transform:translateY(12px)}}
+  to {{opacity:1;transform:translateY(0)}}
+}}
+@keyframes heroPulse {{
+  0%,100% {{transform:scale(1);opacity:.22}}
+  50% {{transform:scale(1.08);opacity:.32}}
+}}
+
 *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
 html,body,[class*="css"]{{font-family:'Space Grotesk','Plus Jakarta Sans',sans-serif!important}}
 [data-testid="stSidebar"]{{background:{SBARBG}!important;border-right:1px solid {BORDER}!important;padding-top:0!important}}
@@ -69,6 +83,10 @@ html,body,[class*="css"]{{font-family:'Space Grotesk','Plus Jakarta Sans',sans-s
 .main .block-container{{padding:0!important;max-width:100%!important}}
 body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 [data-testid="stVerticalBlock"]{{gap:0!important}}
+
+/* PAGE TRANSITION */
+.main .block-container > div {{animation:pageIn 0.48s cubic-bezier(0.22,1,0.36,1)}}
+
 .stTextInput>div>div>input{{background:{INPUT}!important;border:1.5px solid {BORDER2}!important;
   color:{TEXT}!important;border-radius:10px!important;padding:10px 14px!important;font-size:.9rem!important}}
 .stTextInput>div>div>input:focus{{border-color:{BLUE}!important;box-shadow:0 0 0 3px {BLUE}25!important}}
@@ -78,66 +96,86 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .stSlider>div>div>div>div{{background:{BLUE}!important}}
 .stCheckbox span{{color:{TEXT}!important;font-size:.85rem!important}}
 .stButton>button{{border-radius:9px!important;font-family:'Plus Jakarta Sans',sans-serif!important;font-weight:600!important;
-  font-size:.84rem!important;transition:all .15s!important;border:1.5px solid {BORDER2}!important;
+  font-size:.84rem!important;transition:all .18s!important;border:1.5px solid {BORDER2}!important;
   background:{CARD}!important;color:{TEXT}!important;padding:9px 16px!important}}
-.stButton>button:hover{{border-color:{BLUE}!important;color:{BLUE}!important;background:{TAGBG}!important}}
+.stButton>button:hover{{border-color:{BLUE}!important;color:{BLUE}!important;background:{TAGBG}!important;transform:translateY(-1px)!important}}
 .stButton>button[kind="primary"]{{background:linear-gradient(135deg,{BLUE},{BLDARK})!important;color:#fff!important;border-color:transparent!important}}
-.stButton>button[kind="primary"]:hover{{opacity:.88!important}}
+.stButton>button[kind="primary"]:hover{{opacity:.88!important;transform:translateY(-1px)!important;box-shadow:0 4px 14px {BLUE}50!important}}
 .stTabs [data-baseweb="tab-list"]{{background:{CARD2}!important;border-radius:12px!important;padding:3px!important;gap:3px!important;border:1px solid {BORDER}!important}}
-.stTabs [data-baseweb="tab"]{{border-radius:9px!important;color:{TEXT2}!important;font-weight:600!important;font-size:.83rem!important;padding:9px 18px!important;background:transparent!important}}
+.stTabs [data-baseweb="tab"]{{border-radius:9px!important;color:{TEXT2}!important;font-weight:600!important;font-size:.83rem!important;padding:9px 18px!important;background:transparent!important;transition:all .18s!important}}
 .stTabs [aria-selected="true"]{{background:linear-gradient(135deg,{BLUE},{BLDARK})!important;color:#fff!important}}
 .stTabs [data-baseweb="tab-panel"]{{padding:0!important}}
 .stSpinner>div{{border-top-color:{BLUE}!important}}
 
 /* NAVBAR */
-.tvnav{{position:sticky;top:0;z-index:999;background:{NAVBG};backdrop-filter:blur(16px);
+.tvnav{{position:sticky;top:0;z-index:999;background:{NAVBG};backdrop-filter:blur(20px);
   border-bottom:1px solid {BORDER};padding:0 2.2rem;display:flex;align-items:center;
-  justify-content:space-between;height:58px;box-shadow:0 1px 8px rgba(0,0,0,.06)}}
+  justify-content:space-between;height:58px;box-shadow:0 2px 12px rgba(0,0,0,.07)}}
 .tv-brand{{display:flex;align-items:center;gap:10px;font-size:1.08rem;font-weight:800;color:{TEXT};letter-spacing:-.03em}}
-.tv-brand-dot{{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,{BLUE},{GREEN})}}
+.tv-brand-dot{{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,{BLUE},{ACCENT});animation:heroPulse 3s ease-in-out infinite}}
 
-/* HERO */
-.hero{{position:relative;min-height:500px;display:flex;align-items:center;overflow:hidden;background:#0a1a3c}}
-.hero-img{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}}
-.hero-ov{{position:absolute;inset:0;background:{HERO_OV}}}
-.hero-cnt{{position:relative;z-index:2;width:100%;max-width:780px;margin:0 auto;padding:4rem 2rem;text-align:center}}
-.hero-badge{{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.14);
-  backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.25);border-radius:24px;
-  color:rgba(255,255,255,.92);font-size:.72rem;font-weight:700;padding:6px 15px;
-  margin-bottom:1.3rem;letter-spacing:.07em;text-transform:uppercase}}
-.hero-h1{{font-size:clamp(2rem,5vw,3.5rem);font-weight:900;color:#fff;line-height:1.06;
-  margin-bottom:.8rem;letter-spacing:-.04em;text-shadow:0 2px 20px rgba(0,0,0,.4)}}
-.hero-sub{{color:rgba(255,255,255,.72);font-size:.93rem;max-width:500px;margin:0 auto 1.8rem;line-height:1.7}}
+/* HERO — gradient moderne, pas de photo aléatoire */
+.hero{{position:relative;min-height:540px;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  background:linear-gradient(135deg,#050d2a 0%,#0f2060 35%,#3b0f7a 65%,#6d28d9 100%)}}
+.hero-glow1{{position:absolute;width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle,rgba(139,92,246,0.28),transparent 70%);
+  top:-350px;right:-180px;pointer-events:none;animation:heroPulse 6s ease-in-out infinite}}
+.hero-glow2{{position:absolute;width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(249,115,22,0.15),transparent 70%);
+  bottom:-250px;left:-100px;pointer-events:none;animation:heroPulse 8s ease-in-out infinite reverse}}
+.hero-dots{{position:absolute;inset:0;
+  background-image:radial-gradient(rgba(255,255,255,0.06) 1px,transparent 1px);
+  background-size:28px 28px;pointer-events:none}}
+.hero-cnt{{position:relative;z-index:2;text-align:center;max-width:720px;padding:4rem 2rem;
+  display:flex;flex-direction:column;align-items:center;animation:fadeUp 0.7s cubic-bezier(0.22,1,0.36,1)}}
+.hero-badge{{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.12);
+  backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.22);border-radius:24px;
+  color:rgba(255,255,255,.92);font-size:.72rem;font-weight:700;padding:7px 16px;
+  margin-bottom:1.5rem;letter-spacing:.07em;text-transform:uppercase}}
+.hero-h1{{font-size:clamp(2.1rem,5vw,3.6rem);font-weight:900;color:#fff;line-height:1.06;
+  margin-bottom:1rem;letter-spacing:-.04em;text-shadow:0 2px 24px rgba(0,0,0,.3)}}
+.hero-h1 span{{background:linear-gradient(135deg,#a78bfa,{ACCENT});-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text}}
+.hero-sub{{color:rgba(255,255,255,.68);font-size:.95rem;max-width:520px;margin:0 auto 2rem;line-height:1.75}}
+.hero-pills{{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin-bottom:2rem}}
+.hero-pill{{background:rgba(255,255,255,.1);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18);
+  border-radius:20px;color:rgba(255,255,255,.88);padding:5px 13px;font-size:.72rem;font-weight:600;
+  display:inline-flex;align-items:center;gap:5px}}
 
 /* STATS BAR */
 .stats-row{{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid {BORDER}}}
-.stat-c{{display:flex;flex-direction:column;align-items:center;padding:1.4rem 1rem;border-right:1px solid {BORDER}}}
+.stat-c{{display:flex;flex-direction:column;align-items:center;padding:1.5rem 1rem;border-right:1px solid {BORDER};transition:background .2s}}
 .stat-c:last-child{{border-right:none}}
+.stat-c:hover{{background:{CARD2}}}
 .stat-n{{font-size:1.9rem;font-weight:900;letter-spacing:-.05em;
-  background:linear-gradient(135deg,{BLUE},{GREEN});-webkit-background-clip:text;
+  background:linear-gradient(135deg,{BLUE},{ACCENT});-webkit-background-clip:text;
   -webkit-text-fill-color:transparent;background-clip:text}}
 .stat-l{{font-size:.7rem;color:{TEXT2};margin-top:4px;font-weight:500;text-align:center}}
 
 /* SECTION */
 .sect{{max-width:1440px;margin:0 auto;padding:2.2rem 2.5rem}}
+.sect-hdr{{margin-bottom:1.8rem}}
+.sect-title{{font-size:1.35rem;font-weight:800;color:{TEXT};letter-spacing:-.03em;margin-bottom:4px}}
+.sect-sub{{font-size:.78rem;color:{TEXT2}}}
 
 /* DESTINATION CARD */
-.dcard{{border-radius:16px;overflow:hidden;background:{CARD};border:1px solid {BORDER};
-  box-shadow:{SHADOW2};transition:all .22s;margin-bottom:.1rem}}
-.dcard:hover{{transform:translateY(-5px);box-shadow:{SHADOW};border-color:{BORDER2}}}
-.dcard-img{{height:200px;position:relative;overflow:hidden;background:#1e3a8a}}
-.dcard-img img{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s;display:block}}
-.dcard:hover .dcard-img img{{transform:scale(1.06)}}
-.dcard-ov,.dcard-ov span{{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,transparent 55%);display:block}}
+.dcard{{border-radius:18px;overflow:hidden;background:{CARD};border:1px solid {BORDER};
+  box-shadow:{SHADOW2};transition:all .25s cubic-bezier(0.22,1,0.36,1);margin-bottom:.1rem}}
+.dcard:hover{{transform:translateY(-6px);box-shadow:{SHADOW};border-color:{BORDER2}}}
+.dcard-img{{height:210px;position:relative;overflow:hidden;background:#1e3a8a}}
+.dcard-img img{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s;display:block}}
+.dcard:hover .dcard-img img{{transform:scale(1.08)}}
+.dcard-ov,.dcard-ov span{{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.78) 0%,transparent 50%);display:block}}
 .dcard-badge{{position:absolute;top:10px;left:10px;background:{BADGE_BG};backdrop-filter:blur(10px);
   color:rgba(255,255,255,.9);border-radius:16px;padding:4px 10px;font-size:.66rem;font-weight:700;
   display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(255,255,255,.2)}}
 .dcard-score{{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.5);
   backdrop-filter:blur(8px);color:#fcd34d;border-radius:14px;padding:4px 9px;
   font-size:.7rem;font-weight:700;display:inline-flex;align-items:center;gap:4px}}
-.dcard-city{{position:absolute;bottom:10px;left:13px;color:#fff;font-size:1.12rem;
+.dcard-city{{position:absolute;bottom:10px;left:13px;right:13px;color:#fff;font-size:1.12rem;
   font-weight:800;letter-spacing:-.02em;text-shadow:0 2px 8px rgba(0,0,0,.5);display:block}}
-.dcard-body{{padding:.85rem 1.1rem 1rem}}
+.dcard-body{{padding:.9rem 1.1rem 1rem}}
+.dcard-phrase{{font-size:.71rem;color:{TEXT2};margin:0 0 7px;font-style:italic;line-height:1.45}}
 .dcard-meta{{font-size:.7rem;color:{TEXT2};margin:0 0 8px;display:flex;align-items:center;gap:5px}}
 .dtag{{background:{TAGBG};color:{TAGC};border-radius:6px;padding:3px 8px;
   font-size:.64rem;font-weight:600;display:inline-flex;align-items:center;gap:3px}}
@@ -146,8 +184,8 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .poi-cnt{{font-size:.7rem;color:{TEXT2};display:flex;align-items:center;gap:4px}}
 
 /* ACTIVITY CARD */
-.acard{{border:1px solid {BORDER};border-radius:12px;overflow:hidden;background:{CARD};transition:all .18s}}
-.acard:hover{{box-shadow:{SHADOW2};border-color:{BORDER2}}}
+.acard{{border:1px solid {BORDER};border-radius:12px;overflow:hidden;background:{CARD};transition:all .2s}}
+.acard:hover{{box-shadow:{SHADOW2};border-color:{BORDER2};transform:translateY(-2px)}}
 .acard-img{{height:90px;position:relative;overflow:hidden;background:{CARD2}}}
 .acard-img img{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}}
 .acard-ico{{position:absolute;bottom:4px;right:5px;background:rgba(0,0,0,.45);border-radius:4px;padding:2px 5px}}
@@ -156,23 +194,33 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .acard-mt{{font-size:.68rem;color:{TEXT2};line-height:1.75;margin:0}}
 
 /* PROFIL CARD */
-.pcard{{border:2px solid {BORDER};border-radius:14px;padding:1.4rem .9rem;text-align:center;
-  cursor:pointer;transition:all .18s;background:{CARD}}}
-.pcard:hover{{border-color:{BLUE};box-shadow:0 0 0 3px {BLUE}18}}
+.pcard{{border:2px solid {BORDER};border-radius:16px;padding:1.4rem .9rem;text-align:center;
+  cursor:pointer;transition:all .2s;background:{CARD}}}
+.pcard:hover{{border-color:{BLUE};box-shadow:0 0 0 3px {BLUE}18;transform:translateY(-2px)}}
 .pcard.sel{{border-color:{BLUE};background:{TAGBG}}}
 .p-ico{{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 9px;font-size:1.35rem}}
 .p-nm{{font-weight:700;font-size:.88rem;color:{TEXT};margin-bottom:3px}}
 .p-ds{{font-size:.68rem;color:{TEXT2};line-height:1.45}}
 
 /* DESTINATION HERO */
-.dhero{{height:320px;position:relative;overflow:hidden;display:flex;align-items:flex-end;background:#0a1a3c}}
+.dhero{{height:340px;position:relative;overflow:hidden;display:flex;align-items:flex-end;background:#0a1a3c}}
 .dhero img{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}}
-.dhero-ov{{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.86) 0%,rgba(0,0,0,.25) 60%,transparent)}}
-.dhero-body{{position:relative;z-index:2;padding:1.6rem 2.2rem;width:100%}}
-.dhero-h1{{color:#fff;font-size:2.2rem;font-weight:900;letter-spacing:-.04em;margin-bottom:6px;text-shadow:0 2px 14px rgba(0,0,0,.4)}}
+.dhero-ov{{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88) 0%,rgba(0,0,0,.2) 60%,transparent)}}
+.dhero-body{{position:relative;z-index:2;padding:1.8rem 2.2rem;width:100%}}
+.dhero-h1{{color:#fff;font-size:2.4rem;font-weight:900;letter-spacing:-.04em;margin-bottom:4px;text-shadow:0 2px 14px rgba(0,0,0,.4)}}
+.dhero-phrase{{color:rgba(255,255,255,.6);font-size:.84rem;margin:.4rem 0 .8rem;font-style:italic}}
 .chip{{background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28);
   border-radius:16px;color:rgba(255,255,255,.92);padding:5px 12px;font-size:.72rem;font-weight:600;
   display:inline-flex;align-items:center;gap:6px}}
+
+/* SNCF LINK */
+.sncf-btn{{display:inline-flex;align-items:center;gap:7px;background:#e2001a;color:#fff;
+  border-radius:9px;padding:9px 16px;font-size:.82rem;font-weight:700;text-decoration:none;
+  transition:all .18s;border:none}}
+.sncf-btn:hover{{background:#b8001a;transform:translateY(-1px);box-shadow:0 4px 14px rgba(226,0,26,0.4)}}
+.geo-btn{{display:inline-flex;align-items:center;gap:7px;background:{BLUE};color:#fff;
+  border-radius:9px;padding:9px 16px;font-size:.82rem;font-weight:700;text-decoration:none;
+  transition:all .18s}}
 
 /* WEATHER */
 .wx-wrap{{background:{'rgba(37,99,235,0.1)' if dk else '#eff6ff'};border:1px solid {'rgba(37,99,235,0.2)' if dk else '#bfdbfe'};
@@ -182,7 +230,8 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 /* ITINERARY */
 .itin-day{{background:{CARD};border:1px solid {BORDER};border-radius:16px;overflow:hidden;margin-bottom:.9rem;box-shadow:{SHADOW2}}}
 .itin-hdr{{background:linear-gradient(135deg,{BLDARK},{BLUE});color:#fff;padding:12px 18px;font-weight:700;font-size:.86rem;display:flex;align-items:center;gap:9px}}
-.itin-row{{display:flex;align-items:flex-start;gap:13px;padding:12px 18px;border-bottom:1px solid {BORDER}}}
+.itin-row{{display:flex;align-items:flex-start;gap:13px;padding:12px 18px;border-bottom:1px solid {BORDER};transition:background .15s}}
+.itin-row:hover{{background:{CARD2}}}
 .itin-row:last-child{{border-bottom:none}}
 .itin-time{{font-size:.7rem;font-weight:700;color:{BLUE};min-width:46px;padding-top:3px}}
 .itin-ico{{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.82rem;flex-shrink:0}}
@@ -230,7 +279,8 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .sb-nav-btn:hover{{background:{CARD2};color:{TEXT}}}
 .sb-nav-btn.active{{background:linear-gradient(135deg,{BLUE},{BLDARK});color:#fff}}
 
-.footer{{background:{FOOT};color:rgba(255,255,255,.3);padding:2rem;text-align:center;font-size:.72rem}}
+.footer{{background:{FOOT};color:rgba(255,255,255,.3);padding:2.5rem;text-align:center;font-size:.72rem}}
+.footer-brand{{font-size:1rem;font-weight:800;color:rgba(255,255,255,.6);margin-bottom:.5rem;letter-spacing:-.02em}}
 </style>""", unsafe_allow_html=True)
 
 # ── DB ─────────────────────────────────────────────────────────
@@ -394,12 +444,8 @@ def get_weather(commune):
 
 # ── Images ─────────────────────────────────────────────────────
 def uimg(seed, w=800, h=500):
-    # Picsum photos: consistent image per seed, no API key needed
     clean = seed.replace(' ', '').replace(',', '').replace('+', '').replace("'", '')[:20]
     return f"https://picsum.photos/seed/{clean}/{w}/{h}"
-
-# Hero background — landscape/nature photo that looks like travel
-HERO_IMG = "https://picsum.photos/seed/trainvoyagefrance/1920/900"
 
 DEST_META = {
     "saumur":           {"img": uimg("saumurcastle"), "grad": "linear-gradient(135deg,#0f2a5c,#1e4c9e)",
@@ -422,6 +468,34 @@ DEST_META = {
                          "tags":["Port","Pêche","Sel Guérande"],"icon":"fa-solid fa-fish","color":"#7dd3fc"},
     "cholet":           {"img": uimg("choletville"), "grad": "linear-gradient(135deg,#2a0615,#5c0e30)",
                          "tags":["Histoire Vendée","Textiles","Musées"],"icon":"fa-solid fa-building-columns","color":"#f9a8d4"},
+}
+
+DEST_PHRASES = {
+    "nantes":             "La Venise de l'Ouest — vibrante, créative et gastronomique",
+    "saumur":             "Le Joyau de l'Anjou — châteaux, vins de Loire et équitation",
+    "le mans":            "Ville de Légende — là où l'histoire prend de la vitesse",
+    "angers-st-laud":     "Capitale de l'Anjou — douceur de vivre et patrimoine d'exception",
+    "angers":             "Capitale de l'Anjou — douceur de vivre et patrimoine d'exception",
+    "st-nazaire":         "Porte de l'Atlantique — entre océan infini et épopée industrielle",
+    "saint-nazaire":      "Porte de l'Atlantique — entre océan infini et épopée industrielle",
+    "la baule-escoublac": "La Plus Belle Baie d'Europe — sable blanc à l'infini",
+    "le pouliguen":       "Perle de la Côte d'Amour — ports de pêche, criques et authenticité",
+    "laval":              "Cité des Arts Naïfs — étonnante, secrète et pleine de surprises",
+    "le croisic":         "Presqu'île de Guérande — sel, mer et saveurs de l'estuaire",
+    "cholet":             "Cœur de Vendée — caractère, histoire et esprit de conquête",
+    "la roche-sur-yon":   "Ville Napoléonienne — architecture et vitalité vendéenne",
+    "les sables-d'olonne":"Station Emblématique — plages infinies et vendée globe",
+    "les sables":         "Station Emblématique — plages infinies et vendée globe",
+    "pornic":             "Cité Balnéaire de Charme — falaises, plages et château médiéval",
+    "ancenis":            "Porte de Bretagne — vignobles, Loire et art de vivre",
+    "clisson":            "La Petite Toscane — château médiéval et vignes muscadet",
+    "fontenay-le-comte":  "Cité de la Renaissance — histoire, nature et marais poitevin",
+    "challans":           "Pays des Variétés — bocage, marais et gastronomie typique",
+    "pontchâteau":        "Terre de Pèlerinage — calvaire, nature et traditions bretonnes",
+    "redon":              "Carrefour des Rivières — canaux, châtaignes et architecture",
+    "blain":              "Presqu'île de Bretagne — château, forêt de Gavre et authenticité",
+    "paimboeuf":          "Estuaire Mystérieux — bord de Loire, pêcheurs et patrimoine",
+    "sainte-luce-sur-loire": "Porte Est de Nantes — vignobles et berges de Loire",
 }
 
 PROFIL_META = {
@@ -456,9 +530,12 @@ CAT_CLR = {k: v[1] for k,v in CAT_FA.items()}
 def get_meta(nom):
     k = str(nom).lower().strip()
     for key, val in DEST_META.items():
-        if key in k or k in key: return val
+        if key in k or k in key:
+            phrase = next((v for pk, v in DEST_PHRASES.items() if pk in k or k in pk), "")
+            return {**val, "phrase": phrase}
+    phrase = next((v for pk, v in DEST_PHRASES.items() if pk in k or k in pk), "Une destination à découvrir en train")
     return {"img": uimg(k), "grad": f"linear-gradient(135deg,{BLDARK},{BLUE})",
-            "tags": [], "icon": "fa-solid fa-train", "color": BLUE}
+            "tags": [], "icon": "fa-solid fa-train", "color": BLUE, "phrase": phrase}
 
 def fi(cls, col="#fff", sz="1rem", ex=""):
     return f'<i class="{cls}" style="color:{col};font-size:{sz};{ex}"></i>'
@@ -474,14 +551,23 @@ except Exception as e:
 # ══════════════════════════════════════════════════════════════════
 with st.sidebar:
     st.markdown(f"""<div style="padding:.8rem 0 .6rem;">
-      <div style="display:flex;align-items:center;gap:9px;">
-        <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,{BLUE},{BLDARK});
-          display:flex;align-items:center;justify-content:center;">
-          {fi("fa-solid fa-train","#fff","0.78rem")}
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,{BLUE},{BLDARK});
+          display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px {BLUE}40;">
+          <svg viewBox="0 0 32 32" width="20" height="20">
+            <rect x="3" y="10" width="26" height="13" rx="4" fill="white" opacity=".95"/>
+            <rect x="6" y="13" width="5" height="5" rx="1.5" fill="{BLUE}"/>
+            <rect x="13.5" y="13" width="5" height="5" rx="1.5" fill="{BLUE}"/>
+            <rect x="21" y="13" width="5" height="5" rx="1.5" fill="{BLUE}"/>
+            <circle cx="9" cy="25" r="3" fill="white" opacity=".9"/>
+            <circle cx="23" cy="25" r="3" fill="white" opacity=".9"/>
+            <line x1="3" y1="17" x2="0" y2="17" stroke="#f97316" stroke-width="2" stroke-linecap="round"/>
+            <line x1="3" y1="20" x2="1" y2="20" stroke="#f97316" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
         </div>
         <div>
-          <div style="font-size:.92rem;font-weight:800;color:{TEXT};letter-spacing:-.02em;">Wandrail</div>
-          <div style="font-size:.62rem;color:{TEXT2};margin-top:1px;">Pays de la Loire</div>
+          <div style="font-size:.95rem;font-weight:800;color:{TEXT};letter-spacing:-.02em;">Wand<span style="color:{BLUE};">rail</span></div>
+          <div style="font-size:.6rem;color:{TEXT2};margin-top:1px;font-weight:500;">Pays de la Loire</div>
         </div>
       </div>
     </div>
@@ -599,12 +685,18 @@ st.markdown(f"""<div class="tvnav">
 # ══════════════════════════════════════════════════════════════════
 if page == "accueil":
     st.markdown(f"""<div class="hero">
-      <img class="hero-img" src="{HERO_IMG}" alt="Paysage Pays de la Loire" loading="eager">
-      <div class="hero-ov"></div>
+      <div class="hero-glow1"></div>
+      <div class="hero-glow2"></div>
+      <div class="hero-dots"></div>
       <div class="hero-cnt">
-        <div class="hero-badge">{fi("fa-solid fa-train","rgba(255,255,255,.9)","0.7rem")} Pays de la Loire &nbsp;·&nbsp; Tourisme en train</div>
-        <h1 class="hero-h1">Découvrez les Pays de la Loire<br>autrement</h1>
-        <p class="hero-sub">136 gares · 26&thinsp;099 lieux uniques · Votre prochain coup de coeur, à portée de train</p>
+        <div class="hero-badge">{fi("fa-solid fa-train","rgba(255,255,255,.9)","0.72rem")} Pays de la Loire &nbsp;·&nbsp; Tourisme en train</div>
+        <h1 class="hero-h1">Voyagez en train.<br><span>Découvrez les Pays de la Loire.</span></h1>
+        <p class="hero-sub">136 gares accessibles · 26&nbsp;099 lieux uniques à explorer · Votre prochain coup de cœur, à portée de train</p>
+        <div class="hero-pills">
+          <span class="hero-pill">{fi("fa-solid fa-leaf","#86efac","0.68rem")} −91% CO₂ vs voiture</span>
+          <span class="hero-pill">{fi("fa-solid fa-bolt","#fcd34d","0.68rem")} Billets SNCF Connect</span>
+          <span class="hero-pill">{fi("fa-solid fa-map-pin","#f9a8d4","0.68rem")} 5 styles de voyage</span>
+        </div>
       </div>
     </div>""", unsafe_allow_html=True)
 
@@ -622,11 +714,9 @@ if page == "accueil":
     </div>""", unsafe_allow_html=True)
 
     st.markdown(f"""<div class="sect" style="padding-bottom:0;">
-      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;">
-        <div>
-          <div style="font-size:1.3rem;font-weight:800;color:{TEXT};letter-spacing:-.03em;">{fi("fa-solid fa-trophy",ACCENT,"0.95rem")} Destinations incontournables</div>
-          <div style="font-size:.78rem;color:{TEXT2};margin-top:3px;">Sélection sur mesure · attractivité + accessibilité train</div></div>
-        </div>
+      <div class="sect-hdr">
+        <div class="sect-title">{fi("fa-solid fa-trophy",ACCENT,"0.95rem")} Destinations incontournables</div>
+        <div class="sect-sub">Sélection sur mesure · attractivité + accessibilité train</div>
       </div>
     </div>""", unsafe_allow_html=True)
 
@@ -641,6 +731,7 @@ if page == "accueil":
         tgs = "".join([f'<span class="dtag">{t}</span>' for t in meta['tags'][:3]])
         fv = is_fav(user['id'], gk) if user else False
         with c3[i % 3]:
+            phrase_ = meta.get("phrase", "")
             st.markdown(
                 f'<div class="dcard">'
                 f'<div class="dcard-img" style="background:{meta["grad"]};">'
@@ -651,6 +742,7 @@ if page == "accueil":
                 f'<span class="dcard-city">{vil}</span>'
                 f'</div>'
                 f'<div class="dcard-body">'
+                f'{"<p class=\"dcard-phrase\">"+phrase_+"</p>" if phrase_ else ""}'
                 f'<p class="dcard-meta">{fi("fa-solid fa-location-dot",TEXT2,"0.67rem")} {dep}</p>'
                 f'<p style="display:flex;gap:4px;flex-wrap:wrap;margin:0 0 8px;">{tgs}</p>'
                 f'<p class="dcard-foot"><span class="poi-cnt">{fi("fa-solid fa-map-pin",TEXT2,"0.65rem")} {np_} activités</span>'
@@ -724,6 +816,7 @@ elif page == "destinations":
             prf = str(row.get('profil_touristique', ''))
             tgs = "".join([f'<span class="dtag">{t}</span>' for t in meta['tags'][:3]])
             fv = is_fav(user['id'], gk) if user else False
+            phrase_d = get_meta(gk).get("phrase", "")
             with rc[ci]:
                 st.markdown(f"""<div class="sect" style="padding:0 0 .2rem;max-width:100%;">
                   <div class="dcard">
@@ -735,6 +828,7 @@ elif page == "destinations":
                       <div class="dcard-city">{vil}</div>
                     </div>
                     <div class="dcard-body">
+                      {"<div class=\"dcard-phrase\">"+phrase_d+"</div>" if phrase_d else ""}
                       <div class="dcard-meta">{fi("fa-solid fa-location-dot",TEXT2,"0.67rem")} {dep}</div>
                       <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;">{tgs}</div>
                       <div class="dcard-foot">
@@ -776,7 +870,8 @@ elif page == "destination":
     with b1:
         if st.button("Retour", key="bk"): st.session_state.page = "destinations"; st.rerun()
 
-    st.markdown(f"""<div class="dhero" style="{'background:'+meta['grad'] if True else ''}">
+    dest_phrase = meta.get("phrase", "")
+    st.markdown(f"""<div class="dhero" style="background:{meta['grad']}">
       <img src="{meta['img']}" alt="{vil}">
       <div class="dhero-ov"></div>
       <div class="dhero-body">
@@ -787,7 +882,8 @@ elif page == "destination":
           <span class="chip">{fi("fa-solid fa-train","rgba(255,255,255,.85)","0.72rem")} ~{dist_km:.0f} km</span>
         </div>
         <div class="dhero-h1">{vil}</div>
-        <div style="color:rgba(255,255,255,.6);font-size:.82rem;margin-top:3px;">{fi("fa-solid fa-location-dot","rgba(255,255,255,.5)","0.72rem")} {dep}</div>
+        {"<div class=\"dhero-phrase\">"+dest_phrase+"</div>" if dest_phrase else ""}
+        <div style="color:rgba(255,255,255,.5);font-size:.78rem;margin-top:2px;">{fi("fa-solid fa-location-dot","rgba(255,255,255,.4)","0.72rem")} {dep}</div>
       </div>
     </div>""", unsafe_allow_html=True)
 
@@ -898,7 +994,22 @@ elif page == "destination":
             st.info("Météo temporairement indisponible.")
 
     with t3:
+        sncf_url = f"https://www.sncf-connect.com/app/home/search?destination={vil.replace(' ', '+')}"
+        oui_url  = f"https://www.oui.sncf/recherche/result#search=auto-{vil.replace(' ', '+')}"
+        st.markdown(f"""<div style="display:flex;gap:.7rem;align-items:center;padding:1rem 0 .8rem;flex-wrap:wrap;">
+          <a href="{sncf_url}" target="_blank" class="sncf-btn">
+            {fi("fa-solid fa-train","#fff","0.82rem")} Voir l'itinéraire SNCF Connect
+          </a>
+          <span style="font-size:.75rem;color:{TEXT2};">{fi("fa-solid fa-location-crosshairs",BLUE,"0.75rem")} Activez la localisation pour voir votre position sur la carte</span>
+        </div>""", unsafe_allow_html=True)
         m_d = folium.Map(location=[lat, lon], zoom_start=13, tiles=TILE)
+        LocateControl(
+            position="topleft",
+            flyTo=True,
+            keepCurrentZoomLevel=False,
+            strings={{"title": "Ma position", "popup": "Vous êtes ici"}},
+            locateOptions={{"maxZoom": 15, "enableHighAccuracy": True}}
+        ).add_to(m_d)
         folium.Marker([lat, lon], icon=folium.DivIcon(
             html=f'<div style="background:{BLUE};color:#fff;padding:4px 11px;border-radius:7px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.3);">Gare de {vil}</div>',
             icon_size=(160, 28), icon_anchor=(80, 14))).add_to(m_d)
@@ -1014,7 +1125,7 @@ elif page == "planner":
       <div style="font-size:1.3rem;font-weight:800;color:{TEXT};letter-spacing:-.03em;margin-bottom:1rem;">{fi("fa-solid fa-route",BLUE,"0.95rem")} Planifier mon voyage</div>
       <div class="step-bar">
         <div class="step-i {sc(1)}"><div class="sn">{'✓' if step>1 else '1'}</div> Mon profil</div>
-        <div class="step-i {sc(2)}"><div class="sn">{'✓' if step>2 else '2'}</div> Destinations IA</div>
+        <div class="step-i {sc(2)}"><div class="sn">{'✓' if step>2 else '2'}</div> Destinations suggérées</div>
         <div class="step-i {sc(3)}"><div class="sn">3</div> Mon itinéraire</div>
       </div>
     </div>""", unsafe_allow_html=True)
@@ -1048,11 +1159,11 @@ elif page == "planner":
             <div style="width:42px;height:42px;border-radius:12px;background:{pd_['bg']};display:flex;align-items:center;justify-content:center;">{fi(pd_['icon'],pd_['color'],"1.25rem")}</div>
             <div>
               <div style="font-size:1rem;font-weight:800;color:{TEXT};">Vos 5 destinations — {prof}</div>
-              <div style="font-size:.75rem;color:{TEXT2};">Algorithme KNN · Machine Learning</div>
+              <div style="font-size:.75rem;color:{TEXT2};">Sélection personnalisée · 5 styles de voyage</div>
             </div>
           </div>
         </div>""", unsafe_allow_html=True)
-        with st.spinner("Calcul IA en cours..."):
+        with st.spinner("Calcul en cours..."):
             df_r = load_reco(prof)
         if df_r.empty:
             st.warning("Aucune recommandation disponible.")
@@ -1076,7 +1187,7 @@ elif page == "planner":
                       <div style="display:flex;gap:12px;font-size:.7rem;color:{TEXT2};margin:.3rem 0;">
                         <span>{fi("fa-solid fa-map-pin",TEXT2,"0.65rem")} {rnp} activités</span>
                         <span>{fi("fa-solid fa-star","#fcd34d","0.65rem")} {rsc:.2f}/10</span>
-                        <span>{fi("fa-solid fa-brain",BLUE,"0.65rem")} Score IA: {rscr:.2f}/10</span>
+                        <span>{fi("fa-solid fa-chart-bar",BLUE,"0.65rem")} Compatibilité: {rscr:.2f}/10</span>
                       </div>
                       <div class="rbar"><div style="width:{pct}%;height:100%;background:linear-gradient(90deg,{BLUE},{GREEN});border-radius:2px;"></div></div>
                       <div style="font-size:.7rem;color:{TEXT2};font-style:italic;margin-top:3px;">{rr.get('raison','—')}</div>
@@ -1318,7 +1429,11 @@ elif page == "profil":
 
 # ── Footer ──────────────────────────────────────────────────────
 st.markdown(f"""<div class="footer">
-  <div style="font-size:.9rem;font-weight:800;color:rgba(255,255,255,.55);margin-bottom:.4rem;">TrainVoyage PDL</div>
-  <div>Projet M1 Big Data &amp; IA · Tourisme en train · Pays de la Loire</div>
-  <div style="margin-top:.3rem;color:rgba(255,255,255,.2);">Données SNCF Open Data · wttr.in · Picsum Photos</div>
+  <div class="footer-brand">Wand<span style="color:{BLUE};">rail</span></div>
+  <div>Projet M1 Big Data &amp; IA · Sup de Vinci · Tourisme en train · Pays de la Loire</div>
+  <div style="margin-top:.6rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;">
+    <span>{fi("fa-solid fa-train","#e2001a","0.7rem")} Données SNCF Open Data</span>
+    <span>{fi("fa-solid fa-cloud","rgba(255,255,255,.3)","0.7rem")} wttr.in</span>
+    <span>{fi("fa-solid fa-image","rgba(255,255,255,.3)","0.7rem")} Picsum Photos</span>
+  </div>
 </div>""", unsafe_allow_html=True)
