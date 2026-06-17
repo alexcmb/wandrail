@@ -1,8 +1,9 @@
-# Tourisme en Train — Pays de la Loire
+# Wandrail — Découvre la France en train
 
 Projet d'études M1 Big Data & IA — Sup de Vinci  
 Diplôme : **RNCP40167** — Expert en ingénierie de données massives et IA (Niveau 7)  
-Partenaire : **Fondation SNCF** / Open Data University — Saison 3
+Partenaire : **Fondation SNCF** / Open Data University — Saison 3  
+Version actuelle : **Pays de la Loire** · Roadmap : France entière
 
 ---
 
