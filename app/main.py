@@ -571,7 +571,7 @@ with st.sidebar:
           </svg>
         </div>
         <div>
-          <div style="font-size:.95rem;font-weight:800;color:{TEXT};letter-spacing:-.02em;">Wand<span style="color:{BLUE};">rail</span></div>
+          <div style="font-size:.95rem;font-weight:800;color:{TEXT};letter-spacing:-.02em;white-space:nowrap;">Wand<span style="color:{BLUE};">rail</span></div>
           <div style="font-size:.6rem;color:{TEXT2};margin-top:1px;font-weight:500;">Pays de la Loire</div>
         </div>
       </div>
@@ -694,8 +694,8 @@ user_chip = (f'<span style="background:{TAGBG};border:1px solid {BLUE}30;border-
 st.markdown(f"""<div class="tvnav">
   <div class="tv-brand">
     <div class="tv-brand-dot"></div>
-    Wand<span style="color:{BLUE};">rail</span>
-    <span style="font-weight:400;color:{TEXT2};font-size:.75rem;margin-left:4px;">Pays de la Loire</span>
+    <span>Wand<span style="color:{BLUE};">rail</span></span>
+    <span style="font-weight:400;color:{TEXT2};font-size:.75rem;">Pays de la Loire</span>
   </div>
   {user_chip}
 </div>""", unsafe_allow_html=True)
