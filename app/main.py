@@ -219,6 +219,26 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
   border-top:1px solid {BORDER};margin:0}}
 .poi-cnt{{font-size:.72rem;color:{TEXT2};display:flex;align-items:center;gap:4px}}
 
+/* TRENDING HORIZONTAL SCROLL */
+.trend-scroll{{display:flex;gap:.85rem;overflow-x:auto;padding:.5rem 2.5rem 1.2rem;scrollbar-width:none}}
+.trend-scroll::-webkit-scrollbar{{display:none}}
+.trend-card{{flex-shrink:0;width:172px;border-radius:14px;overflow:hidden;cursor:pointer;
+  transition:all .22s cubic-bezier(0.22,1,0.36,1);background:{CARD};
+  box-shadow:0 2px 10px rgba(0,0,0,.07);border:1px solid {BORDER}}}
+.trend-card:hover{{transform:translateY(-4px);box-shadow:0 7px 22px rgba(0,0,0,.12);border-color:{BORDER2}}}
+.trend-img{{height:110px;position:relative;overflow:hidden;background:{CARD2}}}
+.trend-img img{{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}}
+.trend-card:hover .trend-img img{{transform:scale(1.07)}}
+.trend-body{{padding:.6rem .75rem .7rem}}
+.trend-nm{{font-weight:700;font-size:.81rem;color:{TEXT};margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
+.trend-meta{{font-size:.64rem;color:{TEXT2};display:flex;gap:5px;align-items:center}}
+.trend-rank{{position:absolute;top:7px;left:8px;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);
+  color:#fff;border-radius:8px;padding:2px 7px;font-size:.64rem;font-weight:700}}
+.trend-score{{position:absolute;top:7px;right:8px;background:rgba(0,0,0,.45);
+  color:#fcd34d;border-radius:8px;padding:2px 7px;font-size:.64rem;font-weight:700;
+  display:flex;align-items:center;gap:3px}}
+
 /* ACTIVITY CARD */
 .acard{{border:1px solid {BORDER};border-radius:12px;overflow:hidden;background:{CARD};transition:all .2s}}
 .acard:hover{{box-shadow:{SHADOW2};border-color:{BORDER2};transform:translateY(-2px)}}
@@ -229,14 +249,18 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .acard-nm{{font-weight:700;font-size:.81rem;color:{TEXT};margin:0 0 4px;line-height:1.3}}
 .acard-mt{{font-size:.68rem;color:{TEXT2};line-height:1.75;margin:0}}
 
-/* PROFIL CARD */
-.pcard{{border:2px solid {BORDER};border-radius:16px;padding:1.4rem .9rem;text-align:center;
-  cursor:pointer;transition:all .2s;background:{CARD}}}
-.pcard:hover{{border-color:{BLUE};box-shadow:0 0 0 3px {BLUE}18;transform:translateY(-2px)}}
-.pcard.sel{{border-color:{BLUE};background:{TAGBG}}}
-.p-ico{{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 9px;font-size:1.35rem}}
-.p-nm{{font-weight:700;font-size:.88rem;color:{TEXT};margin-bottom:3px}}
-.p-ds{{font-size:.68rem;color:{TEXT2};line-height:1.45}}
+/* PROFIL CARD — style carte Airbnb avec banniere */
+.pcard{{border-radius:18px;overflow:hidden;cursor:pointer;transition:all .22s cubic-bezier(0.22,1,0.36,1);
+  background:{CARD};border:2px solid transparent;box-shadow:0 2px 12px rgba(0,0,0,.07)}}
+.pcard:hover{{transform:translateY(-5px);box-shadow:0 10px 32px rgba(0,0,0,.13);border-color:{BLUE}40}}
+.pcard.sel{{border-color:{BLUE};box-shadow:0 0 0 3px {BLUE}25}}
+.p-banner{{height:96px;display:flex;align-items:center;justify-content:center;position:relative}}
+.p-ico{{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:1.7rem;background:rgba(255,255,255,.25);
+  backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,.45);box-shadow:0 3px 14px rgba(0,0,0,.18)}}
+.p-body{{padding:.85rem .9rem .9rem;text-align:center}}
+.p-nm{{font-weight:800;font-size:.88rem;color:{TEXT};margin-bottom:4px;letter-spacing:-.02em}}
+.p-ds{{font-size:.67rem;color:{TEXT2};line-height:1.45}}
 
 /* DESTINATION HERO */
 .dhero{{height:340px;position:relative;overflow:hidden;display:flex;align-items:flex-end;background:#0a1a3c}}
@@ -315,10 +339,15 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .eco-lbl{{font-size:.82rem;color:{ECO_LBL};margin-top:6px;font-weight:500}}
 
 /* BADGE */
-.badge-card{{border:1px solid {BORDER};border-radius:12px;padding:.9rem;text-align:center;background:{CARD}}}
-.badge-card.unlocked{{border-color:{BLUE};background:{TAGBG}}}
-.badge-card.locked{{opacity:.4}}
-.badge-ico{{width:48px;height:48px;border-radius:50%;margin:0 auto 7px;display:flex;align-items:center;justify-content:center;font-size:1.25rem}}
+@keyframes badgeGlow {{
+  0%,100%{{box-shadow:0 0 0 0 {BLUE}35}}
+  50%{{box-shadow:0 0 0 5px {BLUE}00}}
+}}
+.badge-card{{border:1.5px solid {BORDER};border-radius:14px;padding:.9rem .75rem;text-align:center;background:{CARD};transition:all .2s}}
+.badge-card:hover{{transform:translateY(-2px)}}
+.badge-card.unlocked{{border-color:{BLUE};background:{TAGBG};animation:badgeGlow 2.8s ease-in-out infinite}}
+.badge-card.locked{{opacity:.32;filter:grayscale(1)}}
+.badge-ico{{width:52px;height:52px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:0 2px 8px rgba(0,0,0,.1)}}
 
 /* REVIEW */
 .rev-card{{border:1px solid {BORDER};border-radius:12px;padding:.9rem 1.1rem;background:{CARD};margin-bottom:.65rem}}
@@ -870,6 +899,38 @@ if page == "accueil":
                     else: st.toast("Connectez-vous pour ajouter des favoris")
 
     st.markdown(f'<div class="sect-divider" style="margin-top:2rem;"></div>', unsafe_allow_html=True)
+
+    trend_hdr = f"""<div class="sect" style="padding-bottom:0;padding-top:2rem;">
+      <div class="sect-hdr" style="margin-bottom:.8rem;">
+        <div>
+          <div class="sect-title" style="font-size:1.2rem;">Partez explorer les Pays de la Loire</div>
+          <div class="sect-sub">{len(df_dest)} destinations accessibles en train</div>
+        </div>
+      </div>
+    </div>"""
+    trend_cards = ""
+    for ti, (_, trow) in enumerate(df_dest.head(20).iterrows()):
+        tgk = str(trow['nom_gare']).lower()
+        tvil = str(trow.get('commune', trow['nom_gare'])).title()
+        tmeta = get_meta(tgk)
+        tsc = float(trow.get('score_attractivite', 0) or 0)
+        tnp = int(trow.get('nb_poi_5km', 0) or 0)
+        trend_cards += (
+            f'<div class="trend-card">'
+            f'<div class="trend-img">'
+            f'<img src="{tmeta["img"]}" alt="{tvil}" loading="lazy">'
+            f'<span class="trend-rank">#{ti+1}</span>'
+            f'<span class="trend-score">{fi("fa-solid fa-star","#fcd34d","0.6rem")} {tsc:.1f}</span>'
+            f'</div>'
+            f'<div class="trend-body">'
+            f'<div class="trend-nm">{tvil}</div>'
+            f'<div class="trend-meta">{fi("fa-solid fa-map-pin",TEXT2,"0.6rem")} {tnp} activites</div>'
+            f'</div>'
+            f'</div>'
+        )
+    st.markdown(trend_hdr + f'<div class="trend-scroll">{trend_cards}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="sect-divider"></div>', unsafe_allow_html=True)
+
     st.markdown(f"""<div class="sect" style="padding-top:2.4rem;padding-bottom:1.4rem;background:{CARD2};">
       <div style="max-width:1440px;margin:0 auto;">
         <div class="sect-title" style="margin-bottom:4px;">Quel type de voyageur etes-vous ?</div>
@@ -880,10 +941,15 @@ if page == "accueil":
     for i, (pn, pd_) in enumerate(PROFIL_META.items()):
         with pc[i]:
             sel = st.session_state.profil_sel == pn
+            c_ = pd_['color']
             st.markdown(f"""<div class="pcard {'sel' if sel else ''}">
-              <div class="p-ico" style="background:{pd_['bg']};">{fi(pd_['icon'],pd_['color'],"1.3rem")}</div>
-              <div class="p-nm">{pn}</div>
-              <div class="p-ds">{pd_['desc']}</div>
+              <div class="p-banner" style="background:linear-gradient(135deg,{c_}38,{c_}18);">
+                <div class="p-ico">{fi(pd_['icon'],c_,"1.7rem")}</div>
+              </div>
+              <div class="p-body">
+                <div class="p-nm">{pn}</div>
+                <div class="p-ds">{pd_['desc']}</div>
+              </div>
             </div>""", unsafe_allow_html=True)
             if st.button("Choisi" if sel else "Choisir", key=f"hp_{pn}", use_container_width=True,
                          type="primary" if sel else "secondary"):
@@ -1283,10 +1349,15 @@ elif page == "planner":
         for i, (pn, pd_) in enumerate(PROFIL_META.items()):
             with pc[i]:
                 sel = st.session_state.profil_sel == pn
+                c_ = pd_['color']
                 st.markdown(f"""<div class="pcard {'sel' if sel else ''}">
-                  <div class="p-ico" style="background:{pd_['bg']};">{fi(pd_['icon'],pd_['color'],"1.35rem")}</div>
-                  <div class="p-nm">{pn}</div>
-                  <div class="p-ds">{pd_['desc']}</div>
+                  <div class="p-banner" style="background:linear-gradient(135deg,{c_}38,{c_}18);">
+                    <div class="p-ico">{fi(pd_['icon'],c_,"1.7rem")}</div>
+                  </div>
+                  <div class="p-body">
+                    <div class="p-nm">{pn}</div>
+                    <div class="p-ds">{pd_['desc']}</div>
+                  </div>
                 </div>""", unsafe_allow_html=True)
                 if st.button("Choisi" if sel else "Choisir", key=f"pp_{pn}", use_container_width=True,
                              type="primary" if sel else "secondary"):
@@ -1566,13 +1637,21 @@ elif page == "profil":
             dest_k = str(frow['destination'])
             fmeta = get_meta(dest_k)
             with fv_cols[fi_i % 4]:
-                st.markdown(f"""<div style="background:{CARD};border:1px solid {BORDER};border-radius:11px;overflow:hidden;margin-bottom:.4rem;">
-                  <div style="height:70px;background:{fmeta['grad']};position:relative;overflow:hidden;">
+                st.markdown(f"""<div style="background:{CARD};border:1px solid {BORDER};border-radius:14px;overflow:hidden;margin-bottom:.5rem;box-shadow:{SHADOW2};transition:all .2s;">
+                  <div style="height:130px;background:{fmeta['grad']};position:relative;overflow:hidden;">
                     <img src="{fmeta['img']}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
-                    <div style="position:absolute;inset:0;background:rgba(0,0,0,.35);"></div>
-                    <div style="position:absolute;bottom:5px;left:8px;color:#fff;font-size:.75rem;font-weight:700;">{dest_k.title()}</div>
+                    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.7) 0%,transparent 55%);"></div>
+                    <div style="position:absolute;top:9px;right:9px;">{fi("fa-solid fa-heart",CORAL,"0.78rem")}</div>
+                    <div style="position:absolute;bottom:9px;left:10px;right:10px;">
+                      <div style="color:#fff;font-size:.82rem;font-weight:800;letter-spacing:-.02em;line-height:1.2;">{dest_k.title()}</div>
+                    </div>
+                  </div>
+                  <div style="padding:.55rem .8rem .65rem;display:flex;align-items:center;justify-content:space-between;">
+                    <div style="font-size:.65rem;color:{TEXT2};">{fi(fmeta['icon'],fmeta['color'],'0.62rem')} {", ".join(fmeta['tags'][:2]) if fmeta['tags'] else "Destination"}</div>
                   </div>
                 </div>""", unsafe_allow_html=True)
+                if st.button("Explorer", key=f"fav_e_{fi_i}", use_container_width=True, type="primary"):
+                    st.session_state.dest_sel = dest_k; st.session_state.page = "destination"; st.rerun()
 
 # ── Footer ──────────────────────────────────────────────────────
 st.markdown(f"""<div class="footer">
