@@ -118,77 +118,49 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .tv-right{{display:flex;align-items:center;gap:10px}}
 
 /* HERO */
-.hero{{position:relative;min-height:600px;display:flex;align-items:center;justify-content:center;overflow:hidden;
+.hero{{position:relative;min-height:440px;display:flex;align-items:center;justify-content:center;overflow:hidden;
   background:linear-gradient(135deg,#050d2a 0%,#0f2060 35%,#3b0f7a 100%)}}
 .hero-img{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;
   animation:kenBurns 10s cubic-bezier(0.22,1,0.36,1) forwards}}
 @keyframes kenBurns{{
   from{{transform:scale(1.1);opacity:0}}
   10%{{opacity:1}}
-  to{{transform:scale(1);opacity:.82}}
+  to{{transform:scale(1);opacity:.78}}
 }}
 .hero-ov{{position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(5,10,40,0.3) 0%,rgba(20,10,60,0.75) 55%,rgba(5,10,40,0.96) 100%)}}
-.hero-cnt{{position:relative;z-index:2;text-align:center;max-width:740px;padding:5rem 2rem 3.5rem;
+  background:linear-gradient(180deg,rgba(5,13,42,0.38) 0%,rgba(10,20,65,0.78) 100%)}}
+.hero-cnt{{position:relative;z-index:2;text-align:center;max-width:680px;padding:4rem 2rem 3rem;
   display:flex;flex-direction:column;align-items:center}}
-.hero-badge{{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.13);
-  backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.24);border-radius:24px;
-  color:rgba(255,255,255,.92);font-size:.72rem;font-weight:700;padding:7px 16px;
-  margin-bottom:1.4rem;letter-spacing:.07em;text-transform:uppercase;
+.hero-badge{{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.22);border-radius:24px;
+  color:rgba(255,255,255,.88);font-size:.68rem;font-weight:700;padding:6px 15px;
+  margin-bottom:1.3rem;letter-spacing:.08em;text-transform:uppercase;
   animation:fadeUp 0.6s 0.2s both}}
-.hero-h1{{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;color:#fff;line-height:1.09;
-  margin-bottom:1.1rem;letter-spacing:-.04em;text-shadow:0 2px 30px rgba(0,0,0,.5);
-  animation:fadeUp 0.7s 0.4s both}}
+.hero-h1{{font-size:clamp(1.9rem,4.5vw,3.2rem);font-weight:900;color:#fff;line-height:1.1;
+  margin-bottom:.9rem;letter-spacing:-.04em;text-shadow:0 2px 20px rgba(0,0,0,.6);
+  animation:fadeUp 0.7s 0.35s both}}
 .hero-h1 span{{color:#c4b5fd}}
-.hero-sub{{color:rgba(255,255,255,.72);font-size:.93rem;max-width:500px;margin:0 auto 1.8rem;line-height:1.8;
-  animation:fadeUp 0.7s 0.6s both}}
-/* Hero search — style Airbnb : barre blanche arrondie */
-.hero-search{{background:#fff;border-radius:32px;padding:6px 6px 6px 20px;
-  display:flex;align-items:center;gap:0;box-shadow:0 8px 40px rgba(0,0,0,.4);
-  width:100%;max-width:560px;margin-bottom:1.6rem;
-  animation:fadeUp 0.7s 0.75s both}}
-.hero-search-lbl{{font-size:.65rem;font-weight:700;color:#222;text-transform:uppercase;letter-spacing:.05em;margin-right:8px;white-space:nowrap}}
-.hero-search-div{{width:1px;height:24px;background:rgba(0,0,0,.12);margin:0 10px}}
-.hero-search-btn{{background:linear-gradient(135deg,{BLUE},{BLDARK});border:none;border-radius:26px;
-  color:#fff;padding:11px 20px;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap;
-  display:flex;align-items:center;gap:6px}}
-.hero-pills{{display:flex;gap:.55rem;flex-wrap:wrap;justify-content:center;
-  animation:fadeUp 0.7s 0.9s both}}
-.hero-pill{{background:rgba(255,255,255,.13);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.22);
-  border-radius:20px;color:rgba(255,255,255,.92);padding:6px 14px;font-size:.72rem;font-weight:600}}
-/* Hero search wrapper (surplombe le hero) */
-.hero-search-outer{{position:relative;z-index:10;max-width:640px;margin:-32px auto 0;padding:0 1.5rem}}
-.hero-search-card{{background:{CARD};border-radius:20px;padding:18px 22px;
-  box-shadow:0 8px 40px rgba(0,0,0,.15);border:1px solid {BORDER};
-  display:flex;align-items:center;gap:12px}}
-.hero-search-card .stTextInput{{flex:1;margin-bottom:0}}
-.hero-search-card .stTextInput>div>div>input{{border-radius:12px!important;font-size:.92rem!important;
-  padding:12px 16px!important;background:{INPUT}!important}}
+.hero-sub{{color:rgba(255,255,255,.65);font-size:.88rem;max-width:460px;margin:0 auto 0;line-height:1.75;
+  animation:fadeUp 0.7s 0.5s both}}
 
 /* CATEGORY CHIPS — style Airbnb */
-.cat-scroll{{display:flex;gap:.55rem;overflow-x:auto;padding:1.4rem 2.5rem .8rem;
+.cat-scroll{{display:flex;gap:.65rem;overflow-x:auto;padding:1.6rem 2.5rem 1rem;
   scrollbar-width:none;border-bottom:1px solid {BORDER}}}
 .cat-scroll::-webkit-scrollbar{{display:none}}
-.cat-chip{{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:24px;
-  border:1.5px solid {BORDER2};background:{CARD};color:{TEXT2};font-size:.78rem;font-weight:600;
+.cat-chip{{display:inline-flex;align-items:center;padding:9px 22px;border-radius:24px;
+  border:1.5px solid {BORDER2};background:{CARD};color:{TEXT2};font-size:.8rem;font-weight:600;
   cursor:pointer;white-space:nowrap;transition:all .18s;text-decoration:none;flex-shrink:0}}
-.cat-chip:hover{{border-color:{BLUE};color:{BLUE};background:{TAGBG}}}
-.cat-chip.active{{border-color:{BLUE};color:#fff;background:linear-gradient(135deg,{BLUE},{BLDARK})}}
-.cat-chip i{{font-size:.75rem}}
+.cat-chip:hover{{border-color:{BLUE};color:{BLUE}}}
+.cat-chip.active{{border-color:{BLUE};color:#fff;background:{BLUE}}}
 
-/* STATS BAR — plus aéré, icônes colorées */
+/* STATS BAR */
 .stats-row{{display:grid;grid-template-columns:repeat(4,1fr);background:{CARD};
   border-top:1px solid {BORDER};border-bottom:1px solid {BORDER}}}
-.stat-c{{display:flex;flex-direction:column;align-items:center;padding:1.6rem 1rem;
-  border-right:1px solid {BORDER};transition:background .2s;gap:4px}}
+.stat-c{{display:flex;flex-direction:column;align-items:center;padding:2.2rem 1rem;
+  border-right:1px solid {BORDER};gap:6px}}
 .stat-c:last-child{{border-right:none}}
-.stat-c:hover{{background:{CARD2}}}
-.stat-ico{{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;
-  font-size:.9rem;margin-bottom:6px}}
-.stat-n{{font-size:1.75rem;font-weight:900;letter-spacing:-.05em;
-  background:linear-gradient(135deg,{BLUE},{ACCENT});-webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;background-clip:text}}
-.stat-l{{font-size:.68rem;color:{TEXT2};font-weight:500;text-align:center}}
+.stat-n{{font-size:2rem;font-weight:900;letter-spacing:-.05em;color:{BLUE}}}
+.stat-l{{font-size:.72rem;color:{TEXT2};font-weight:500;text-align:center}}
 
 /* SECTION */
 .sect{{max-width:1440px;margin:0 auto;padding:2.4rem 2.5rem}}
@@ -199,27 +171,20 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .sect-link{{font-size:.82rem;font-weight:700;color:{BLUE};text-decoration:none;white-space:nowrap}}
 .sect-divider{{height:1px;background:{BORDER};margin:0 2.5rem}}
 
-/* DESTINATION CARD — minimal, aéré */
-.dcard{{border-radius:14px;overflow:hidden;background:{CARD};
-  transition:transform .22s ease,box-shadow .22s ease;cursor:pointer;margin-bottom:.1rem}}
-.dcard:hover{{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.1)}}
-.dcard-img{{height:220px;position:relative;overflow:hidden;border-radius:14px;background:{CARD2}}}
+/* DESTINATION CARD */
+.dcard{{border-radius:16px;overflow:hidden;background:{CARD};
+  transition:transform .22s ease,box-shadow .22s ease;cursor:pointer}}
+.dcard:hover{{transform:translateY(-3px);box-shadow:0 10px 32px rgba(0,0,0,.11)}}
+.dcard-img{{height:240px;position:relative;overflow:hidden;background:{CARD2}}}
 .dcard-img img{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   transition:transform .5s ease;display:block}}
 .dcard:hover .dcard-img img{{transform:scale(1.04)}}
 .dcard-ov{{position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(0,0,0,.48) 0%,transparent 52%)}}
-.dcard-heart{{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;
-  background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:transform .18s;z-index:2}}
-.dcard-heart:hover{{transform:scale(1.12)}}
-.dcard-city{{position:absolute;bottom:11px;left:13px;right:48px;color:#fff;font-size:.95rem;
-  font-weight:700;text-shadow:0 1px 6px rgba(0,0,0,.5);z-index:2}}
-.dcard-info{{padding:.8rem 0 .4rem}}
-.dcard-loc{{font-size:.73rem;color:{TEXT2};margin-bottom:7px}}
-.dcard-row{{display:flex;align-items:center;justify-content:space-between}}
-.dcard-rating{{font-size:.77rem;font-weight:600;color:{TEXT};display:flex;align-items:center;gap:4px}}
-.dcard-eco{{font-size:.72rem;color:#16a34a;font-weight:600;display:flex;align-items:center;gap:3px}}
+  background:linear-gradient(to top,rgba(0,0,0,.52) 0%,transparent 55%)}}
+.dcard-city{{position:absolute;bottom:14px;left:16px;right:16px;color:#fff;font-size:1rem;
+  font-weight:700;text-shadow:0 1px 8px rgba(0,0,0,.5);z-index:2}}
+.dcard-info{{padding:.9rem 0 .5rem}}
+.dcard-loc{{font-size:.74rem;color:{TEXT2}}}
 .dtag{{background:{TAGBG};color:{TAGC};border-radius:5px;padding:2px 7px;
   font-size:.61rem;font-weight:600;display:inline;margin-right:3px}}
 
@@ -253,18 +218,14 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .acard-nm{{font-weight:700;font-size:.81rem;color:{TEXT};margin:0 0 4px;line-height:1.3}}
 .acard-mt{{font-size:.68rem;color:{TEXT2};line-height:1.75;margin:0}}
 
-/* PROFIL CARD — style carte Airbnb avec banniere */
-.pcard{{border-radius:18px;overflow:hidden;cursor:pointer;transition:all .22s cubic-bezier(0.22,1,0.36,1);
-  background:{CARD};border:2px solid transparent;box-shadow:0 2px 12px rgba(0,0,0,.07)}}
-.pcard:hover{{transform:translateY(-5px);box-shadow:0 10px 32px rgba(0,0,0,.13);border-color:{BLUE}40}}
-.pcard.sel{{border-color:{BLUE};box-shadow:0 0 0 3px {BLUE}25}}
-.p-banner{{height:96px;display:flex;align-items:center;justify-content:center;position:relative}}
-.p-ico{{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;
-  justify-content:center;font-size:1.7rem;background:rgba(255,255,255,.25);
-  backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,.45);box-shadow:0 3px 14px rgba(0,0,0,.18)}}
-.p-body{{padding:.85rem .9rem .9rem;text-align:center}}
-.p-nm{{font-weight:800;font-size:.88rem;color:{TEXT};margin-bottom:4px;letter-spacing:-.02em}}
-.p-ds{{font-size:.67rem;color:{TEXT2};line-height:1.45}}
+/* PROFIL CARD */
+.pcard{{border-radius:16px;cursor:pointer;transition:all .22s cubic-bezier(0.22,1,0.36,1);
+  background:{CARD};border:1.5px solid {BORDER};padding:1.6rem 1.2rem 1.3rem;
+  box-shadow:0 1px 6px rgba(0,0,0,.05)}}
+.pcard:hover{{transform:translateY(-3px);border-color:{BLUE}55;box-shadow:0 8px 24px rgba(0,0,0,.09)}}
+.pcard.sel{{border-color:{BLUE};box-shadow:0 0 0 3px {BLUE}20}}
+.p-nm{{font-weight:800;font-size:.92rem;color:{TEXT};margin-bottom:8px;letter-spacing:-.02em}}
+.p-ds{{font-size:.72rem;color:{TEXT2};line-height:1.55}}
 
 /* DESTINATION HERO */
 .dhero{{height:340px;position:relative;overflow:hidden;display:flex;align-items:flex-end;background:#0a1a3c}}
@@ -827,8 +788,7 @@ NAV_LINKS = [
     ("Carte","carte","fa-solid fa-earth-europe"),
 ]
 nav_links_html = "".join([
-    f'<span class="tv-nav-lnk {"cur" if page == pg else ""}">'
-    f'{fi(ico, BLUE if page==pg else TEXT2, "0.76rem")} {lbl}</span>'
+    f'<span class="tv-nav-lnk {"cur" if page == pg else ""}">{lbl}</span>'
     for lbl, pg, ico in NAV_LINKS
 ])
 st.markdown(f"""<div class="tvnav">
@@ -863,20 +823,13 @@ if page == "accueil":
         <div class="hero-badge">Pays de la Loire &nbsp;·&nbsp; Tourisme en train</div>
         <h1 class="hero-h1">Où voulez-vous aller<br><span>en train ?</span></h1>
         <p class="hero-sub">136 gares · 26&nbsp;099 lieux uniques · Votre prochain coup de cœur, à portée de train</p>
-        <div class="hero-pills">
-          <span class="hero-pill">−91% CO₂ vs voiture</span>
-          <span class="hero-pill">Billets SNCF Connect</span>
-          <span class="hero-pill">5 profils de voyage</span>
-        </div>
       </div>
     </div>""", unsafe_allow_html=True)
 
     st.markdown(f"""<div style="background:{CARD};padding:1.4rem 2.5rem 1.2rem;">
       <div style="max-width:700px;margin:0 auto;">
         <div style="font-size:.68rem;font-weight:700;color:{TEXT2};text-transform:uppercase;
-          letter-spacing:.07em;margin-bottom:.6rem;">
-          {fi("fa-solid fa-magnifying-glass",TEXT2,"0.62rem")} &nbsp;Rechercher une destination
-        </div>
+          letter-spacing:.07em;margin-bottom:.6rem;">Rechercher une destination</div>
       </div>
     </div>""", unsafe_allow_html=True)
     deps_all = sorted([d for d in df_dest['departement'].dropna().unique() if d])
@@ -890,25 +843,21 @@ if page == "accueil":
 
     st.markdown(f"""<div class="stats-row">
       <div class="stat-c">
-        <div class="stat-ico" style="background:rgba(124,58,237,0.1);">{fi("fa-solid fa-train",BLUE,"0.9rem")}</div>
         <div class="stat-n">136</div><div class="stat-l">Gares PDL</div>
       </div>
       <div class="stat-c">
-        <div class="stat-ico" style="background:rgba(249,115,22,0.1);">{fi("fa-solid fa-map-pin",ACCENT,"0.9rem")}</div>
         <div class="stat-n">26 099</div><div class="stat-l">Lieux à explorer</div>
       </div>
       <div class="stat-c">
-        <div class="stat-ico" style="background:rgba(22,163,74,0.1);">{fi("fa-solid fa-leaf",GREEN,"0.9rem")}</div>
         <div class="stat-n">−91%</div><div class="stat-l">CO₂ vs voiture</div>
       </div>
       <div class="stat-c">
-        <div class="stat-ico" style="background:rgba(226,0,26,0.1);">{fi("fa-solid fa-users",SNCF,"0.9rem")}</div>
         <div class="stat-n">5</div><div class="stat-l">Styles de voyage</div>
       </div>
     </div>""", unsafe_allow_html=True)
 
     cat_chips = "".join([
-        f'<span class="cat-chip {"active" if i==0 else ""}">{fi(ico,BLUE if i==0 else TEXT2,"0.75rem")} {lbl}</span>'
+        f'<span class="cat-chip {"active" if i==0 else ""}">{lbl}</span>'
         for i, (lbl, ico, _) in enumerate(CATS_HOME)
     ])
     st.markdown(f'<div class="cat-scroll">{cat_chips}</div>', unsafe_allow_html=True)
@@ -949,15 +898,10 @@ if page == "accueil":
                 f'<div class="dcard-img">'
                 f'<img src="{meta["img"]}" alt="{vil}" loading="lazy">'
                 f'<div class="dcard-ov"></div>'
-                f'<div class="dcard-heart">{fi(fv_ico,fv_col,"0.82rem")}</div>'
                 f'<span class="dcard-city">{vil}</span>'
                 f'</div>'
                 f'<div class="dcard-info">'
                 f'<div class="dcard-loc">{dep} · {np_} activités</div>'
-                f'<div class="dcard-row">'
-                f'<span class="dcard-rating">{fi("fa-solid fa-star","#f59e0b","0.7rem")} {sc_:.1f} &nbsp;{sc_lbl_h}</span>'
-                f'<span class="dcard-eco">{fi("fa-solid fa-leaf","#16a34a","0.65rem")} −{co2_h:.0f} kg CO₂</span>'
-                f'</div>'
                 f'</div></div>',
                 unsafe_allow_html=True)
             bc1, bc2 = st.columns(2)
@@ -1015,13 +959,8 @@ if page == "accueil":
             sel = st.session_state.profil_sel == pn
             c_ = pd_['color']
             st.markdown(f"""<div class="pcard {'sel' if sel else ''}">
-              <div class="p-banner" style="background:linear-gradient(135deg,{c_}38,{c_}18);">
-                <div class="p-ico">{fi(pd_['icon'],c_,"1.7rem")}</div>
-              </div>
-              <div class="p-body">
-                <div class="p-nm">{pn}</div>
-                <div class="p-ds">{pd_['desc']}</div>
-              </div>
+              <div class="p-nm">{pn}</div>
+              <div class="p-ds">{pd_['desc']}</div>
             </div>""", unsafe_allow_html=True)
             if st.button("Choisi" if sel else "Choisir", key=f"hp_{pn}", use_container_width=True,
                          type="primary" if sel else "secondary"):
@@ -1101,7 +1040,7 @@ elif page == "destinations":
     chip_type_html = ""
     for lbl, ico, _ in TYPES:
         active_ = (lbl == "Tout" and type_sel is None) or (type_sel == lbl)
-        chip_type_html += f'<span class="cat-chip {"active" if active_ else ""}">{fi(ico,BLUE if active_ else TEXT2,"0.73rem")} {lbl}</span>'
+        chip_type_html += f'<span class="cat-chip {"active" if active_ else ""}">{lbl}</span>'
     st.markdown(f'<div class="cat-scroll" style="padding-top:.65rem;">{chip_type_html}</div>', unsafe_allow_html=True)
 
     # ── Active filters display ────────────────────────────────────
@@ -1174,15 +1113,10 @@ elif page == "destinations":
                     f'<div class="dcard-img">'
                     f'<img src="{meta["img"]}" alt="{vil}" loading="lazy">'
                     f'<div class="dcard-ov"></div>'
-                    f'<div class="dcard-heart">{fi(fv_ico2,fv_col2,"0.82rem")}</div>'
                     f'<span class="dcard-city">{vil}</span>'
                     f'</div>'
                     f'<div class="dcard-info">'
                     f'<div class="dcard-loc">{dep} · {np_} activités</div>'
-                    f'<div class="dcard-row">'
-                    f'<span class="dcard-rating">{fi("fa-solid fa-star","#f59e0b","0.7rem")} {sc_:.1f} &nbsp;{sc_lbl_c}</span>'
-                    f'<span class="dcard-eco">{fi("fa-solid fa-leaf","#16a34a","0.65rem")} −{co2_c:.0f} kg CO₂</span>'
-                    f'</div>'
                     f'</div></div>',
                     unsafe_allow_html=True)
                 bc1, bc2 = st.columns(2)
@@ -1515,13 +1449,8 @@ elif page == "planner":
                 sel = st.session_state.profil_sel == pn
                 c_ = pd_['color']
                 st.markdown(f"""<div class="pcard {'sel' if sel else ''}">
-                  <div class="p-banner" style="background:linear-gradient(135deg,{c_}38,{c_}18);">
-                    <div class="p-ico">{fi(pd_['icon'],c_,"1.7rem")}</div>
-                  </div>
-                  <div class="p-body">
-                    <div class="p-nm">{pn}</div>
-                    <div class="p-ds">{pd_['desc']}</div>
-                  </div>
+                  <div class="p-nm">{pn}</div>
+                  <div class="p-ds">{pd_['desc']}</div>
                 </div>""", unsafe_allow_html=True)
                 if st.button("Choisi" if sel else "Choisir", key=f"pp_{pn}", use_container_width=True,
                              type="primary" if sel else "secondary"):
