@@ -815,20 +815,46 @@ CATS_HOME = [
 ]
 
 if page == "accueil":
-    st.markdown(f"""<div class="hero">
-      <img class="hero-img" src="{HERO_IMG}" alt="Paysage Pays de la Loire" loading="eager">
-      <div class="hero-ov"></div>
-      <div class="hero-cnt">
-        <div class="hero-badge">Pays de la Loire &nbsp;·&nbsp; Tourisme en train</div>
-        <h1 class="hero-h1">Où voulez-vous aller<br><span>en train ?</span></h1>
-        <p class="hero-sub">136 gares · 26&nbsp;099 lieux uniques · Votre prochain coup de cœur, à portée de train</p>
+    st.markdown(f"""<div style="background:#ffffff;padding:5rem 2.5rem 3.5rem;text-align:center;
+        border-bottom:1px solid {BORDER};">
+      <div style="max-width:700px;margin:0 auto;">
+        <div style="font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+          color:{TEXT2};margin-bottom:1.6rem;">Pays de la Loire &nbsp;·&nbsp; Tourisme en train</div>
+        <h1 style="font-size:clamp(2.8rem,5.5vw,4.2rem);font-weight:900;color:{TEXT};
+          line-height:1.0;letter-spacing:-.06em;margin-bottom:1.4rem;">
+          Où voulez-vous<br>aller <span style="color:{BLUE};">en train&nbsp;?</span>
+        </h1>
+        <p style="font-size:.97rem;color:{TEXT2};line-height:1.75;margin:0 0 3rem;">
+          Découvrez les Pays de la Loire à travers ses gares, ses paysages et ses lieux uniques.
+        </p>
+        <div style="display:flex;align-items:center;justify-content:center;gap:3rem;flex-wrap:wrap;">
+          <div style="text-align:center;">
+            <div style="font-size:2rem;font-weight:900;letter-spacing:-.05em;color:{BLUE};line-height:1;">136</div>
+            <div style="font-size:.72rem;color:{TEXT2};margin-top:4px;font-weight:500;">Gares PDL</div>
+          </div>
+          <div style="width:1px;height:36px;background:{BORDER2};"></div>
+          <div style="text-align:center;">
+            <div style="font-size:2rem;font-weight:900;letter-spacing:-.05em;color:{BLUE};line-height:1;">26 099</div>
+            <div style="font-size:.72rem;color:{TEXT2};margin-top:4px;font-weight:500;">Lieux à explorer</div>
+          </div>
+          <div style="width:1px;height:36px;background:{BORDER2};"></div>
+          <div style="text-align:center;">
+            <div style="font-size:2rem;font-weight:900;letter-spacing:-.05em;color:{BLUE};line-height:1;">−91%</div>
+            <div style="font-size:.72rem;color:{TEXT2};margin-top:4px;font-weight:500;">CO₂ vs voiture</div>
+          </div>
+          <div style="width:1px;height:36px;background:{BORDER2};"></div>
+          <div style="text-align:center;">
+            <div style="font-size:2rem;font-weight:900;letter-spacing:-.05em;color:{BLUE};line-height:1;">5</div>
+            <div style="font-size:.72rem;color:{TEXT2};margin-top:4px;font-weight:500;">Profils de voyage</div>
+          </div>
+        </div>
       </div>
     </div>""", unsafe_allow_html=True)
 
-    st.markdown(f"""<div style="background:{CARD};padding:2rem 2.5rem 1rem;border-bottom:1px solid {BORDER};">
+    st.markdown(f"""<div style="background:{CARD2};padding:1.6rem 2.5rem 1.2rem;border-bottom:1px solid {BORDER};">
       <div style="max-width:760px;margin:0 auto;">
-        <div style="font-size:.7rem;font-weight:700;color:{TEXT2};text-transform:uppercase;
-          letter-spacing:.09em;margin-bottom:.8rem;">Rechercher une destination</div>
+        <div style="font-size:.65rem;font-weight:700;color:{TEXT2};text-transform:uppercase;
+          letter-spacing:.1em;margin-bottom:.7rem;">Rechercher une destination</div>
       </div>
     </div>""", unsafe_allow_html=True)
     deps_all = sorted([d for d in df_dest['departement'].dropna().unique() if d])
@@ -839,21 +865,6 @@ if page == "accueil":
         if st.button("Rechercher", type="primary", use_container_width=True, key="hs_btn"):
             st.session_state.search_q = q_h
             st.session_state.page = "destinations"; st.rerun()
-
-    st.markdown(f"""<div class="stats-row">
-      <div class="stat-c">
-        <div class="stat-n">136</div><div class="stat-l">Gares PDL</div>
-      </div>
-      <div class="stat-c">
-        <div class="stat-n">26 099</div><div class="stat-l">Lieux à explorer</div>
-      </div>
-      <div class="stat-c">
-        <div class="stat-n">−91%</div><div class="stat-l">CO₂ vs voiture</div>
-      </div>
-      <div class="stat-c">
-        <div class="stat-n">5</div><div class="stat-l">Styles de voyage</div>
-      </div>
-    </div>""", unsafe_allow_html=True)
 
     cat_chips = "".join([
         f'<span class="cat-chip {"active" if i==0 else ""}">{lbl}</span>'
@@ -913,38 +924,7 @@ if page == "accueil":
                     if user: toggle_fav(user['id'], gk); st.rerun()
                     else: st.toast("Connectez-vous pour ajouter des favoris")
 
-    st.markdown(f'<div class="sect-divider" style="margin-top:2rem;"></div>', unsafe_allow_html=True)
-
-    trend_hdr = f"""<div class="sect" style="padding-bottom:0;padding-top:2rem;">
-      <div class="sect-hdr" style="margin-bottom:.8rem;">
-        <div>
-          <div class="sect-title" style="font-size:1.2rem;">Partez explorer les Pays de la Loire</div>
-          <div class="sect-sub">{len(df_dest)} destinations accessibles en train</div>
-        </div>
-      </div>
-    </div>"""
-    trend_cards = ""
-    for ti, (_, trow) in enumerate(df_dest.head(20).iterrows()):
-        tgk = str(trow['nom_gare']).lower()
-        tvil = str(trow.get('commune', trow['nom_gare'])).title()
-        tmeta = get_meta(tgk)
-        tsc = float(trow.get('score_attractivite', 0) or 0)
-        tnp = int(trow.get('nb_poi_5km', 0) or 0)
-        trend_cards += (
-            f'<div class="trend-card">'
-            f'<div class="trend-img">'
-            f'<img src="{tmeta["img"]}" alt="{tvil}" loading="lazy">'
-            f'<span class="trend-rank">#{ti+1}</span>'
-            f'<span class="trend-score">{fi("fa-solid fa-star","#fcd34d","0.6rem")} {tsc:.1f}</span>'
-            f'</div>'
-            f'<div class="trend-body">'
-            f'<div class="trend-nm">{tvil}</div>'
-            f'<div class="trend-meta">{fi("fa-solid fa-map-pin",TEXT2,"0.6rem")} {tnp} activites</div>'
-            f'</div>'
-            f'</div>'
-        )
-    st.markdown(trend_hdr + f'<div class="trend-scroll">{trend_cards}</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="sect-divider"></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="sect-divider" style="margin-top:3rem;"></div>', unsafe_allow_html=True)
 
     st.markdown(f"""<div style="background:{CARD2};padding:3.5rem 2.5rem 1.8rem;">
       <div style="max-width:1440px;margin:0 auto;">
