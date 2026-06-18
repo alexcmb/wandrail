@@ -19,6 +19,8 @@ for k, v in {
     "dark_mode": False, "page": "accueil", "dest_sel": None,
     "profil_sel": None, "planner_step": 1, "user": None, "search_q": "",
     "show_auth": False,
+    "f_dep": [], "f_prof": [], "f_score": 0.0, "f_type": None,
+    "f_sort": "Score", "f_nb": 24,
 }.items():
     if k not in st.session_state:
         st.session_state[k] = v
@@ -101,12 +103,19 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .stTabs [data-baseweb="tab-panel"]{{padding:0!important}}
 .stSpinner>div{{border-top-color:{BLUE}!important}}
 
-/* NAVBAR */
+/* NAVBAR — style SNCF Connect */
 .tvnav{{position:sticky;top:0;z-index:999;background:{NAVBG};backdrop-filter:blur(20px);
   border-bottom:1px solid {BORDER};padding:0 2.2rem;display:flex;align-items:center;
-  justify-content:space-between;height:58px;box-shadow:0 1px 0 {BORDER}}}
-.tv-brand{{display:flex;align-items:center;gap:10px;font-size:1.08rem;font-weight:800;color:{TEXT};letter-spacing:-.03em}}
+  justify-content:space-between;height:58px;box-shadow:0 2px 12px rgba(0,0,0,.06)}}
+.tv-brand{{display:flex;align-items:center;gap:10px;font-size:1.08rem;font-weight:800;color:{TEXT};letter-spacing:-.03em;text-decoration:none}}
 .tv-brand-dot{{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,{BLUE},{ACCENT});animation:heroPulse 3s ease-in-out infinite}}
+.tv-nav{{display:flex;align-items:center;gap:0}}
+.tv-nav-lnk{{padding:0 14px;height:58px;display:flex;align-items:center;font-size:.82rem;
+  font-weight:600;color:{TEXT2};text-decoration:none;border-bottom:3px solid transparent;
+  transition:all .18s;cursor:pointer;white-space:nowrap}}
+.tv-nav-lnk:hover{{color:{BLUE};border-bottom-color:{BLUE}30}}
+.tv-nav-lnk.cur{{color:{BLUE};border-bottom-color:{BLUE};font-weight:700}}
+.tv-right{{display:flex;align-items:center;gap:10px}}
 
 /* HERO */
 .hero{{position:relative;min-height:600px;display:flex;align-items:center;justify-content:center;overflow:hidden;
@@ -366,6 +375,114 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .footer-brand{{font-size:1.1rem;font-weight:900;color:rgba(255,255,255,.65);margin-bottom:.6rem;letter-spacing:-.03em}}
 .footer-links{{display:flex;align-items:center;justify-content:center;gap:1.8rem;flex-wrap:wrap;margin:.8rem 0;font-size:.72rem}}
 .footer-sep{{color:rgba(255,255,255,.15)}}
+
+/* ── BOOKING.COM STYLE SEARCH CARD (homepage) ─────────────── */
+.bk-search{{max-width:900px;margin:0 auto;padding:0 2.5rem}}
+.bk-search-card{{background:{CARD};border-radius:16px;border:2px solid {BLUE}30;
+  box-shadow:0 6px 36px rgba(0,0,0,.14);overflow:hidden;margin-bottom:0}}
+.bk-search-hdr{{background:linear-gradient(135deg,{BLUE}12,{BLDARK}08);
+  padding:12px 20px 8px;border-bottom:1px solid {BORDER};
+  display:flex;align-items:center;gap:8px}}
+.bk-search-hdr-txt{{font-size:.72rem;font-weight:800;color:{BLUE};text-transform:uppercase;letter-spacing:.08em}}
+.bk-fields-row{{display:grid;grid-template-columns:2fr 1fr 1fr;border-bottom:1px solid {BORDER}}}
+.bk-field{{padding:12px 20px;border-right:1px solid {BORDER};display:flex;flex-direction:column;gap:2px}}
+.bk-field:last-child{{border-right:none}}
+.bk-field-lbl{{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:{TEXT2}}}
+.bk-field-val{{font-size:.88rem;font-weight:600;color:{TEXT}}}
+.bk-footer{{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}}
+.bk-pill-row{{display:flex;gap:.45rem;flex-wrap:wrap}}
+.bk-pill{{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:18px;
+  border:1px solid {BORDER2};background:{CARD2};color:{TEXT2};font-size:.72rem;font-weight:600;cursor:pointer;
+  transition:all .15s;white-space:nowrap}}
+.bk-pill:hover,.bk-pill.on{{border-color:{BLUE};color:{BLUE};background:{TAGBG}}}
+
+/* ── AIRBNB-STYLE FILTER BAR (destinations) ─────────────── */
+.airfbar{{position:sticky;top:58px;z-index:98;background:{NAVBG};backdrop-filter:blur(20px);
+  border-bottom:1px solid {BORDER};padding:0 2.5rem}}
+.airfbar-inner{{max-width:1440px;margin:0 auto;display:flex;align-items:center;gap:6px;
+  padding:8px 0;overflow-x:auto;scrollbar-width:none}}
+.airfbar-inner::-webkit-scrollbar{{display:none}}
+.afc{{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:22px;
+  border:1.5px solid {BORDER2};background:{CARD};color:{TEXT2};font-size:.77rem;font-weight:600;
+  cursor:pointer;white-space:nowrap;transition:all .18s;flex-shrink:0}}
+.afc:hover{{border-color:{BLUE};color:{BLUE};background:{TAGBG}}}
+.afc.on{{border-color:{BLUE};color:#fff;background:linear-gradient(135deg,{BLUE},{BLDARK})}}
+.afc .afc-n{{background:rgba(255,255,255,.3);border-radius:50%;
+  width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;
+  font-size:.6rem;font-weight:700;margin-left:2px}}
+.afbar-sep{{width:1px;height:22px;background:{BORDER2};flex-shrink:0}}
+.afbar-sort{{display:flex;align-items:center;gap:4px;padding:7px 14px;border-radius:22px;
+  border:1.5px solid {BORDER2};background:{CARD};color:{TEXT2};font-size:.77rem;font-weight:600;
+  cursor:pointer;white-space:nowrap;flex-shrink:0}}
+.afbar-sort.on{{border-color:{BLUE};color:{BLUE}}}
+
+/* ── ACTIVE FILTERS PILLS ─────────────────────────────── */
+.af-row{{padding:.55rem 2.5rem .2rem;display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}}
+.af-pill{{display:inline-flex;align-items:center;gap:6px;padding:4px 12px 4px 10px;border-radius:14px;
+  background:{BLUE};color:#fff;font-size:.73rem;font-weight:600}}
+.af-pill-x{{opacity:.7;cursor:pointer;margin-left:2px;font-size:.7rem}}
+.af-reset{{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:14px;
+  border:1.5px solid {BORDER2};color:{TEXT2};font-size:.73rem;font-weight:600;cursor:pointer;
+  transition:all .15s}}
+.af-reset:hover{{border-color:{SNCF};color:{SNCF}}}
+
+/* ── RESULT COUNT HEADER ──────────────────────────────── */
+.rh{{padding:.8rem 2.5rem .4rem;display:flex;align-items:flex-end;justify-content:space-between;
+  max-width:1440px;margin:0 auto}}
+.rh-left{{}}
+.rh-count{{font-size:1.1rem;font-weight:800;color:{TEXT};letter-spacing:-.03em}}
+.rh-sub{{font-size:.73rem;color:{TEXT2};margin-top:1px}}
+
+/* ── CARD STICKERS / BADGES ───────────────────────────── */
+.sticker-eco{{position:absolute;bottom:46px;left:14px;
+  background:linear-gradient(135deg,#15803d,#166534);
+  color:#fff;border-radius:8px;padding:4px 10px;font-size:.63rem;font-weight:700;
+  display:inline-flex;align-items:center;gap:4px;
+  box-shadow:0 2px 8px rgba(22,163,74,.45)}}
+.sticker-dur{{position:absolute;top:46px;right:12px;background:rgba(0,0,0,.5);
+  backdrop-filter:blur(6px);color:rgba(255,255,255,.9);border-radius:8px;
+  padding:3px 8px;font-size:.62rem;font-weight:600;
+  display:inline-flex;align-items:center;gap:3px}}
+
+/* ── SNCF CONNECT-STYLE RESULT ROW ───────────────────── */
+.sncf-row{{background:{CARD};border:1.5px solid {BORDER};border-radius:14px;
+  padding:14px 20px;margin-bottom:.55rem;display:flex;align-items:center;gap:14px;
+  transition:all .2s;box-shadow:{SHADOW2};cursor:pointer}}
+.sncf-row:hover{{border-color:{BLUE};box-shadow:0 4px 20px {BLUE}20;transform:translateY(-1px)}}
+.sncf-tm{{font-size:1.35rem;font-weight:900;color:{TEXT};letter-spacing:-.04em;line-height:1}}
+.sncf-tm-lbl{{font-size:.6rem;color:{TEXT2};font-weight:500;margin-top:1px}}
+.sncf-arrow{{flex:1;display:flex;align-items:center;gap:5px}}
+.sncf-line{{flex:1;height:1.5px;background:{BORDER2};position:relative}}
+.sncf-dot{{width:7px;height:7px;border-radius:50%;background:{BLUE};flex-shrink:0}}
+.sncf-ter-badge{{background:{SNCF};color:#fff;border-radius:5px;padding:2px 7px;
+  font-size:.6rem;font-weight:800;letter-spacing:.04em}}
+.sncf-dur-pill{{background:{TAGBG};color:{BLUE};border-radius:6px;padding:3px 9px;
+  font-size:.68rem;font-weight:700}}
+.sncf-eco-pill{{background:rgba(22,163,74,.12);color:#15803d;border-radius:6px;padding:3px 9px;
+  font-size:.68rem;font-weight:700;display:flex;align-items:center;gap:4px}}
+
+/* ── MULTISELECT CUSTOM STYLE ─────────────────────────── */
+.stMultiSelect [data-baseweb="select"] > div{{
+  background:{INPUT}!important;border:1.5px solid {BORDER2}!important;
+  border-radius:10px!important;min-height:38px!important}}
+.stMultiSelect [data-baseweb="select"] > div:focus-within{{border-color:{BLUE}!important}}
+.stMultiSelect [data-baseweb="tag"]{{
+  background:linear-gradient(135deg,{BLUE},{BLDARK})!important;
+  color:#fff!important;border-radius:7px!important;font-size:.73rem!important;font-weight:600!important}}
+.stMultiSelect [data-baseweb="tag"] span{{color:#fff!important}}
+.stMultiSelect [data-baseweb="tag"] button{{color:rgba(255,255,255,.7)!important}}
+
+/* ── SELECT_SLIDER STYLE ──────────────────────────────── */
+.stSelectSlider [data-baseweb="slider"]{{padding-top:4px!important}}
+
+/* ── BOOKING.COM SCORE ROW (bas de chaque card) ───────── */
+.bk-score-row{{display:flex;align-items:center;gap:7px;margin-top:7px;
+  padding-top:7px;border-top:1px solid {BORDER}}}
+.bk-sc-num{{color:#fff;border-radius:7px 7px 7px 0;padding:3px 9px;
+  font-size:.84rem;font-weight:900;min-width:36px;text-align:center;flex-shrink:0}}
+.bk-sc-lbl{{font-size:.76rem;font-weight:700;color:{TEXT}}}
+.bk-sc-eco{{font-size:.68rem;color:#16a34a;font-weight:600;margin-left:auto;
+  display:flex;align-items:center;gap:3px;white-space:nowrap}}
 </style>""", unsafe_allow_html=True)
 
 # ── DB ─────────────────────────────────────────────────────────
@@ -773,14 +890,28 @@ user_chip = (f'<span style="background:{TAGBG};border:1px solid {BLUE}30;border-
              f'{fi("fa-regular fa-user",BLUE,"0.68rem")} {user["pseudo"]}</span>') if user else \
             f'<span style="font-size:.73rem;color:{TEXT2};">Non connecté</span>'
 
+NAV_LINKS = [
+    ("Accueil","accueil","fa-solid fa-house"),
+    ("Destinations","destinations","fa-solid fa-map"),
+    ("Mon Voyage","planner","fa-solid fa-route"),
+    ("Eco-Impact","eco","fa-solid fa-leaf"),
+    ("Carte","carte","fa-solid fa-earth-europe"),
+]
+nav_links_html = "".join([
+    f'<span class="tv-nav-lnk {"cur" if page == pg else ""}">'
+    f'{fi(ico, BLUE if page==pg else TEXT2, "0.76rem")} {lbl}</span>'
+    for lbl, pg, ico in NAV_LINKS
+])
 st.markdown(f"""<div class="tvnav">
   <div class="tv-brand">
     <div class="tv-brand-dot"></div>
     <span>Wand<span style="color:{BLUE};">rail</span></span>
-    <span style="font-weight:400;color:{TEXT2};font-size:.75rem;">Pays de la Loire</span>
+    <span style="font-weight:400;color:{TEXT2};font-size:.72rem;margin-left:2px;">PDL</span>
   </div>
-  {user_chip}
+  <nav class="tv-nav">{nav_links_html}</nav>
+  <div class="tv-right">{user_chip}</div>
 </div>""", unsafe_allow_html=True)
+
 
 # ══════════════════════════════════════════════════════════════════
 # PAGE : ACCUEIL
@@ -811,17 +942,50 @@ if page == "accueil":
       </div>
     </div>""", unsafe_allow_html=True)
 
-    st.markdown(f"""<div style="background:{CARD};padding:20px 2.5rem 16px;border-bottom:1px solid {BORDER};">
-      <div style="max-width:700px;margin:0 auto;">
-        <div style="font-size:.68rem;font-weight:700;color:{TEXT2};text-transform:uppercase;
-          letter-spacing:.07em;margin-bottom:8px;">Rechercher une destination</div>
+    st.markdown(f"""<div class="bk-search">
+      <div class="bk-search-card">
+        <div class="bk-search-hdr">
+          {fi("fa-solid fa-magnifying-glass",BLUE,"0.72rem")}
+          <span class="bk-search-hdr-txt">Trouvez votre prochain voyage en train</span>
+        </div>
+        <div class="bk-fields-row">
+          <div class="bk-field">
+            <span class="bk-field-lbl">{fi("fa-solid fa-location-dot",BLUE,"0.58rem")} Destination</span>
+          </div>
+          <div class="bk-field">
+            <span class="bk-field-lbl">{fi("fa-solid fa-person-hiking",BLUE,"0.58rem")} Profil voyageur</span>
+          </div>
+          <div class="bk-field">
+            <span class="bk-field-lbl">{fi("fa-solid fa-map",BLUE,"0.58rem")} Département</span>
+          </div>
+        </div>
       </div>
     </div>""", unsafe_allow_html=True)
-    sc1, sc2 = st.columns([5, 1])
-    with sc1: q_h = st.text_input("Rechercher", placeholder="Nantes, Le Mans, Saumur...", key="hs", label_visibility="collapsed")
+    deps_all = sorted([d for d in df_dest['departement'].dropna().unique() if d])
+    sc1, sc2, sc3, sc4 = st.columns([3, 2, 2, 1])
+    with sc1:
+        q_h = st.text_input("Destination", placeholder="Nantes, Le Mans, Saumur...", key="hs", label_visibility="collapsed")
     with sc2:
-        if st.button("Rechercher", type="primary", use_container_width=True):
-            st.session_state.search_q = q_h; st.session_state.page = "destinations"; st.rerun()
+        prof_opts = ["Tous les profils"] + list(PROFIL_META.keys())
+        prof_h = st.selectbox("Profil", prof_opts, key="hs_p", label_visibility="collapsed")
+    with sc3:
+        dep_opts = ["Tous les départements"] + deps_all
+        dep_h = st.selectbox("Département", dep_opts, key="hs_d", label_visibility="collapsed")
+    with sc4:
+        if st.button("Rechercher", type="primary", use_container_width=True, key="hs_btn"):
+            st.session_state.search_q = q_h
+            if prof_h != "Tous les profils": st.session_state.f_prof = [prof_h]
+            if dep_h != "Tous les départements": st.session_state.f_dep = [dep_h]
+            st.session_state.page = "destinations"; st.rerun()
+    st.markdown(f"""<div style="padding:6px 2.5rem 14px;max-width:900px;margin:0 auto;">
+      <div class="bk-pill-row">
+        <span class="bk-pill">{fi("fa-solid fa-leaf",GREEN,"0.68rem")} −91% CO₂ vs voiture</span>
+        <span class="bk-pill">{fi("fa-solid fa-chess-rook","#f59e0b","0.68rem")} Châteaux de la Loire</span>
+        <span class="bk-pill">{fi("fa-solid fa-umbrella-beach","#3b82f6","0.68rem")} Côte Atlantique</span>
+        <span class="bk-pill">{fi("fa-solid fa-masks-theater","#8b5cf6","0.68rem")} Culture &amp; Patrimoine</span>
+        <span class="bk-pill">{fi("fa-solid fa-person-hiking","#16a34a","0.68rem")} Nature &amp; Randonnée</span>
+      </div>
+    </div>""", unsafe_allow_html=True)
 
     st.markdown(f"""<div class="stats-row">
       <div class="stat-c">
@@ -870,6 +1034,13 @@ if page == "accueil":
         fv = is_fav(user['id'], gk) if user else False
         fv_ico = "fa-solid fa-heart" if fv else "fa-regular fa-heart"
         fv_col = CORAL if fv else "rgba(0,0,0,0.55)"
+        lat_h = float(row.get('latitude', 47.2) or 47.2)
+        lon_h = float(row.get('longitude', -0.5) or -0.5)
+        dist_h = round(((lat_h - 47.218)**2 + (lon_h + 1.554)**2)**0.5 * 111, 0)
+        co2_h = round((218 - 2.4) * dist_h * 2 / 1000, 1)
+        dur_h = max(1, int(dist_h / 60))
+        sc_col_h = "#1e40af" if sc_ >= 8 else "#2563eb" if sc_ >= 6.5 else "#0d9488"
+        sc_lbl_h = "Excellent" if sc_ >= 8 else "Tres Bien" if sc_ >= 6.5 else "Bien" if sc_ >= 5 else "Populaire"
         with c3[i % 3]:
             phrase_ = meta.get("phrase", "")
             st.markdown(
@@ -879,13 +1050,20 @@ if page == "accueil":
                 f'<span class="dcard-ov"></span>'
                 f'<span class="dcard-badge">{fi(meta["icon"],meta["color"],"0.65rem")} {prf}</span>'
                 f'<div class="dcard-heart">{fi(fv_ico,fv_col,"0.88rem")}</div>'
+                f'<span class="sticker-dur">{fi("fa-solid fa-clock","rgba(255,255,255,.85)","0.58rem")} ~{dur_h}h</span>'
                 f'<span class="dcard-score">{fi("fa-solid fa-star","#ffd700","0.72rem")} {sc_:.1f}</span>'
+                f'<span class="sticker-eco">{fi("fa-solid fa-train","#fff","0.58rem")} −{co2_h:.0f} kg CO₂</span>'
                 f'<span class="dcard-city">{vil}</span>'
                 f'</div>'
                 f'<div class="dcard-body">'
-                f'<div class="dcard-meta">{fi("fa-solid fa-location-dot",TEXT2,"0.67rem")} {dep} &nbsp;·&nbsp; {np_} activites</div>'
+                f'<div class="dcard-meta">{fi("fa-solid fa-location-dot",TEXT2,"0.67rem")} {dep} &nbsp;·&nbsp; {np_} activités</div>'
                 f'{"<div class=\"dcard-phrase\">"+phrase_+"</div>" if phrase_ else ""}'
-                f'<div style="display:flex;gap:4px;flex-wrap:wrap;">{tgs}</div>'
+                f'<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">{tgs}</div>'
+                f'<div class="bk-score-row">'
+                f'<span class="bk-sc-num" style="background:{sc_col_h};">{sc_:.1f}</span>'
+                f'<span class="bk-sc-lbl">{sc_lbl_h}</span>'
+                f'<span class="bk-sc-eco">{fi("fa-solid fa-leaf","#16a34a","0.6rem")} −{co2_h:.0f} kg CO₂</span>'
+                f'</div>'
                 f'</div></div>',
                 unsafe_allow_html=True)
             bc1, bc2 = st.columns(2)
@@ -960,36 +1138,134 @@ if page == "accueil":
 # PAGE : DESTINATIONS
 # ══════════════════════════════════════════════════════════════════
 elif page == "destinations":
-    st.markdown(f"""<div style="background:linear-gradient(135deg,#050d2a,#0f2060);padding:2.4rem 2.5rem 2rem;">
+    # ── Header ──────────────────────────────────────────────────
+    deps_list = sorted([d for d in df_dest['departement'].dropna().unique() if d])
+    profs_list = sorted([p for p in df_dest['profil_touristique'].dropna().unique() if p])
+    TYPES = [("Tout","fa-solid fa-border-all",None),
+             ("Nature","fa-solid fa-leaf","Nature"),
+             ("Mer","fa-solid fa-umbrella-beach","Loisirs"),
+             ("Patrimoine","fa-solid fa-chess-rook","Patrimoine"),
+             ("Culture","fa-solid fa-masks-theater","Culture"),
+             ("Gastronomie","fa-solid fa-utensils","Restauration"),
+             ("Sport","fa-solid fa-dumbbell","Sport & Loisirs")]
+    SORTS = ["Score","Activités","A → Z","Éco (CO₂)"]
+    SORT_ICONS = {"Score":"fa-solid fa-star","Activités":"fa-solid fa-map-pin","A → Z":"fa-solid fa-arrow-down-a-z","Éco (CO₂)":"fa-solid fa-leaf"}
+
+    st.markdown(f"""<div style="background:linear-gradient(135deg,#050d2a 0%,#0f2060 50%,#1a0a4a 100%);
+      padding:1.8rem 2.5rem 1.4rem;">
       <div style="max-width:1440px;margin:0 auto;">
-        <div style="font-size:1.6rem;font-weight:900;color:#fff;letter-spacing:-.04em;margin-bottom:5px;">Toutes les destinations</div>
-        <div style="font-size:.82rem;color:rgba(255,255,255,.55);font-weight:400;">{len(df_dest)} gares · Pays de la Loire · Accessibles en train</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:.35rem;">
+          <span style="font-size:.7rem;color:rgba(255,255,255,.4);font-weight:500;">Wandrail</span>
+          <span style="color:rgba(255,255,255,.25);font-size:.7rem;">›</span>
+          <span style="font-size:.7rem;color:rgba(255,255,255,.65);font-weight:600;">Destinations</span>
+        </div>
+        <div style="font-size:1.55rem;font-weight:900;color:#fff;letter-spacing:-.04em;margin-bottom:4px;">
+          Explorez les Pays de la Loire en train
+        </div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,.5);">
+          {fi("fa-solid fa-train","rgba(255,255,255,.5)","0.72rem")} {len(df_dest)} gares &nbsp;·&nbsp;
+          {fi("fa-solid fa-map-pin","rgba(255,255,255,.5)","0.72rem")} 26 099 lieux à découvrir &nbsp;·&nbsp;
+          {fi("fa-solid fa-leaf","#6ee7b7","0.72rem")} −91% CO₂ vs voiture
+        </div>
       </div>
     </div>""", unsafe_allow_html=True)
 
-    dc1, dc2, dc3 = st.columns([3, 2, 1])
-    with dc1: q = st.text_input("Rechercher", placeholder="Nantes, Saumur, Le Mans...", value=st.session_state.get("search_q",""), key="ds_q", label_visibility="collapsed")
-    with dc2: srt = st.selectbox("Trier", ["Popularité", "Activités", "A → Z"], key="ds_s", label_visibility="collapsed")
-    with dc3: nb = st.selectbox("Nombre", [12, 24, 48, 100], key="ds_n", label_visibility="collapsed")
+    # ── Search bar ────────────────────────────────────────────────
+    sq1, sq2 = st.columns([5, 1])
+    with sq1:
+        q = st.text_input("Rechercher", placeholder="Nantes, Saumur, Le Mans, La Baule...",
+                          value=st.session_state.get("search_q",""), key="ds_q", label_visibility="collapsed")
+    with sq2:
+        if st.button("Rechercher", type="primary", use_container_width=True, key="ds_srch"):
+            st.session_state.search_q = q; st.rerun()
 
-    cat_chips2 = "".join([
-        f'<span class="cat-chip">{fi(ico,TEXT2,"0.75rem")} {lbl}</span>'
-        for lbl, ico, _ in CATS_HOME[1:]
-    ])
-    st.markdown(f'<div class="cat-scroll" style="padding-top:.8rem;">{cat_chips2}</div>', unsafe_allow_html=True)
+    # ── Airbnb-style filter bar ──────────────────────────────────
+    st.markdown(f'<div class="airfbar"><div class="airfbar-inner">', unsafe_allow_html=True)
 
+    fbar_cols = st.columns([2, 2, 2, 1, 1, 0.1])
+    with fbar_cols[0]:
+        dep_sel = st.multiselect("Département", deps_list,
+                                 default=st.session_state.f_dep,
+                                 key="ds_dep", label_visibility="collapsed",
+                                 placeholder="Département")
+    with fbar_cols[1]:
+        prof_sel = st.multiselect("Profil voyageur", profs_list,
+                                   default=st.session_state.f_prof,
+                                   key="ds_prf", label_visibility="collapsed",
+                                   placeholder="Profil voyageur")
+    with fbar_cols[2]:
+        score_min = st.slider("Score min", 0.0, 9.0, float(st.session_state.f_score),
+                              0.5, key="ds_sc", label_visibility="collapsed")
+    with fbar_cols[3]:
+        srt = st.selectbox("Trier", SORTS,
+                           index=SORTS.index(st.session_state.f_sort) if st.session_state.f_sort in SORTS else 0,
+                           key="ds_srt", label_visibility="collapsed")
+    with fbar_cols[4]:
+        nb_res = st.selectbox("Nb", [12,24,48,100],
+                              index=[12,24,48,100].index(st.session_state.f_nb) if st.session_state.f_nb in [12,24,48,100] else 1,
+                              key="ds_nb", label_visibility="collapsed")
+    with fbar_cols[5]:
+        st.markdown("", unsafe_allow_html=True)
+    st.markdown('</div></div>', unsafe_allow_html=True)
+
+    # Sync filter state
+    st.session_state.f_dep = dep_sel
+    st.session_state.f_prof = prof_sel
+    st.session_state.f_score = score_min
+    st.session_state.f_sort = srt
+    st.session_state.f_nb = nb_res
+
+    # ── Type chips (Airbnb category chips) ───────────────────────
+    type_sel = st.session_state.f_type
+    chip_type_html = ""
+    for lbl, ico, _ in TYPES:
+        active_ = (lbl == "Tout" and type_sel is None) or (type_sel == lbl)
+        chip_type_html += f'<span class="cat-chip {"active" if active_ else ""}">{fi(ico,BLUE if active_ else TEXT2,"0.73rem")} {lbl}</span>'
+    st.markdown(f'<div class="cat-scroll" style="padding-top:.65rem;">{chip_type_html}</div>', unsafe_allow_html=True)
+
+    # ── Active filters display ────────────────────────────────────
+    active_filters = []
+    if dep_sel: active_filters += [f"Dep: {d}" for d in dep_sel]
+    if prof_sel: active_filters += [f"Profil: {p}" for p in prof_sel]
+    if score_min > 0: active_filters.append(f"Score ≥ {score_min:.1f}")
+    if type_sel: active_filters.append(f"Type: {type_sel}")
+    if q: active_filters.append(f'"{q}"')
+
+    if active_filters:
+        pills_html = "".join([f'<span class="af-pill">{fi("fa-solid fa-xmark","rgba(255,255,255,.7)","0.6rem")} {f}</span>' for f in active_filters])
+        st.markdown(f'<div class="af-row">{pills_html}</div>', unsafe_allow_html=True)
+        if st.button(f"Effacer tous les filtres ({len(active_filters)})", key="ds_reset"):
+            st.session_state.f_dep = []; st.session_state.f_prof = []
+            st.session_state.f_score = 0.0; st.session_state.f_type = None
+            st.session_state.search_q = ""; st.rerun()
+
+    # ── Filter + sort ─────────────────────────────────────────────
     df_s = df_dest.copy()
     if q:
         m = (df_s['nom_gare'].str.lower().str.contains(q.lower(), na=False) |
              df_s['commune'].str.lower().str.contains(q.lower(), na=False) |
              df_s['departement'].str.lower().str.contains(q.lower(), na=False))
         df_s = df_s[m]
+    if dep_sel: df_s = df_s[df_s['departement'].isin(dep_sel)]
+    if prof_sel: df_s = df_s[df_s['profil_touristique'].isin(prof_sel)]
+    if score_min > 0: df_s = df_s[df_s['score_attractivite'] >= score_min]
     if srt == "Activités": df_s = df_s.sort_values('nb_poi_5km', ascending=False)
-    elif srt == "Popularité": pass
     elif srt == "A → Z": df_s = df_s.sort_values('commune')
-    df_s = df_s.head(int(nb))
-    st.markdown(f"<div style='padding:0 2.5rem .8rem;font-size:.75rem;color:{TEXT2};'>{fi('fa-solid fa-filter',TEXT2,'0.67rem')} {len(df_s)} résultats</div>", unsafe_allow_html=True)
+    elif srt == "Éco (CO₂)": df_s = df_s.sort_values('score_attractivite', ascending=False)
+    total_res = len(df_s)
+    df_s = df_s.head(int(nb_res))
 
+    # ── Result count header ───────────────────────────────────────
+    sort_icon = SORT_ICONS.get(srt, "fa-solid fa-sort")
+    st.markdown(f"""<div class="rh">
+      <div class="rh-left">
+        <div class="rh-count">{total_res} destination{'s' if total_res != 1 else ''} trouvée{'s' if total_res != 1 else ''}</div>
+        <div class="rh-sub">{fi("fa-solid fa-sort",TEXT2,"0.65rem")} Triées par <b>{srt}</b>
+          {"&nbsp;·&nbsp;" + str(len(active_filters)) + " filtre(s) actif(s)" if active_filters else ""}</div>
+      </div>
+    </div>""", unsafe_allow_html=True)
+
+    # ── Card grid ─────────────────────────────────────────────────
     for chunk in [df_s.iloc[i:i+3] for i in range(0, len(df_s), 3)]:
         rc = st.columns(3)
         for ci, (_, row) in enumerate(chunk.iterrows()):
@@ -1001,9 +1277,16 @@ elif page == "destinations":
             prf = str(row.get('profil_touristique', ''))
             tgs = "".join([f'<span class="dtag">{t}</span>' for t in meta['tags'][:3]])
             fv = is_fav(user['id'], gk) if user else False
-            phrase_d = get_meta(gk).get("phrase", "")
+            phrase_d = meta.get("phrase", "")
             fv_ico2 = "fa-solid fa-heart" if fv else "fa-regular fa-heart"
             fv_col2 = CORAL if fv else "rgba(0,0,0,0.55)"
+            lat_c = float(row.get('latitude', 47.2) or 47.2)
+            lon_c = float(row.get('longitude', -0.5) or -0.5)
+            dist_c = round(((lat_c - 47.218)**2 + (lon_c + 1.554)**2)**0.5 * 111, 0)
+            co2_c = round((218 - 2.4) * dist_c * 2 / 1000, 1)
+            dur_c = max(1, int(dist_c / 60))
+            sc_col_c = "#1e40af" if sc_ >= 8 else "#2563eb" if sc_ >= 6.5 else "#0d9488"
+            sc_lbl_c = "Excellent" if sc_ >= 8 else "Tres Bien" if sc_ >= 6.5 else "Bien" if sc_ >= 5 else "Populaire"
             with rc[ci]:
                 st.markdown(
                     f'<div class="dcard">'
@@ -1012,13 +1295,20 @@ elif page == "destinations":
                     f'<span class="dcard-ov"></span>'
                     f'<span class="dcard-badge">{fi(meta["icon"],meta["color"],"0.65rem")} {prf}</span>'
                     f'<div class="dcard-heart">{fi(fv_ico2,fv_col2,"0.88rem")}</div>'
+                    f'<span class="sticker-dur">{fi("fa-solid fa-clock","rgba(255,255,255,.85)","0.58rem")} ~{dur_c}h</span>'
                     f'<span class="dcard-score">{fi("fa-solid fa-star","#ffd700","0.72rem")} {sc_:.1f}</span>'
+                    f'<span class="sticker-eco">{fi("fa-solid fa-train","#fff","0.58rem")} −{co2_c:.0f} kg CO₂</span>'
                     f'<span class="dcard-city">{vil}</span>'
                     f'</div>'
                     f'<div class="dcard-body">'
-                    f'<div class="dcard-meta">{fi("fa-solid fa-location-dot",TEXT2,"0.67rem")} {dep} &nbsp;·&nbsp; {np_} activites</div>'
+                    f'<div class="dcard-meta">{fi("fa-solid fa-location-dot",TEXT2,"0.67rem")} {dep} &nbsp;·&nbsp; {np_} activités</div>'
                     f'{"<div class=\"dcard-phrase\">"+phrase_d+"</div>" if phrase_d else ""}'
-                    f'<div style="display:flex;gap:4px;flex-wrap:wrap;">{tgs}</div>'
+                    f'<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">{tgs}</div>'
+                    f'<div class="bk-score-row">'
+                    f'<span class="bk-sc-num" style="background:{sc_col_c};">{sc_:.1f}</span>'
+                    f'<span class="bk-sc-lbl">{sc_lbl_c}</span>'
+                    f'<span class="bk-sc-eco">{fi("fa-solid fa-leaf","#16a34a","0.6rem")} −{co2_c:.0f} kg CO₂</span>'
+                    f'</div>'
                     f'</div></div>',
                     unsafe_allow_html=True)
                 bc1, bc2 = st.columns(2)
