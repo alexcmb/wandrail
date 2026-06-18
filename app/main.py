@@ -36,21 +36,22 @@ if dk:
     CHART_BG="#0f1a2e"; CO2GB="#10b981"; CO2BB="#ef4444"
     TAGBG="rgba(59,130,246,0.15)"; TAGC="#7dbff5"; FOOT="#04070f"
 else:
-    BG="#f4f7fe"; CARD="#ffffff"; CARD2="#eef2fd"; BORDER="rgba(0,0,0,0.07)"
-    BORDER2="rgba(0,0,0,0.13)"; TEXT="#0c1535"; TEXT2="#5a6a8a"
-    SHADOW="0 8px 32px rgba(30,64,175,.13)"; SHADOW2="0 2px 12px rgba(30,64,175,.08)"
-    SBARBG="#ffffff"; INPUT="#f0f4ff"; NAVBG="rgba(255,255,255,0.97)"
+    BG="#f7f7f7"; CARD="#ffffff"; CARD2="#f0f0f0"; BORDER="rgba(0,0,0,0.08)"
+    BORDER2="rgba(0,0,0,0.16)"; TEXT="#222222"; TEXT2="#717171"
+    SHADOW="0 8px 32px rgba(0,0,0,.14)"; SHADOW2="0 2px 12px rgba(0,0,0,.08)"
+    SBARBG="#ffffff"; INPUT="#f7f7f7"; NAVBG="rgba(255,255,255,0.97)"
     HERO_OV="linear-gradient(165deg,rgba(10,40,100,0.88),rgba(30,100,180,0.55))"
     BADGE_BG="rgba(0,0,0,0.45)"; ECO_BG="linear-gradient(135deg,#d1fae5,#a7f3d0)"
     ECO_NUM="#065f46"; ECO_LBL="#047857"; TILE="CartoDB positron"
     CHART_BG="#ffffff"; CO2GB="#16a34a"; CO2BB="#dc2626"
-    TAGBG="#eff6ff"; TAGC="#1d4ed8"; FOOT="#0c1535"
+    TAGBG="rgba(124,58,237,0.08)"; TAGC="#5b21b6"; FOOT="#111111"
 
 BLUE="#8b5cf6" if dk else "#7c3aed"
 BLDARK="#6d28d9" if dk else "#4c1d95"
 GREEN="#22c55e" if dk else "#16a34a"
 ACCENT="#f97316"
 SNCF="#e2001a"
+CORAL="#ff385c"
 
 # ── CSS ────────────────────────────────────────────────────────
 st.markdown(f"""<style>
@@ -103,80 +104,120 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 /* NAVBAR */
 .tvnav{{position:sticky;top:0;z-index:999;background:{NAVBG};backdrop-filter:blur(20px);
   border-bottom:1px solid {BORDER};padding:0 2.2rem;display:flex;align-items:center;
-  justify-content:space-between;height:58px;box-shadow:0 2px 12px rgba(0,0,0,.07)}}
+  justify-content:space-between;height:58px;box-shadow:0 1px 0 {BORDER}}}
 .tv-brand{{display:flex;align-items:center;gap:10px;font-size:1.08rem;font-weight:800;color:{TEXT};letter-spacing:-.03em}}
 .tv-brand-dot{{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,{BLUE},{ACCENT});animation:heroPulse 3s ease-in-out infinite}}
 
-/* HERO — photo avec effet Ken Burns + fondu */
-.hero{{position:relative;min-height:560px;display:flex;align-items:center;justify-content:center;overflow:hidden;
+/* HERO */
+.hero{{position:relative;min-height:600px;display:flex;align-items:center;justify-content:center;overflow:hidden;
   background:linear-gradient(135deg,#050d2a 0%,#0f2060 35%,#3b0f7a 100%)}}
 .hero-img{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;
   animation:kenBurns 10s cubic-bezier(0.22,1,0.36,1) forwards}}
 @keyframes kenBurns{{
   from{{transform:scale(1.1);opacity:0}}
   10%{{opacity:1}}
-  to{{transform:scale(1);opacity:.85}}
+  to{{transform:scale(1);opacity:.82}}
 }}
 .hero-ov{{position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(5,10,40,0.35) 0%,rgba(30,15,80,0.82) 60%,rgba(5,10,40,0.95) 100%)}}
-.hero-cnt{{position:relative;z-index:2;text-align:center;max-width:720px;padding:4rem 2rem;
+  background:linear-gradient(180deg,rgba(5,10,40,0.3) 0%,rgba(20,10,60,0.75) 55%,rgba(5,10,40,0.96) 100%)}}
+.hero-cnt{{position:relative;z-index:2;text-align:center;max-width:740px;padding:5rem 2rem 3.5rem;
   display:flex;flex-direction:column;align-items:center}}
-.hero-badge{{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.12);
-  backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.22);border-radius:24px;
+.hero-badge{{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.13);
+  backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.24);border-radius:24px;
   color:rgba(255,255,255,.92);font-size:.72rem;font-weight:700;padding:7px 16px;
-  margin-bottom:1.5rem;letter-spacing:.07em;text-transform:uppercase;
+  margin-bottom:1.4rem;letter-spacing:.07em;text-transform:uppercase;
   animation:fadeUp 0.6s 0.2s both}}
-.hero-h1{{font-size:clamp(2.1rem,5vw,3.6rem);font-weight:900;color:#fff;line-height:1.1;
-  margin-bottom:1rem;letter-spacing:-.04em;text-shadow:0 2px 30px rgba(0,0,0,.5);
+.hero-h1{{font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;color:#fff;line-height:1.09;
+  margin-bottom:1.1rem;letter-spacing:-.04em;text-shadow:0 2px 30px rgba(0,0,0,.5);
   animation:fadeUp 0.7s 0.4s both}}
 .hero-h1 span{{color:#c4b5fd}}
-.hero-sub{{color:rgba(255,255,255,.7);font-size:.95rem;max-width:520px;margin:0 auto 2rem;line-height:1.75;
+.hero-sub{{color:rgba(255,255,255,.72);font-size:.93rem;max-width:500px;margin:0 auto 1.8rem;line-height:1.8;
   animation:fadeUp 0.7s 0.6s both}}
-.hero-pills{{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin-bottom:2rem;
-  animation:fadeUp 0.7s 0.8s both}}
-.hero-pill{{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.2);
-  border-radius:20px;color:rgba(255,255,255,.9);padding:6px 14px;font-size:.73rem;font-weight:600}}
+/* Hero search — style Airbnb : barre blanche arrondie */
+.hero-search{{background:#fff;border-radius:32px;padding:6px 6px 6px 20px;
+  display:flex;align-items:center;gap:0;box-shadow:0 8px 40px rgba(0,0,0,.4);
+  width:100%;max-width:560px;margin-bottom:1.6rem;
+  animation:fadeUp 0.7s 0.75s both}}
+.hero-search-lbl{{font-size:.65rem;font-weight:700;color:#222;text-transform:uppercase;letter-spacing:.05em;margin-right:8px;white-space:nowrap}}
+.hero-search-div{{width:1px;height:24px;background:rgba(0,0,0,.12);margin:0 10px}}
+.hero-search-btn{{background:linear-gradient(135deg,{BLUE},{BLDARK});border:none;border-radius:26px;
+  color:#fff;padding:11px 20px;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap;
+  display:flex;align-items:center;gap:6px}}
+.hero-pills{{display:flex;gap:.55rem;flex-wrap:wrap;justify-content:center;
+  animation:fadeUp 0.7s 0.9s both}}
+.hero-pill{{background:rgba(255,255,255,.13);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.22);
+  border-radius:20px;color:rgba(255,255,255,.92);padding:6px 14px;font-size:.72rem;font-weight:600}}
+/* Hero search wrapper (surplombe le hero) */
+.hero-search-outer{{position:relative;z-index:10;max-width:640px;margin:-32px auto 0;padding:0 1.5rem}}
+.hero-search-card{{background:{CARD};border-radius:20px;padding:18px 22px;
+  box-shadow:0 8px 40px rgba(0,0,0,.15);border:1px solid {BORDER};
+  display:flex;align-items:center;gap:12px}}
+.hero-search-card .stTextInput{{flex:1;margin-bottom:0}}
+.hero-search-card .stTextInput>div>div>input{{border-radius:12px!important;font-size:.92rem!important;
+  padding:12px 16px!important;background:{INPUT}!important}}
 
-/* STATS BAR */
-.stats-row{{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid {BORDER}}}
-.stat-c{{display:flex;flex-direction:column;align-items:center;padding:1.5rem 1rem;border-right:1px solid {BORDER};transition:background .2s}}
+/* CATEGORY CHIPS — style Airbnb */
+.cat-scroll{{display:flex;gap:.55rem;overflow-x:auto;padding:1.4rem 2.5rem .8rem;
+  scrollbar-width:none;border-bottom:1px solid {BORDER}}}
+.cat-scroll::-webkit-scrollbar{{display:none}}
+.cat-chip{{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:24px;
+  border:1.5px solid {BORDER2};background:{CARD};color:{TEXT2};font-size:.78rem;font-weight:600;
+  cursor:pointer;white-space:nowrap;transition:all .18s;text-decoration:none;flex-shrink:0}}
+.cat-chip:hover{{border-color:{BLUE};color:{BLUE};background:{TAGBG}}}
+.cat-chip.active{{border-color:{BLUE};color:#fff;background:linear-gradient(135deg,{BLUE},{BLDARK})}}
+.cat-chip i{{font-size:.75rem}}
+
+/* STATS BAR — plus aéré, icônes colorées */
+.stats-row{{display:grid;grid-template-columns:repeat(4,1fr);background:{CARD};
+  border-top:1px solid {BORDER};border-bottom:1px solid {BORDER}}}
+.stat-c{{display:flex;flex-direction:column;align-items:center;padding:1.6rem 1rem;
+  border-right:1px solid {BORDER};transition:background .2s;gap:4px}}
 .stat-c:last-child{{border-right:none}}
 .stat-c:hover{{background:{CARD2}}}
-.stat-n{{font-size:1.9rem;font-weight:900;letter-spacing:-.05em;
+.stat-ico{{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;margin-bottom:6px}}
+.stat-n{{font-size:1.75rem;font-weight:900;letter-spacing:-.05em;
   background:linear-gradient(135deg,{BLUE},{ACCENT});-webkit-background-clip:text;
   -webkit-text-fill-color:transparent;background-clip:text}}
-.stat-l{{font-size:.7rem;color:{TEXT2};margin-top:4px;font-weight:500;text-align:center}}
+.stat-l{{font-size:.68rem;color:{TEXT2};font-weight:500;text-align:center}}
 
 /* SECTION */
-.sect{{max-width:1440px;margin:0 auto;padding:2.2rem 2.5rem}}
-.sect-hdr{{margin-bottom:1.8rem}}
-.sect-title{{font-size:1.35rem;font-weight:800;color:{TEXT};letter-spacing:-.03em;margin-bottom:4px}}
-.sect-sub{{font-size:.78rem;color:{TEXT2}}}
+.sect{{max-width:1440px;margin:0 auto;padding:2.4rem 2.5rem}}
+.sect-hdr{{margin-bottom:1.8rem;display:flex;align-items:flex-end;justify-content:space-between}}
+.sect-title{{font-size:1.5rem;font-weight:800;color:{TEXT};letter-spacing:-.04em;margin-bottom:3px;line-height:1.15}}
+.sect-title-sm{{font-size:1.2rem;font-weight:800;color:{TEXT};letter-spacing:-.03em}}
+.sect-sub{{font-size:.8rem;color:{TEXT2};font-weight:400}}
+.sect-link{{font-size:.82rem;font-weight:700;color:{BLUE};text-decoration:none;white-space:nowrap}}
+.sect-divider{{height:1px;background:{BORDER};margin:0 2.5rem}}
 
-/* DESTINATION CARD */
-.dcard{{border-radius:18px;overflow:hidden;background:{CARD};border:1px solid {BORDER};
-  box-shadow:{SHADOW2};transition:all .25s cubic-bezier(0.22,1,0.36,1);margin-bottom:.1rem}}
-.dcard:hover{{transform:translateY(-6px);box-shadow:{SHADOW};border-color:{BORDER2}}}
-.dcard-img{{height:210px;position:relative;overflow:hidden;background:#1e3a8a}}
-.dcard-img img{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s;display:block}}
-.dcard:hover .dcard-img img{{transform:scale(1.08)}}
-.dcard-ov,.dcard-ov span{{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.78) 0%,transparent 50%);display:block}}
-.dcard-badge{{position:absolute;top:10px;left:10px;background:{BADGE_BG};backdrop-filter:blur(10px);
-  color:rgba(255,255,255,.9);border-radius:16px;padding:4px 10px;font-size:.66rem;font-weight:700;
-  display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(255,255,255,.2)}}
-.dcard-score{{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.5);
-  backdrop-filter:blur(8px);color:#fcd34d;border-radius:14px;padding:4px 9px;
-  font-size:.7rem;font-weight:700;display:inline-flex;align-items:center;gap:4px}}
-.dcard-city{{position:absolute;bottom:10px;left:13px;right:13px;color:#fff;font-size:1.12rem;
-  font-weight:800;letter-spacing:-.02em;text-shadow:0 2px 8px rgba(0,0,0,.5);display:block}}
-.dcard-body{{padding:.9rem 1.1rem 1rem}}
-.dcard-phrase{{font-size:.71rem;color:{TEXT2};margin:0 0 7px;font-style:italic;line-height:1.45}}
-.dcard-meta{{font-size:.7rem;color:{TEXT2};margin:0 0 8px;display:flex;align-items:center;gap:5px}}
+/* DESTINATION CARD — style Airbnb : grande image, minimal texte */
+.dcard{{border-radius:16px;overflow:hidden;background:{CARD};border:none;
+  box-shadow:none;transition:all .28s cubic-bezier(0.22,1,0.36,1);margin-bottom:.1rem}}
+.dcard:hover{{transform:translateY(-4px)}}
+.dcard-img{{height:250px;position:relative;overflow:hidden;background:#1e3a8a;border-radius:16px}}
+.dcard-img img{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .55s;display:block}}
+.dcard:hover .dcard-img img{{transform:scale(1.06)}}
+.dcard-ov,.dcard-ov span{{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,rgba(0,0,0,.1) 55%,transparent 80%);display:block}}
+.dcard-badge{{position:absolute;top:12px;left:12px;background:rgba(0,0,0,.42);backdrop-filter:blur(10px);
+  color:rgba(255,255,255,.92);border-radius:16px;padding:4px 10px;font-size:.66rem;font-weight:700;
+  display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(255,255,255,.18)}}
+.dcard-heart{{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;
+  background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:transform .18s}}
+.dcard-heart:hover{{transform:scale(1.15)}}
+.dcard-score{{position:absolute;bottom:44px;right:12px;background:transparent;
+  color:#fcd34d;font-size:.76rem;font-weight:700;display:inline-flex;align-items:center;gap:3px;
+  text-shadow:0 1px 4px rgba(0,0,0,.6)}}
+.dcard-city{{position:absolute;bottom:12px;left:14px;right:50px;color:#fff;font-size:1.08rem;
+  font-weight:800;letter-spacing:-.02em;text-shadow:0 2px 10px rgba(0,0,0,.5);display:block}}
+.dcard-body{{padding:.85rem .2rem .6rem}}
+.dcard-phrase{{font-size:.73rem;color:{TEXT2};margin:0 0 6px;font-style:italic;line-height:1.5}}
+.dcard-meta{{font-size:.72rem;color:{TEXT};margin:0 0 7px;display:flex;align-items:center;gap:5px;font-weight:500}}
 .dtag{{background:{TAGBG};color:{TAGC};border-radius:6px;padding:3px 8px;
   font-size:.64rem;font-weight:600;display:inline-flex;align-items:center;gap:3px}}
-.dcard-foot{{display:flex;align-items:center;justify-content:space-between;padding-top:8px;
+.dcard-foot{{display:flex;align-items:center;justify-content:space-between;padding-top:7px;
   border-top:1px solid {BORDER};margin:0}}
-.poi-cnt{{font-size:.7rem;color:{TEXT2};display:flex;align-items:center;gap:4px}}
+.poi-cnt{{font-size:.72rem;color:{TEXT2};display:flex;align-items:center;gap:4px}}
 
 /* ACTIVITY CARD */
 .acard{{border:1px solid {BORDER};border-radius:12px;overflow:hidden;background:{CARD};transition:all .2s}}
@@ -233,6 +274,23 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .itin-tx h4{{margin-bottom:2px;font-size:.83rem;font-weight:700;color:{TEXT}}}
 .itin-tx p{{margin:0;font-size:.7rem;color:{TEXT2}}}
 
+/* SNCF JOURNEY CARD — style billet de train */
+.sncf-journey{{background:{CARD};border-radius:16px;overflow:hidden;border:1px solid {BORDER};box-shadow:{SHADOW2}}}
+.sncf-journey-top{{background:linear-gradient(135deg,#0a1c4b,#0d3080);padding:16px 20px;display:flex;align-items:center;gap:12px}}
+.sncf-journey-badge{{background:{SNCF};color:#fff;border-radius:8px;padding:4px 10px;font-size:.68rem;font-weight:800;letter-spacing:.05em}}
+.sncf-journey-route{{display:flex;align-items:center;gap:0;flex:1;color:#fff}}
+.sncf-journey-city{{font-size:.92rem;font-weight:800;flex:1}}
+.sncf-journey-city.arrival{{text-align:right}}
+.sncf-journey-line{{flex:1;display:flex;align-items:center;gap:6px;justify-content:center}}
+.sncf-journey-line-bar{{flex:1;height:2px;background:rgba(255,255,255,.3);position:relative}}
+.sncj-dot{{width:8px;height:8px;border-radius:50%;background:#fff;flex-shrink:0}}
+.sncf-journey-mid{{font-size:.65rem;color:rgba(255,255,255,.5);text-align:center;margin-top:2px}}
+.sncf-journey-bottom{{padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}}
+.sncf-jstat{{display:flex;flex-direction:column;gap:1px}}
+.sncf-jstat-v{{font-size:.88rem;font-weight:800;color:{TEXT}}}
+.sncf-jstat-l{{font-size:.62rem;color:{TEXT2};font-weight:500}}
+.sncf-jsep{{width:1px;height:28px;background:{BORDER2};flex-shrink:0}}
+
 /* STEP BAR */
 .step-bar{{display:flex;border-bottom:2px solid {BORDER};margin-bottom:1.8rem}}
 .step-i{{flex:1;padding:11px;text-align:center;font-size:.78rem;font-weight:600;color:{TEXT2};
@@ -274,8 +332,11 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .sb-nav-btn:hover{{background:{CARD2};color:{TEXT}}}
 .sb-nav-btn.active{{background:linear-gradient(135deg,{BLUE},{BLDARK});color:#fff}}
 
-.footer{{background:{FOOT};color:rgba(255,255,255,.3);padding:2.5rem;text-align:center;font-size:.72rem}}
-.footer-brand{{font-size:1rem;font-weight:800;color:rgba(255,255,255,.6);margin-bottom:.5rem;letter-spacing:-.02em}}
+.footer{{background:{FOOT};color:rgba(255,255,255,.35);padding:2.8rem 2.5rem;text-align:center;font-size:.73rem;
+  border-top:1px solid rgba(255,255,255,.06)}}
+.footer-brand{{font-size:1.1rem;font-weight:900;color:rgba(255,255,255,.65);margin-bottom:.6rem;letter-spacing:-.03em}}
+.footer-links{{display:flex;align-items:center;justify-content:center;gap:1.8rem;flex-wrap:wrap;margin:.8rem 0;font-size:.72rem}}
+.footer-sep{{color:rgba(255,255,255,.15)}}
 </style>""", unsafe_allow_html=True)
 
 # ── DB ─────────────────────────────────────────────────────────
@@ -695,39 +756,76 @@ st.markdown(f"""<div class="tvnav">
 # ══════════════════════════════════════════════════════════════════
 # PAGE : ACCUEIL
 # ══════════════════════════════════════════════════════════════════
+CATS_HOME = [
+    ("Tout", "fa-solid fa-border-all", None),
+    ("Nature", "fa-solid fa-leaf", "Nature"),
+    ("Mer & Plage", "fa-solid fa-umbrella-beach", "Loisirs"),
+    ("Châteaux", "fa-solid fa-chess-rook", "Patrimoine"),
+    ("Culture", "fa-solid fa-masks-theater", "Culture"),
+    ("Gastronomie", "fa-solid fa-utensils", "Restauration"),
+    ("Sport", "fa-solid fa-dumbbell", "Sport & Loisirs"),
+]
+
 if page == "accueil":
     st.markdown(f"""<div class="hero">
       <img class="hero-img" src="{HERO_IMG}" alt="Paysage Pays de la Loire" loading="eager">
       <div class="hero-ov"></div>
       <div class="hero-cnt">
         <div class="hero-badge">Pays de la Loire &nbsp;·&nbsp; Tourisme en train</div>
-        <h1 class="hero-h1">Voyagez en train.<br><span>Découvrez les Pays de la Loire.</span></h1>
-        <p class="hero-sub">136 gares accessibles · 26&nbsp;099 lieux uniques à explorer · Votre prochain coup de cœur, à portée de train</p>
+        <h1 class="hero-h1">Où voulez-vous aller<br><span>en train ?</span></h1>
+        <p class="hero-sub">136 gares · 26&nbsp;099 lieux uniques · Votre prochain coup de cœur, à portée de train</p>
         <div class="hero-pills">
           <span class="hero-pill">−91% CO₂ vs voiture</span>
           <span class="hero-pill">Billets SNCF Connect</span>
-          <span class="hero-pill">5 styles de voyage</span>
+          <span class="hero-pill">5 profils de voyage</span>
         </div>
       </div>
     </div>""", unsafe_allow_html=True)
 
+    st.markdown(f"""<div style="background:{CARD};padding:20px 2.5rem 16px;border-bottom:1px solid {BORDER};">
+      <div style="max-width:700px;margin:0 auto;">
+        <div style="font-size:.68rem;font-weight:700;color:{TEXT2};text-transform:uppercase;
+          letter-spacing:.07em;margin-bottom:8px;">Rechercher une destination</div>
+      </div>
+    </div>""", unsafe_allow_html=True)
     sc1, sc2 = st.columns([5, 1])
-    with sc1: q_h = st.text_input("Rechercher", placeholder="Rechercher une destination...", key="hs", label_visibility="collapsed")
+    with sc1: q_h = st.text_input("Rechercher", placeholder="Nantes, Le Mans, Saumur...", key="hs", label_visibility="collapsed")
     with sc2:
         if st.button("Rechercher", type="primary", use_container_width=True):
             st.session_state.search_q = q_h; st.session_state.page = "destinations"; st.rerun()
 
     st.markdown(f"""<div class="stats-row">
-      <div class="stat-c"><div class="stat-n">136</div><div class="stat-l">{fi("fa-solid fa-train",TEXT2,"0.68rem")} Gares PDL</div></div>
-      <div class="stat-c"><div class="stat-n">26 099</div><div class="stat-l">{fi("fa-solid fa-map-pin",TEXT2,"0.68rem")} Lieux à explorer</div></div>
-      <div class="stat-c"><div class="stat-n">−91%</div><div class="stat-l">{fi("fa-solid fa-leaf",TEXT2,"0.68rem")} CO₂ vs voiture</div></div>
-      <div class="stat-c"><div class="stat-n">5</div><div class="stat-l">{fi("fa-solid fa-users",TEXT2,"0.68rem")} Styles de voyage</div></div>
+      <div class="stat-c">
+        <div class="stat-ico" style="background:rgba(124,58,237,0.1);">{fi("fa-solid fa-train",BLUE,"0.9rem")}</div>
+        <div class="stat-n">136</div><div class="stat-l">Gares PDL</div>
+      </div>
+      <div class="stat-c">
+        <div class="stat-ico" style="background:rgba(249,115,22,0.1);">{fi("fa-solid fa-map-pin",ACCENT,"0.9rem")}</div>
+        <div class="stat-n">26 099</div><div class="stat-l">Lieux à explorer</div>
+      </div>
+      <div class="stat-c">
+        <div class="stat-ico" style="background:rgba(22,163,74,0.1);">{fi("fa-solid fa-leaf",GREEN,"0.9rem")}</div>
+        <div class="stat-n">−91%</div><div class="stat-l">CO₂ vs voiture</div>
+      </div>
+      <div class="stat-c">
+        <div class="stat-ico" style="background:rgba(226,0,26,0.1);">{fi("fa-solid fa-users",SNCF,"0.9rem")}</div>
+        <div class="stat-n">5</div><div class="stat-l">Styles de voyage</div>
+      </div>
     </div>""", unsafe_allow_html=True)
+
+    cat_chips = "".join([
+        f'<span class="cat-chip {"active" if i==0 else ""}">{fi(ico,BLUE if i==0 else TEXT2,"0.75rem")} {lbl}</span>'
+        for i, (lbl, ico, _) in enumerate(CATS_HOME)
+    ])
+    st.markdown(f'<div class="cat-scroll">{cat_chips}</div>', unsafe_allow_html=True)
 
     st.markdown(f"""<div class="sect" style="padding-bottom:0;">
       <div class="sect-hdr">
-        <div class="sect-title">{fi("fa-solid fa-trophy",ACCENT,"0.95rem")} Destinations incontournables</div>
-        <div class="sect-sub">Sélection sur mesure · attractivité + accessibilité train</div>
+        <div>
+          <div class="sect-title">Destinations incontournables</div>
+          <div class="sect-sub">Selectionnees pour vous · attractivite + accessibilite train</div>
+        </div>
+        <a class="sect-link" href="#">Voir tout</a>
       </div>
     </div>""", unsafe_allow_html=True)
 
@@ -741,6 +839,8 @@ if page == "accueil":
         prf = str(row.get('profil_touristique', ''))
         tgs = "".join([f'<span class="dtag">{t}</span>' for t in meta['tags'][:3]])
         fv = is_fav(user['id'], gk) if user else False
+        fv_ico = "fa-solid fa-heart" if fv else "fa-regular fa-heart"
+        fv_col = CORAL if fv else "rgba(0,0,0,0.55)"
         with c3[i % 3]:
             phrase_ = meta.get("phrase", "")
             st.markdown(
@@ -749,15 +849,14 @@ if page == "accueil":
                 f'<img src="{meta["img"]}" alt="{vil}" loading="lazy">'
                 f'<span class="dcard-ov"></span>'
                 f'<span class="dcard-badge">{fi(meta["icon"],meta["color"],"0.65rem")} {prf}</span>'
-                f'<span class="dcard-score">{fi("fa-solid fa-star","#fcd34d","0.67rem")} {sc_:.1f}</span>'
+                f'<div class="dcard-heart">{fi(fv_ico,fv_col,"0.88rem")}</div>'
+                f'<span class="dcard-score">{fi("fa-solid fa-star","#ffd700","0.72rem")} {sc_:.1f}</span>'
                 f'<span class="dcard-city">{vil}</span>'
                 f'</div>'
                 f'<div class="dcard-body">'
-                f'{"<p class=\"dcard-phrase\">"+phrase_+"</p>" if phrase_ else ""}'
-                f'<p class="dcard-meta">{fi("fa-solid fa-location-dot",TEXT2,"0.67rem")} {dep}</p>'
-                f'<p style="display:flex;gap:4px;flex-wrap:wrap;margin:0 0 8px;">{tgs}</p>'
-                f'<p class="dcard-foot"><span class="poi-cnt">{fi("fa-solid fa-map-pin",TEXT2,"0.65rem")} {np_} activités</span>'
-                f'<span>{fi("fa-solid fa-heart" if fv else "fa-regular fa-heart","#ec4899" if fv else TEXT2,"0.75rem")}</span></p>'
+                f'<div class="dcard-meta">{fi("fa-solid fa-location-dot",TEXT2,"0.67rem")} {dep} &nbsp;·&nbsp; {np_} activites</div>'
+                f'{"<div class=\"dcard-phrase\">"+phrase_+"</div>" if phrase_ else ""}'
+                f'<div style="display:flex;gap:4px;flex-wrap:wrap;">{tgs}</div>'
                 f'</div></div>',
                 unsafe_allow_html=True)
             bc1, bc2 = st.columns(2)
@@ -770,10 +869,11 @@ if page == "accueil":
                     if user: toggle_fav(user['id'], gk); st.rerun()
                     else: st.toast("Connectez-vous pour ajouter des favoris")
 
-    st.markdown(f"""<div style="background:{CARD2};border-top:1px solid {BORDER};padding:2rem 2.5rem;margin-top:1.5rem;">
+    st.markdown(f'<div class="sect-divider" style="margin-top:2rem;"></div>', unsafe_allow_html=True)
+    st.markdown(f"""<div class="sect" style="padding-top:2.4rem;padding-bottom:1.4rem;background:{CARD2};">
       <div style="max-width:1440px;margin:0 auto;">
-        <div style="font-size:1.2rem;font-weight:800;color:{TEXT};letter-spacing:-.03em;margin-bottom:3px;">{fi("fa-solid fa-wand-magic-sparkles",BLUE,"0.9rem")} Quel voyageur êtes-vous ?</div>
-        <div style="font-size:.78rem;color:{TEXT2};margin-bottom:1.4rem;">Votre style de voyage révélé — des recommandations taillées pour vous</div>
+        <div class="sect-title" style="margin-bottom:4px;">Quel type de voyageur etes-vous ?</div>
+        <div class="sect-sub" style="margin-bottom:1.6rem;">Votre profil · des recommandations sur mesure</div>
       </div>
     </div>""", unsafe_allow_html=True)
     pc = st.columns(5)
@@ -794,15 +894,23 @@ if page == "accueil":
 # PAGE : DESTINATIONS
 # ══════════════════════════════════════════════════════════════════
 elif page == "destinations":
-    st.markdown(f"""<div class="sect">
-      <div style="font-size:1.3rem;font-weight:800;color:{TEXT};letter-spacing:-.03em;margin-bottom:3px;">{fi("fa-solid fa-map",BLUE,"0.95rem")} Toutes les destinations</div>
-      <div style="font-size:.78rem;color:{TEXT2};margin-bottom:1.2rem;">{len(df_dest)} gares · Pays de la Loire</div>
+    st.markdown(f"""<div style="background:linear-gradient(135deg,#050d2a,#0f2060);padding:2.4rem 2.5rem 2rem;">
+      <div style="max-width:1440px;margin:0 auto;">
+        <div style="font-size:1.6rem;font-weight:900;color:#fff;letter-spacing:-.04em;margin-bottom:5px;">Toutes les destinations</div>
+        <div style="font-size:.82rem;color:rgba(255,255,255,.55);font-weight:400;">{len(df_dest)} gares · Pays de la Loire · Accessibles en train</div>
+      </div>
     </div>""", unsafe_allow_html=True)
 
     dc1, dc2, dc3 = st.columns([3, 2, 1])
-    with dc1: q = st.text_input("Rechercher", placeholder="Rechercher...", value=st.session_state.get("search_q",""), key="ds_q", label_visibility="collapsed")
+    with dc1: q = st.text_input("Rechercher", placeholder="Nantes, Saumur, Le Mans...", value=st.session_state.get("search_q",""), key="ds_q", label_visibility="collapsed")
     with dc2: srt = st.selectbox("Trier", ["Popularité", "Activités", "A → Z"], key="ds_s", label_visibility="collapsed")
     with dc3: nb = st.selectbox("Nombre", [12, 24, 48, 100], key="ds_n", label_visibility="collapsed")
+
+    cat_chips2 = "".join([
+        f'<span class="cat-chip">{fi(ico,TEXT2,"0.75rem")} {lbl}</span>'
+        for lbl, ico, _ in CATS_HOME[1:]
+    ])
+    st.markdown(f'<div class="cat-scroll" style="padding-top:.8rem;">{cat_chips2}</div>', unsafe_allow_html=True)
 
     df_s = df_dest.copy()
     if q:
@@ -828,27 +936,25 @@ elif page == "destinations":
             tgs = "".join([f'<span class="dtag">{t}</span>' for t in meta['tags'][:3]])
             fv = is_fav(user['id'], gk) if user else False
             phrase_d = get_meta(gk).get("phrase", "")
+            fv_ico2 = "fa-solid fa-heart" if fv else "fa-regular fa-heart"
+            fv_col2 = CORAL if fv else "rgba(0,0,0,0.55)"
             with rc[ci]:
-                st.markdown(f"""<div class="sect" style="padding:0 0 .2rem;max-width:100%;">
-                  <div class="dcard">
-                    <div class="dcard-img" style="background:{meta['grad']};">
-                      <img src="{meta['img']}" alt="{vil}" loading="lazy">
-                      <div class="dcard-ov"></div>
-                      <div class="dcard-badge">{fi(meta['icon'],meta['color'],"0.65rem")} {prf}</div>
-                      <div class="dcard-score">{fi("fa-solid fa-star","#fcd34d","0.67rem")} {sc_:.1f}</div>
-                      <div class="dcard-city">{vil}</div>
-                    </div>
-                    <div class="dcard-body">
-                      {"<div class=\"dcard-phrase\">"+phrase_d+"</div>" if phrase_d else ""}
-                      <div class="dcard-meta">{fi("fa-solid fa-location-dot",TEXT2,"0.67rem")} {dep}</div>
-                      <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;">{tgs}</div>
-                      <div class="dcard-foot">
-                        <span class="poi-cnt">{fi("fa-solid fa-map-pin",TEXT2,"0.65rem")} {np_} activités</span>
-                        <span style="font-size:.75rem;">{fi("fa-solid fa-heart" if fv else "fa-regular fa-heart","#ec4899" if fv else TEXT2,"0.75rem")}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>""", unsafe_allow_html=True)
+                st.markdown(
+                    f'<div class="dcard">'
+                    f'<div class="dcard-img" style="background:{meta["grad"]};">'
+                    f'<img src="{meta["img"]}" alt="{vil}" loading="lazy">'
+                    f'<span class="dcard-ov"></span>'
+                    f'<span class="dcard-badge">{fi(meta["icon"],meta["color"],"0.65rem")} {prf}</span>'
+                    f'<div class="dcard-heart">{fi(fv_ico2,fv_col2,"0.88rem")}</div>'
+                    f'<span class="dcard-score">{fi("fa-solid fa-star","#ffd700","0.72rem")} {sc_:.1f}</span>'
+                    f'<span class="dcard-city">{vil}</span>'
+                    f'</div>'
+                    f'<div class="dcard-body">'
+                    f'<div class="dcard-meta">{fi("fa-solid fa-location-dot",TEXT2,"0.67rem")} {dep} &nbsp;·&nbsp; {np_} activites</div>'
+                    f'{"<div class=\"dcard-phrase\">"+phrase_d+"</div>" if phrase_d else ""}'
+                    f'<div style="display:flex;gap:4px;flex-wrap:wrap;">{tgs}</div>'
+                    f'</div></div>',
+                    unsafe_allow_html=True)
                 bc1, bc2 = st.columns(2)
                 with bc1:
                     if st.button("Explorer", key=f"da_{gk[:8]}_{ci}", use_container_width=True, type="primary"):
@@ -912,6 +1018,36 @@ elif page == "destination":
         if st.button("Planifier ce voyage", use_container_width=True, key="d_pl"):
             st.session_state.dest_sel = gk; st.session_state.planner_step = 3
             st.session_state.page = "planner"; st.rerun()
+
+    dur_h = max(1, int(dist_km / 60)); dur_lbl = f"{dur_h}h" if dur_h < 2 else f"{dur_h}h environ"
+    st.markdown(f"""<div style="padding:.6rem 2.5rem 1.2rem;max-width:900px;">
+      <div class="sncf-journey">
+        <div class="sncf-journey-top">
+          <span class="sncf-journey-badge">TER</span>
+          <div class="sncf-journey-route">
+            <div class="sncf-journey-city">Nantes</div>
+            <div class="sncf-journey-line">
+              <div class="sncj-dot"></div>
+              <div class="sncf-journey-line-bar"></div>
+              <div style="font-size:.82rem;color:#fff;font-weight:700;white-space:nowrap;padding:0 6px;">{dur_lbl}</div>
+              <div class="sncf-journey-line-bar"></div>
+              <div class="sncj-dot"></div>
+            </div>
+            <div class="sncf-journey-city arrival">{vil}</div>
+          </div>
+        </div>
+        <div class="sncf-journey-bottom">
+          <div class="sncf-jstat"><div class="sncf-jstat-v">~{dist_km:.0f} km</div><div class="sncf-jstat-l">Distance</div></div>
+          <div class="sncf-jsep"></div>
+          <div class="sncf-jstat"><div class="sncf-jstat-v" style="color:{GREEN};">{co2_sv:.1f} kg</div><div class="sncf-jstat-l">CO₂ economise vs voiture</div></div>
+          <div class="sncf-jsep"></div>
+          <div class="sncf-jstat"><div class="sncf-jstat-v" style="color:{SNCF};">SNCF Connect</div><div class="sncf-jstat-l">Acheter le billet</div></div>
+          <a class="sncf-btn" href="https://www.sncf-connect.com" target="_blank" style="margin-left:auto;">
+            {fi("fa-solid fa-train","#fff","0.8rem")} Voir les trains
+          </a>
+        </div>
+      </div>
+    </div>""", unsafe_allow_html=True)
 
     with st.spinner("Chargement des activités..."):
         df_poi = load_poi(gk)
@@ -1441,10 +1577,19 @@ elif page == "profil":
 # ── Footer ──────────────────────────────────────────────────────
 st.markdown(f"""<div class="footer">
   <div class="footer-brand">Wand<span style="color:{BLUE};">rail</span></div>
-  <div>Projet M1 Big Data &amp; IA · Sup de Vinci · Tourisme en train · Pays de la Loire</div>
-  <div style="margin-top:.6rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;">
-    <span>{fi("fa-solid fa-train","#e2001a","0.7rem")} Données SNCF Open Data</span>
+  <div style="font-size:.73rem;color:rgba(255,255,255,.4);margin-bottom:.3rem;">
+    Projet M1 Big Data &amp; IA · Sup de Vinci · Partenariat SNCF Open Data University Saison 3
+  </div>
+  <div class="footer-links">
+    <span>{fi("fa-solid fa-train",SNCF,"0.7rem")} SNCF Open Data</span>
+    <span class="footer-sep">·</span>
+    <span>{fi("fa-solid fa-leaf",GREEN,"0.7rem")} Donnees ADEME CO₂</span>
+    <span class="footer-sep">·</span>
     <span>{fi("fa-solid fa-cloud","rgba(255,255,255,.3)","0.7rem")} wttr.in</span>
+    <span class="footer-sep">·</span>
     <span>{fi("fa-solid fa-image","rgba(255,255,255,.3)","0.7rem")} Picsum Photos</span>
+  </div>
+  <div style="font-size:.65rem;color:rgba(255,255,255,.18);margin-top:.4rem;">
+    RNCP40167 · Sup de Vinci · {fi("fa-regular fa-copyright","rgba(255,255,255,.18)","0.65rem")} 2026 Thilissa Amara
   </div>
 </div>""", unsafe_allow_html=True)
