@@ -199,34 +199,29 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .sect-link{{font-size:.82rem;font-weight:700;color:{BLUE};text-decoration:none;white-space:nowrap}}
 .sect-divider{{height:1px;background:{BORDER};margin:0 2.5rem}}
 
-/* DESTINATION CARD — style Airbnb : grande image, minimal texte */
-.dcard{{border-radius:16px;overflow:hidden;background:{CARD};border:none;
-  box-shadow:none;transition:all .28s cubic-bezier(0.22,1,0.36,1);margin-bottom:.1rem}}
-.dcard:hover{{transform:translateY(-4px)}}
-.dcard-img{{height:250px;position:relative;overflow:hidden;background:#1e3a8a;border-radius:16px}}
-.dcard-img img{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .55s;display:block}}
-.dcard:hover .dcard-img img{{transform:scale(1.06)}}
-.dcard-ov,.dcard-ov span{{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,rgba(0,0,0,.1) 55%,transparent 80%);display:block}}
-.dcard-badge{{position:absolute;top:12px;left:12px;background:rgba(0,0,0,.42);backdrop-filter:blur(10px);
-  color:rgba(255,255,255,.92);border-radius:16px;padding:4px 10px;font-size:.66rem;font-weight:700;
-  display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(255,255,255,.18)}}
-.dcard-heart{{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;
-  background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:transform .18s}}
-.dcard-heart:hover{{transform:scale(1.15)}}
-.dcard-score{{position:absolute;bottom:44px;right:12px;background:transparent;
-  color:#fcd34d;font-size:.76rem;font-weight:700;display:inline-flex;align-items:center;gap:3px;
-  text-shadow:0 1px 4px rgba(0,0,0,.6)}}
-.dcard-city{{position:absolute;bottom:12px;left:14px;right:50px;color:#fff;font-size:1.08rem;
-  font-weight:800;letter-spacing:-.02em;text-shadow:0 2px 10px rgba(0,0,0,.5);display:block}}
-.dcard-body{{padding:.85rem .2rem .6rem}}
-.dcard-phrase{{font-size:.73rem;color:{TEXT2};margin:0 0 6px;font-style:italic;line-height:1.5}}
-.dcard-meta{{font-size:.72rem;color:{TEXT};margin:0 0 7px;display:flex;align-items:center;gap:5px;font-weight:500}}
-.dtag{{background:{TAGBG};color:{TAGC};border-radius:6px;padding:3px 8px;
-  font-size:.64rem;font-weight:600;display:inline-flex;align-items:center;gap:3px}}
-.dcard-foot{{display:flex;align-items:center;justify-content:space-between;padding-top:7px;
-  border-top:1px solid {BORDER};margin:0}}
-.poi-cnt{{font-size:.72rem;color:{TEXT2};display:flex;align-items:center;gap:4px}}
+/* DESTINATION CARD — minimal, aéré */
+.dcard{{border-radius:14px;overflow:hidden;background:{CARD};
+  transition:transform .22s ease,box-shadow .22s ease;cursor:pointer;margin-bottom:.1rem}}
+.dcard:hover{{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.1)}}
+.dcard-img{{height:220px;position:relative;overflow:hidden;border-radius:14px;background:{CARD2}}}
+.dcard-img img{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  transition:transform .5s ease;display:block}}
+.dcard:hover .dcard-img img{{transform:scale(1.04)}}
+.dcard-ov{{position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.48) 0%,transparent 52%)}}
+.dcard-heart{{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:transform .18s;z-index:2}}
+.dcard-heart:hover{{transform:scale(1.12)}}
+.dcard-city{{position:absolute;bottom:11px;left:13px;right:48px;color:#fff;font-size:.95rem;
+  font-weight:700;text-shadow:0 1px 6px rgba(0,0,0,.5);z-index:2}}
+.dcard-info{{padding:.8rem 0 .4rem}}
+.dcard-loc{{font-size:.73rem;color:{TEXT2};margin-bottom:7px}}
+.dcard-row{{display:flex;align-items:center;justify-content:space-between}}
+.dcard-rating{{font-size:.77rem;font-weight:600;color:{TEXT};display:flex;align-items:center;gap:4px}}
+.dcard-eco{{font-size:.72rem;color:#16a34a;font-weight:600;display:flex;align-items:center;gap:3px}}
+.dtag{{background:{TAGBG};color:{TAGC};border-radius:5px;padding:2px 7px;
+  font-size:.61rem;font-weight:600;display:inline;margin-right:3px}}
 
 /* TRENDING HORIZONTAL SCROLL */
 .trend-scroll{{display:flex;gap:.85rem;overflow-x:auto;padding:.5rem 2.5rem 1.2rem;scrollbar-width:none}}
@@ -376,73 +371,15 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .footer-links{{display:flex;align-items:center;justify-content:center;gap:1.8rem;flex-wrap:wrap;margin:.8rem 0;font-size:.72rem}}
 .footer-sep{{color:rgba(255,255,255,.15)}}
 
-/* ── BOOKING.COM STYLE SEARCH CARD (homepage) ─────────────── */
-.bk-search{{max-width:900px;margin:0 auto;padding:0 2.5rem}}
-.bk-search-card{{background:{CARD};border-radius:16px;border:2px solid {BLUE}30;
-  box-shadow:0 6px 36px rgba(0,0,0,.14);overflow:hidden;margin-bottom:0}}
-.bk-search-hdr{{background:linear-gradient(135deg,{BLUE}12,{BLDARK}08);
-  padding:12px 20px 8px;border-bottom:1px solid {BORDER};
-  display:flex;align-items:center;gap:8px}}
-.bk-search-hdr-txt{{font-size:.72rem;font-weight:800;color:{BLUE};text-transform:uppercase;letter-spacing:.08em}}
-.bk-fields-row{{display:grid;grid-template-columns:2fr 1fr 1fr;border-bottom:1px solid {BORDER}}}
-.bk-field{{padding:12px 20px;border-right:1px solid {BORDER};display:flex;flex-direction:column;gap:2px}}
-.bk-field:last-child{{border-right:none}}
-.bk-field-lbl{{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:{TEXT2}}}
-.bk-field-val{{font-size:.88rem;font-weight:600;color:{TEXT}}}
-.bk-footer{{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}}
-.bk-pill-row{{display:flex;gap:.45rem;flex-wrap:wrap}}
-.bk-pill{{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:18px;
-  border:1px solid {BORDER2};background:{CARD2};color:{TEXT2};font-size:.72rem;font-weight:600;cursor:pointer;
-  transition:all .15s;white-space:nowrap}}
-.bk-pill:hover,.bk-pill.on{{border-color:{BLUE};color:{BLUE};background:{TAGBG}}}
-
-/* ── AIRBNB-STYLE FILTER BAR (destinations) ─────────────── */
-.airfbar{{position:sticky;top:58px;z-index:98;background:{NAVBG};backdrop-filter:blur(20px);
-  border-bottom:1px solid {BORDER};padding:0 2.5rem}}
-.airfbar-inner{{max-width:1440px;margin:0 auto;display:flex;align-items:center;gap:6px;
-  padding:8px 0;overflow-x:auto;scrollbar-width:none}}
-.airfbar-inner::-webkit-scrollbar{{display:none}}
-.afc{{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border-radius:22px;
-  border:1.5px solid {BORDER2};background:{CARD};color:{TEXT2};font-size:.77rem;font-weight:600;
-  cursor:pointer;white-space:nowrap;transition:all .18s;flex-shrink:0}}
-.afc:hover{{border-color:{BLUE};color:{BLUE};background:{TAGBG}}}
-.afc.on{{border-color:{BLUE};color:#fff;background:linear-gradient(135deg,{BLUE},{BLDARK})}}
-.afc .afc-n{{background:rgba(255,255,255,.3);border-radius:50%;
-  width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;
-  font-size:.6rem;font-weight:700;margin-left:2px}}
-.afbar-sep{{width:1px;height:22px;background:{BORDER2};flex-shrink:0}}
-.afbar-sort{{display:flex;align-items:center;gap:4px;padding:7px 14px;border-radius:22px;
-  border:1.5px solid {BORDER2};background:{CARD};color:{TEXT2};font-size:.77rem;font-weight:600;
-  cursor:pointer;white-space:nowrap;flex-shrink:0}}
-.afbar-sort.on{{border-color:{BLUE};color:{BLUE}}}
-
 /* ── ACTIVE FILTERS PILLS ─────────────────────────────── */
-.af-row{{padding:.55rem 2.5rem .2rem;display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}}
+.af-row{{padding:.55rem 0 .2rem;display:flex;align-items:center;gap:.45rem;flex-wrap:wrap}}
 .af-pill{{display:inline-flex;align-items:center;gap:6px;padding:4px 12px 4px 10px;border-radius:14px;
   background:{BLUE};color:#fff;font-size:.73rem;font-weight:600}}
-.af-pill-x{{opacity:.7;cursor:pointer;margin-left:2px;font-size:.7rem}}
-.af-reset{{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:14px;
-  border:1.5px solid {BORDER2};color:{TEXT2};font-size:.73rem;font-weight:600;cursor:pointer;
-  transition:all .15s}}
-.af-reset:hover{{border-color:{SNCF};color:{SNCF}}}
 
 /* ── RESULT COUNT HEADER ──────────────────────────────── */
-.rh{{padding:.8rem 2.5rem .4rem;display:flex;align-items:flex-end;justify-content:space-between;
-  max-width:1440px;margin:0 auto}}
-.rh-left{{}}
-.rh-count{{font-size:1.1rem;font-weight:800;color:{TEXT};letter-spacing:-.03em}}
-.rh-sub{{font-size:.73rem;color:{TEXT2};margin-top:1px}}
-
-/* ── CARD STICKERS / BADGES ───────────────────────────── */
-.sticker-eco{{position:absolute;bottom:46px;left:14px;
-  background:linear-gradient(135deg,#15803d,#166534);
-  color:#fff;border-radius:8px;padding:4px 10px;font-size:.63rem;font-weight:700;
-  display:inline-flex;align-items:center;gap:4px;
-  box-shadow:0 2px 8px rgba(22,163,74,.45)}}
-.sticker-dur{{position:absolute;top:46px;right:12px;background:rgba(0,0,0,.5);
-  backdrop-filter:blur(6px);color:rgba(255,255,255,.9);border-radius:8px;
-  padding:3px 8px;font-size:.62rem;font-weight:600;
-  display:inline-flex;align-items:center;gap:3px}}
+.rh{{padding:.8rem 0 .4rem;display:flex;align-items:flex-end;justify-content:space-between}}
+.rh-count{{font-size:1.05rem;font-weight:800;color:{TEXT};letter-spacing:-.03em}}
+.rh-sub{{font-size:.72rem;color:{TEXT2};margin-top:2px}}
 
 /* ── SNCF CONNECT-STYLE RESULT ROW ───────────────────── */
 .sncf-row{{background:{CARD};border:1.5px solid {BORDER};border-radius:14px;
@@ -475,14 +412,6 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 /* ── SELECT_SLIDER STYLE ──────────────────────────────── */
 .stSelectSlider [data-baseweb="slider"]{{padding-top:4px!important}}
 
-/* ── BOOKING.COM SCORE ROW (bas de chaque card) ───────── */
-.bk-score-row{{display:flex;align-items:center;gap:7px;margin-top:7px;
-  padding-top:7px;border-top:1px solid {BORDER}}}
-.bk-sc-num{{color:#fff;border-radius:7px 7px 7px 0;padding:3px 9px;
-  font-size:.84rem;font-weight:900;min-width:36px;text-align:center;flex-shrink:0}}
-.bk-sc-lbl{{font-size:.76rem;font-weight:700;color:{TEXT}}}
-.bk-sc-eco{{font-size:.68rem;color:#16a34a;font-weight:600;margin-left:auto;
-  display:flex;align-items:center;gap:3px;white-space:nowrap}}
 </style>""", unsafe_allow_html=True)
 
 # ── DB ─────────────────────────────────────────────────────────
@@ -942,50 +871,22 @@ if page == "accueil":
       </div>
     </div>""", unsafe_allow_html=True)
 
-    st.markdown(f"""<div class="bk-search">
-      <div class="bk-search-card">
-        <div class="bk-search-hdr">
-          {fi("fa-solid fa-magnifying-glass",BLUE,"0.72rem")}
-          <span class="bk-search-hdr-txt">Trouvez votre prochain voyage en train</span>
-        </div>
-        <div class="bk-fields-row">
-          <div class="bk-field">
-            <span class="bk-field-lbl">{fi("fa-solid fa-location-dot",BLUE,"0.58rem")} Destination</span>
-          </div>
-          <div class="bk-field">
-            <span class="bk-field-lbl">{fi("fa-solid fa-person-hiking",BLUE,"0.58rem")} Profil voyageur</span>
-          </div>
-          <div class="bk-field">
-            <span class="bk-field-lbl">{fi("fa-solid fa-map",BLUE,"0.58rem")} Département</span>
-          </div>
+    st.markdown(f"""<div style="background:{CARD};padding:1.4rem 2.5rem 1.2rem;">
+      <div style="max-width:700px;margin:0 auto;">
+        <div style="font-size:.68rem;font-weight:700;color:{TEXT2};text-transform:uppercase;
+          letter-spacing:.07em;margin-bottom:.6rem;">
+          {fi("fa-solid fa-magnifying-glass",TEXT2,"0.62rem")} &nbsp;Rechercher une destination
         </div>
       </div>
     </div>""", unsafe_allow_html=True)
     deps_all = sorted([d for d in df_dest['departement'].dropna().unique() if d])
-    sc1, sc2, sc3, sc4 = st.columns([3, 2, 2, 1])
-    with sc1:
-        q_h = st.text_input("Destination", placeholder="Nantes, Le Mans, Saumur...", key="hs", label_visibility="collapsed")
-    with sc2:
-        prof_opts = ["Tous les profils"] + list(PROFIL_META.keys())
-        prof_h = st.selectbox("Profil", prof_opts, key="hs_p", label_visibility="collapsed")
-    with sc3:
-        dep_opts = ["Tous les départements"] + deps_all
-        dep_h = st.selectbox("Département", dep_opts, key="hs_d", label_visibility="collapsed")
-    with sc4:
+    _sc1, _sc2 = st.columns([5, 1])
+    with _sc1:
+        q_h = st.text_input("Destination", placeholder="Nantes, Le Mans, Saumur, La Baule...", key="hs", label_visibility="collapsed")
+    with _sc2:
         if st.button("Rechercher", type="primary", use_container_width=True, key="hs_btn"):
             st.session_state.search_q = q_h
-            if prof_h != "Tous les profils": st.session_state.f_prof = [prof_h]
-            if dep_h != "Tous les départements": st.session_state.f_dep = [dep_h]
             st.session_state.page = "destinations"; st.rerun()
-    st.markdown(f"""<div style="padding:6px 2.5rem 14px;max-width:900px;margin:0 auto;">
-      <div class="bk-pill-row">
-        <span class="bk-pill">{fi("fa-solid fa-leaf",GREEN,"0.68rem")} −91% CO₂ vs voiture</span>
-        <span class="bk-pill">{fi("fa-solid fa-chess-rook","#f59e0b","0.68rem")} Châteaux de la Loire</span>
-        <span class="bk-pill">{fi("fa-solid fa-umbrella-beach","#3b82f6","0.68rem")} Côte Atlantique</span>
-        <span class="bk-pill">{fi("fa-solid fa-masks-theater","#8b5cf6","0.68rem")} Culture &amp; Patrimoine</span>
-        <span class="bk-pill">{fi("fa-solid fa-person-hiking","#16a34a","0.68rem")} Nature &amp; Randonnée</span>
-      </div>
-    </div>""", unsafe_allow_html=True)
 
     st.markdown(f"""<div class="stats-row">
       <div class="stat-c">
@@ -1045,24 +946,17 @@ if page == "accueil":
             phrase_ = meta.get("phrase", "")
             st.markdown(
                 f'<div class="dcard">'
-                f'<div class="dcard-img" style="background:{meta["grad"]};">'
+                f'<div class="dcard-img">'
                 f'<img src="{meta["img"]}" alt="{vil}" loading="lazy">'
-                f'<span class="dcard-ov"></span>'
-                f'<span class="dcard-badge">{fi(meta["icon"],meta["color"],"0.65rem")} {prf}</span>'
-                f'<div class="dcard-heart">{fi(fv_ico,fv_col,"0.88rem")}</div>'
-                f'<span class="sticker-dur">{fi("fa-solid fa-clock","rgba(255,255,255,.85)","0.58rem")} ~{dur_h}h</span>'
-                f'<span class="dcard-score">{fi("fa-solid fa-star","#ffd700","0.72rem")} {sc_:.1f}</span>'
-                f'<span class="sticker-eco">{fi("fa-solid fa-train","#fff","0.58rem")} −{co2_h:.0f} kg CO₂</span>'
+                f'<div class="dcard-ov"></div>'
+                f'<div class="dcard-heart">{fi(fv_ico,fv_col,"0.82rem")}</div>'
                 f'<span class="dcard-city">{vil}</span>'
                 f'</div>'
-                f'<div class="dcard-body">'
-                f'<div class="dcard-meta">{fi("fa-solid fa-location-dot",TEXT2,"0.67rem")} {dep} &nbsp;·&nbsp; {np_} activités</div>'
-                f'{"<div class=\"dcard-phrase\">"+phrase_+"</div>" if phrase_ else ""}'
-                f'<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">{tgs}</div>'
-                f'<div class="bk-score-row">'
-                f'<span class="bk-sc-num" style="background:{sc_col_h};">{sc_:.1f}</span>'
-                f'<span class="bk-sc-lbl">{sc_lbl_h}</span>'
-                f'<span class="bk-sc-eco">{fi("fa-solid fa-leaf","#16a34a","0.6rem")} −{co2_h:.0f} kg CO₂</span>'
+                f'<div class="dcard-info">'
+                f'<div class="dcard-loc">{dep} · {np_} activités</div>'
+                f'<div class="dcard-row">'
+                f'<span class="dcard-rating">{fi("fa-solid fa-star","#f59e0b","0.7rem")} {sc_:.1f} &nbsp;{sc_lbl_h}</span>'
+                f'<span class="dcard-eco">{fi("fa-solid fa-leaf","#16a34a","0.65rem")} −{co2_h:.0f} kg CO₂</span>'
                 f'</div>'
                 f'</div></div>',
                 unsafe_allow_html=True)
@@ -1179,41 +1073,28 @@ elif page == "destinations":
         if st.button("Rechercher", type="primary", use_container_width=True, key="ds_srch"):
             st.session_state.search_q = q; st.rerun()
 
-    # ── Airbnb-style filter bar ──────────────────────────────────
-    st.markdown(f'<div class="airfbar"><div class="airfbar-inner">', unsafe_allow_html=True)
-
-    fbar_cols = st.columns([2, 2, 2, 1, 1, 0.1])
-    with fbar_cols[0]:
+    # ── Filter bar ────────────────────────────────────────────────
+    fb1, fb2, fb3 = st.columns([3, 3, 2])
+    with fb1:
         dep_sel = st.multiselect("Département", deps_list,
                                  default=st.session_state.f_dep,
-                                 key="ds_dep", label_visibility="collapsed",
-                                 placeholder="Département")
-    with fbar_cols[1]:
+                                 key="ds_dep", placeholder="Tous les départements")
+    with fb2:
         prof_sel = st.multiselect("Profil voyageur", profs_list,
                                    default=st.session_state.f_prof,
-                                   key="ds_prf", label_visibility="collapsed",
-                                   placeholder="Profil voyageur")
-    with fbar_cols[2]:
-        score_min = st.slider("Score min", 0.0, 9.0, float(st.session_state.f_score),
-                              0.5, key="ds_sc", label_visibility="collapsed")
-    with fbar_cols[3]:
-        srt = st.selectbox("Trier", SORTS,
+                                   key="ds_prf", placeholder="Tous les profils")
+    with fb3:
+        srt = st.selectbox("Trier par", SORTS,
                            index=SORTS.index(st.session_state.f_sort) if st.session_state.f_sort in SORTS else 0,
-                           key="ds_srt", label_visibility="collapsed")
-    with fbar_cols[4]:
-        nb_res = st.selectbox("Nb", [12,24,48,100],
-                              index=[12,24,48,100].index(st.session_state.f_nb) if st.session_state.f_nb in [12,24,48,100] else 1,
-                              key="ds_nb", label_visibility="collapsed")
-    with fbar_cols[5]:
-        st.markdown("", unsafe_allow_html=True)
-    st.markdown('</div></div>', unsafe_allow_html=True)
+                           key="ds_srt")
 
     # Sync filter state
+    score_min = 0.0
+    nb_res = st.session_state.f_nb
     st.session_state.f_dep = dep_sel
     st.session_state.f_prof = prof_sel
     st.session_state.f_score = score_min
     st.session_state.f_sort = srt
-    st.session_state.f_nb = nb_res
 
     # ── Type chips (Airbnb category chips) ───────────────────────
     type_sel = st.session_state.f_type
@@ -1290,24 +1171,17 @@ elif page == "destinations":
             with rc[ci]:
                 st.markdown(
                     f'<div class="dcard">'
-                    f'<div class="dcard-img" style="background:{meta["grad"]};">'
+                    f'<div class="dcard-img">'
                     f'<img src="{meta["img"]}" alt="{vil}" loading="lazy">'
-                    f'<span class="dcard-ov"></span>'
-                    f'<span class="dcard-badge">{fi(meta["icon"],meta["color"],"0.65rem")} {prf}</span>'
-                    f'<div class="dcard-heart">{fi(fv_ico2,fv_col2,"0.88rem")}</div>'
-                    f'<span class="sticker-dur">{fi("fa-solid fa-clock","rgba(255,255,255,.85)","0.58rem")} ~{dur_c}h</span>'
-                    f'<span class="dcard-score">{fi("fa-solid fa-star","#ffd700","0.72rem")} {sc_:.1f}</span>'
-                    f'<span class="sticker-eco">{fi("fa-solid fa-train","#fff","0.58rem")} −{co2_c:.0f} kg CO₂</span>'
+                    f'<div class="dcard-ov"></div>'
+                    f'<div class="dcard-heart">{fi(fv_ico2,fv_col2,"0.82rem")}</div>'
                     f'<span class="dcard-city">{vil}</span>'
                     f'</div>'
-                    f'<div class="dcard-body">'
-                    f'<div class="dcard-meta">{fi("fa-solid fa-location-dot",TEXT2,"0.67rem")} {dep} &nbsp;·&nbsp; {np_} activités</div>'
-                    f'{"<div class=\"dcard-phrase\">"+phrase_d+"</div>" if phrase_d else ""}'
-                    f'<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;">{tgs}</div>'
-                    f'<div class="bk-score-row">'
-                    f'<span class="bk-sc-num" style="background:{sc_col_c};">{sc_:.1f}</span>'
-                    f'<span class="bk-sc-lbl">{sc_lbl_c}</span>'
-                    f'<span class="bk-sc-eco">{fi("fa-solid fa-leaf","#16a34a","0.6rem")} −{co2_c:.0f} kg CO₂</span>'
+                    f'<div class="dcard-info">'
+                    f'<div class="dcard-loc">{dep} · {np_} activités</div>'
+                    f'<div class="dcard-row">'
+                    f'<span class="dcard-rating">{fi("fa-solid fa-star","#f59e0b","0.7rem")} {sc_:.1f} &nbsp;{sc_lbl_c}</span>'
+                    f'<span class="dcard-eco">{fi("fa-solid fa-leaf","#16a34a","0.65rem")} −{co2_c:.0f} kg CO₂</span>'
                     f'</div>'
                     f'</div></div>',
                     unsafe_allow_html=True)
