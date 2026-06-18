@@ -1,19 +1,20 @@
 apiVersion: 1
 
 datasources:
-  - name: Wandrail PostgreSQL
+  # Supabase (production) — donnees reelles
+  - name: Wandrail Supabase
     type: postgres
     uid: wandrail_pg
-    url: tourisme_postgres:5432
-    user: postgres
+    url: aws-0-eu-west-1.pooler.supabase.com:6543
+    user: postgres.tqzvujolklzcaytvaajo
     secureJsonData:
-      password: "00000"
+      password: "${SUPABASE_PASSWORD}"
     jsonData:
-      database: tourisme_train
-      sslmode: disable
+      database: postgres
+      sslmode: require
       maxOpenConns: 5
       maxIdleConns: 2
-      postgresVersion: 1600
+      postgresVersion: 1500
       timescaledb: false
     isDefault: true
-    editable: false
+    editable: true

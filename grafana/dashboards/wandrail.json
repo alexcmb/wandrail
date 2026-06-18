@@ -573,10 +573,164 @@
     },
 
     {
+      "id": 60,
+      "type": "row",
+      "title": "Carte des gares — Pays de la Loire",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 49 },
+      "collapsed": false
+    },
+
+    {
+      "id": 61,
+      "type": "geomap",
+      "title": "Carte interactive des 136 gares PDL",
+      "description": "Taille et couleur proportionnelles au score d'attractivite",
+      "gridPos": { "h": 16, "w": 16, "x": 0, "y": 50 },
+      "options": {
+        "view": { "id": "coords", "lat": 47.45, "lon": -0.9, "zoom": 8 },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showZoom": true,
+          "showAttribution": true,
+          "showScale": true,
+          "showMeasure": false,
+          "showDebug": false
+        },
+        "tooltip": { "mode": "details" },
+        "layers": [
+          {
+            "type": "markers",
+            "name": "Gares PDL",
+            "tooltip": true,
+            "config": {
+              "style": {
+                "size": { "field": "score_attractivite", "fixed": 8, "min": 4, "max": 20 },
+                "color": { "field": "score_attractivite", "mode": "field" },
+                "fillOpacity": 85,
+                "symbol": { "mode": "fixed", "value": "img/icons/marker/circle.svg" }
+              },
+              "showLegend": true
+            },
+            "location": {
+              "mode": "coords",
+              "latitude": "latitude",
+              "longitude": "longitude"
+            }
+          }
+        ],
+        "basemap": { "type": "default", "name": "Basemap", "config": {} }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-GrYlRd" },
+          "custom": {
+            "hideFrom": { "legend": false, "tooltip": false, "viz": false }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "yellow", "value": 5 },
+              { "color": "red", "value": 8 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT g.commune as name, g.latitude, g.longitude, COALESCE(d.score_attractivite, 0) as score_attractivite, d.nb_poi_5km, d.profil_touristique, g.departement FROM silver.gares g LEFT JOIN gold.dim_gare d ON d.nom_gare = g.nom_gare WHERE g.latitude IS NOT NULL AND g.longitude IS NOT NULL ORDER BY score_attractivite DESC",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 62,
+      "type": "bargauge",
+      "title": "Score attractivite par departement",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 50 },
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": true },
+        "showUnfilled": true,
+        "text": {}
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-BlPu" },
+          "custom": { "fillOpacity": 85 },
+          "decimals": 2,
+          "mappings": [],
+          "max": 10,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "blue", "value": null },
+              { "color": "purple", "value": 5 },
+              { "color": "red", "value": 8 }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT g.departement, ROUND(AVG(d.score_attractivite)::numeric, 2) as score_moyen FROM gold.dim_gare d JOIN silver.gares g ON g.nom_gare = d.nom_gare WHERE g.departement IS NOT NULL GROUP BY g.departement ORDER BY score_moyen DESC",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 63,
+      "type": "table",
+      "title": "Top 10 gares les mieux notees",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 58 },
+      "options": {
+        "cellHeight": "md",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": { "align": "auto", "cellOptions": { "type": "auto" } },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 6 }, { "color": "red", "value": 8 }] }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "score" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "type": "color-background", "mode": "gradient" } },
+              { "id": "custom.width", "value": 80 }
+            ]
+          },
+          { "matcher": { "id": "byName", "options": "commune" }, "properties": [{ "id": "custom.width", "value": 120 }] }
+        ]
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT g.commune, g.departement, ROUND(d.score_attractivite::numeric, 2) as score, d.nb_poi_5km as poi FROM gold.dim_gare d JOIN silver.gares g ON g.nom_gare = d.nom_gare ORDER BY d.score_attractivite DESC LIMIT 10",
+        "refId": "A"
+      }]
+    },
+
+    {
       "id": 50,
       "type": "row",
       "title": "Eco-Impact — Comparaison CO2",
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 49 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 66 },
       "collapsed": false
     },
 
@@ -584,7 +738,7 @@
       "id": 51,
       "type": "bargauge",
       "title": "Emissions CO2 par mode de transport (g/km/passager)",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 50 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 67 },
       "options": {
         "displayMode": "gradient",
         "minVizHeight": 10,
@@ -627,7 +781,7 @@
       "id": 52,
       "type": "text",
       "title": "Impact ecologique du projet",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 50 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 67 },
       "options": {
         "content": "## Wandrail — Impact CO2\n\nUn trajet **Nantes → Paris** (380 km) :\n\n| Mode | CO2 emis |\n|------|----------|\n| Train TER | **0.8 kg** |\n| Bus | 39 kg |\n| Voiture seul | 83 kg |\n| Avion | 98 kg |\n\nEconomie vs voiture : **−91%**\n\n> Sources : ADEME 2023, SNCF Open Data\n\n---\n**Projet** : M1 BDIA Sup de Vinci  \n**Partenaire** : SNCF Open Data University Saison 3",
         "mode": "markdown"
