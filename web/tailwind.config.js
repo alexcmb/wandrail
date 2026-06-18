@@ -8,6 +8,7 @@ export default {
         violet: {
           DEFAULT: '#7c3aed',
           dark: '#4c1d95',
+          light: '#c4b5fd',
         },
         ink: '#111111',
         muted: '#6b6b6b',

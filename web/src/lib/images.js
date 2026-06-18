@@ -1,3 +1,7 @@
+// Image de fond du hero : un train sur les rails (photo stable Unsplash).
+export const HERO_IMAGE =
+  'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1920&q=80&auto=format&fit=crop'
+
 // Mapping image par destination (porte depuis l'app Streamlit).
 // On utilise picsum.photos avec des IDs choisis pour ressembler aux villes.
 // Cle = mot present dans le nom de la commune/gare (en minuscules).

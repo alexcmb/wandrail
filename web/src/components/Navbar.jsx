@@ -12,7 +12,6 @@ export default function Navbar() {
         <Link to="/" className="flex items-center gap-2 text-lg font-extrabold tracking-tight">
           <span className="h-2 w-2 rounded-full bg-gradient-to-br from-violet to-orange-500" />
           Wand<span className="text-violet">rail</span>
-          <span className="ml-1 text-xs font-normal text-muted">PDL</span>
         </Link>
 
         <nav className="flex items-center gap-1">
