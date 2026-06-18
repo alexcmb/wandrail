@@ -36,6 +36,17 @@ function hashString(str) {
   return sum
 }
 
+// Image (vignette) pour un lieu / activite. Seed stable base sur la
+// categorie + le nom : chaque lieu a une image constante et unique.
+export function poiImage(categorie, nom, w = 600, h = 360) {
+  const seed =
+    `${categorie || 'lieu'}-${nom || ''}`
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '')
+      .slice(0, 28) || 'lieu'
+  return `https://picsum.photos/seed/${seed}/${w}/${h}`
+}
+
 export function destImage(nom, w = 800, h = 500) {
   const key = String(nom || '').toLowerCase()
   let id = null

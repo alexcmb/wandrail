@@ -11,7 +11,7 @@ import {
 } from 'react-leaflet'
 import L from 'leaflet'
 import { api } from '../lib/api'
-import { destImage } from '../lib/images'
+import { destImage, poiImage } from '../lib/images'
 
 // Corrige les icones Leaflet (chemins casses par le bundler Vite).
 const icon = new L.Icon({
@@ -238,34 +238,42 @@ export default function DestinationDetail() {
               ))}
             </div>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {visible.map((p, i) => {
                 const isSel = selected.includes(p.nom)
                 return (
                   <button
                     key={`${p.nom}-${i}`}
                     onClick={() => toggle(p.nom)}
-                    className={`flex items-start justify-between gap-3 rounded-xl border p-4 text-left transition-all ${
-                      isSel
-                        ? 'border-violet bg-violet/5 shadow-card'
-                        : 'border-line bg-white shadow-card hover:border-violet/40'
+                    className={`group overflow-hidden rounded-xl border bg-white text-left shadow-card transition-all ${
+                      isSel ? 'border-violet ring-2 ring-violet/20' : 'border-line hover:border-violet/40'
                     }`}
                   >
-                    <div>
-                      <div className="font-bold text-ink">{cap(p.nom)}</div>
-                      <div className="mt-1 text-xs text-muted">
+                    <div className="relative h-32 overflow-hidden bg-neutral-100">
+                      <img
+                        src={poiImage(p.categorie, p.nom)}
+                        alt={cap(p.nom)}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <span className="absolute left-2 top-2 rounded-full bg-black/55 px-2 py-0.5 text-[0.65rem] font-semibold text-white backdrop-blur">
                         {p.categorie}
-                        {p.distance_gare_km != null ? ` - ${Number(p.distance_gare_km).toFixed(1)} km` : ''}
+                      </span>
+                      <span
+                        className={`absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold shadow ${
+                          isSel ? 'bg-violet text-white' : 'bg-white/90 text-ink'
+                        }`}
+                      >
+                        {isSel ? '✓' : '+'}
+                      </span>
+                    </div>
+                    <div className="p-3">
+                      <div className="truncate font-bold text-ink">{cap(p.nom)}</div>
+                      <div className="mt-0.5 text-xs text-muted">
+                        {p.distance_gare_km != null ? `${Number(p.distance_gare_km).toFixed(1)} km` : ''}
                         {p.temps_marche_min != null ? ` - ${Math.round(p.temps_marche_min)} min a pied` : ''}
                       </div>
                     </div>
-                    <span
-                      className={`mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold ${
-                        isSel ? 'bg-violet text-white' : 'border border-black/20 text-muted'
-                      }`}
-                    >
-                      {isSel ? '✓' : '+'}
-                    </span>
                   </button>
                 )
               })}
