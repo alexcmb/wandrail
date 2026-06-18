@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { api } from '../lib/api'
 import DestinationCard from '../components/DestinationCard'
+import { SkeletonGrid } from '../components/CardSkeleton'
 
 export default function Destinations() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -14,6 +15,7 @@ export default function Destinations() {
   const departement = searchParams.get('departement') || ''
   const profil = searchParams.get('profil') || ''
   const sort = searchParams.get('sort') || 'score'
+  const hasFilters = q || departement || profil || sort !== 'score'
 
   // Met a jour un parametre d'URL (et nettoie les valeurs vides)
   const setParam = (key, value) => {
@@ -85,18 +87,30 @@ export default function Destinations() {
           <option value="nom">Tri : Nom</option>
           <option value="poi">Tri : Nb activites</option>
         </select>
+        {hasFilters && (
+          <button
+            onClick={() => setSearchParams({})}
+            className="h-11 rounded-xl px-3 text-sm font-semibold text-violet hover:underline"
+          >
+            Reinitialiser
+          </button>
+        )}
       </div>
 
       {/* Resultats */}
       <div className="mb-6 mt-8 text-sm font-semibold text-ink">
-        {loading ? 'Chargement...' : `${dests.length} destination${dests.length > 1 ? 's' : ''}`}
+        {loading ? 'Recherche en cours...' : `${dests.length} destination${dests.length > 1 ? 's' : ''}`}
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {dests.map((d) => (
-          <DestinationCard key={d.nom_gare} dest={d} />
-        ))}
-      </div>
+      {loading ? (
+        <SkeletonGrid count={6} />
+      ) : (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {dests.map((d) => (
+            <DestinationCard key={d.nom_gare} dest={d} />
+          ))}
+        </div>
+      )}
 
       {!loading && dests.length === 0 && (
         <div className="py-20 text-center text-muted">

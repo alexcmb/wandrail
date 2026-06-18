@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
 import DestinationCard from '../components/DestinationCard'
+import { SkeletonGrid } from '../components/CardSkeleton'
 import CategoryChips from '../components/CategoryChips'
 import ProfilCard from '../components/ProfilCard'
 
@@ -26,7 +27,7 @@ function StatItem({ value, label }) {
   return (
     <div className="text-center">
       <div className="text-3xl font-extrabold leading-none tracking-tighter text-violet">{value}</div>
-      <div className="mt-1 text-xs font-medium text-muted">{label}</div>
+      <div className="mt-1.5 text-xs font-medium text-muted">{label}</div>
     </div>
   )
 }
@@ -35,11 +36,16 @@ export default function Home() {
   const navigate = useNavigate()
   const [stats, setStats] = useState(null)
   const [dests, setDests] = useState([])
+  const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
 
   useEffect(() => {
     api.stats().then(setStats).catch(() => {})
-    api.destinations({ limit: 9 }).then(setDests).catch(() => {})
+    api
+      .destinations({ limit: 9 })
+      .then(setDests)
+      .catch(() => setDests([]))
+      .finally(() => setLoading(false))
   }, [])
 
   const search = () => {
@@ -64,17 +70,17 @@ export default function Home() {
           </p>
 
           {/* Recherche */}
-          <div className="mx-auto flex max-w-xl items-center gap-2">
+          <div className="mx-auto flex max-w-xl items-center gap-1.5 rounded-2xl border border-line bg-white p-1.5 shadow-[0_4px_24px_rgba(0,0,0,0.08)]">
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && search()}
               placeholder="Nantes, Le Mans, Saumur, La Baule..."
-              className="h-12 flex-1 rounded-xl border-[1.5px] border-black/15 bg-neutral-50 px-4 text-sm outline-none transition focus:border-violet focus:ring-2 focus:ring-violet/20"
+              className="h-12 flex-1 rounded-xl bg-transparent px-4 text-sm outline-none placeholder:text-muted"
             />
             <button
               onClick={search}
-              className="h-12 rounded-xl bg-violet px-6 text-sm font-semibold text-white transition hover:bg-violet-dark"
+              className="h-12 rounded-xl bg-violet px-7 text-sm font-semibold text-white transition hover:bg-violet-dark"
             >
               Rechercher
             </button>
@@ -117,17 +123,21 @@ export default function Home() {
           </div>
           <button
             onClick={() => navigate('/destinations')}
-            className="whitespace-nowrap text-sm font-bold text-violet"
+            className="whitespace-nowrap text-sm font-bold text-violet hover:underline"
           >
-            Voir tout
+            Voir tout &rarr;
           </button>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {dests.map((d) => (
-            <DestinationCard key={d.nom_gare} dest={d} />
-          ))}
-        </div>
+        {loading ? (
+          <SkeletonGrid count={9} />
+        ) : (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {dests.map((d) => (
+              <DestinationCard key={d.nom_gare} dest={d} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Profils */}
