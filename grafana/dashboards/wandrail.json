@@ -1,0 +1,694 @@
+{
+  "id": null,
+  "uid": "wandrail-main",
+  "title": "Wandrail — Analytics Pays de la Loire",
+  "description": "Tableau de bord analytique — Projet M1 BDIA Sup de Vinci — RNCP40167",
+  "tags": ["wandrail", "tourisme", "train", "pdl"],
+  "timezone": "Europe/Paris",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "5m",
+  "time": { "from": "now-30d", "to": "now" },
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "panels": [
+
+    {
+      "id": 1,
+      "type": "row",
+      "title": "Vue d'ensemble",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false
+    },
+
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Gares analysees",
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "purple" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT COUNT(*) as value FROM gold.dim_gare",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Points d'interet",
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "orange" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT COUNT(*) as value FROM silver.poi",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Score moyen attractivite",
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "blue" },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT ROUND(AVG(score_attractivite)::numeric, 2) as value FROM gold.dim_gare WHERE score_attractivite IS NOT NULL",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 5,
+      "type": "stat",
+      "title": "Profils voyageurs",
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "green" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT COUNT(DISTINCT nom) as value FROM gold.dim_profil",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 6,
+      "type": "stat",
+      "title": "Recommandations generees",
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "red" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT COUNT(*) as value FROM gold.recommandations",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 7,
+      "type": "stat",
+      "title": "Categories POI distinctes",
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "yellow" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT COUNT(DISTINCT categorie) as value FROM silver.poi WHERE categorie IS NOT NULL",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 10,
+      "type": "row",
+      "title": "Destinations — Score attractivite",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "collapsed": false
+    },
+
+    {
+      "id": 11,
+      "type": "barchart",
+      "title": "Top 20 destinations — Score attractivite",
+      "gridPos": { "h": 10, "w": 16, "x": 0, "y": 6 },
+      "options": {
+        "barWidth": 0.7,
+        "fillOpacity": 80,
+        "gradientMode": "none",
+        "groupWidth": 0.7,
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": false },
+        "orientation": "horizontal",
+        "tooltip": { "mode": "single", "sort": "none" },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 100
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "purple" },
+          "custom": { "axisPlacement": "auto", "fillOpacity": 80, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1 },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 80 }] }
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT commune, ROUND(score_attractivite::numeric, 2) as score FROM gold.dim_gare WHERE score_attractivite IS NOT NULL ORDER BY score_attractivite DESC LIMIT 20",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 12,
+      "type": "table",
+      "title": "Classement complet des gares",
+      "gridPos": { "h": 10, "w": 8, "x": 16, "y": 6 },
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 5 },
+              { "color": "red", "value": 8 }
+            ]
+          }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "score_attractivite" }, "properties": [{ "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge" } }, { "id": "custom.width", "value": 120 }] },
+          { "matcher": { "id": "byName", "options": "commune" }, "properties": [{ "id": "custom.width", "value": 130 }] }
+        ]
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT commune, departement, ROUND(score_attractivite::numeric, 2) as score_attractivite, nb_poi_5km, profil_touristique FROM gold.dim_gare WHERE score_attractivite IS NOT NULL ORDER BY score_attractivite DESC LIMIT 50",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 20,
+      "type": "row",
+      "title": "Points d'interet — Distribution",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 16 },
+      "collapsed": false
+    },
+
+    {
+      "id": 21,
+      "type": "piechart",
+      "title": "Repartition POI par categorie",
+      "gridPos": { "h": 10, "w": 10, "x": 0, "y": 17 },
+      "options": {
+        "displayLabels": ["name", "percent"],
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"] },
+        "pieType": "donut",
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT categorie, COUNT(*) as count FROM silver.poi WHERE categorie IS NOT NULL GROUP BY categorie ORDER BY count DESC",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 22,
+      "type": "barchart",
+      "title": "Nombre de POI par departement",
+      "gridPos": { "h": 10, "w": 8, "x": 10, "y": 17 },
+      "options": {
+        "barWidth": 0.6,
+        "fillOpacity": 80,
+        "gradientMode": "opacity",
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": false },
+        "orientation": "vertical",
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "orange" },
+          "custom": { "fillOpacity": 80, "gradientMode": "opacity", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1 },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT p.commune, COUNT(*) as nb_poi FROM silver.poi p WHERE p.commune IS NOT NULL GROUP BY p.commune ORDER BY nb_poi DESC LIMIT 15",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 23,
+      "type": "stat",
+      "title": "Note moyenne POI (tous)",
+      "gridPos": { "h": 5, "w": 3, "x": 18, "y": 17 },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "yellow" },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT ROUND(AVG(note_moyenne)::numeric, 2) as value FROM silver.poi WHERE note_moyenne IS NOT NULL AND note_moyenne > 0",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 24,
+      "type": "stat",
+      "title": "POI avec note",
+      "gridPos": { "h": 5, "w": 3, "x": 21, "y": 17 },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "fixed", "fixedColor": "blue" },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT COUNT(*) as value FROM silver.poi WHERE note_moyenne IS NOT NULL AND note_moyenne > 0",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 25,
+      "type": "table",
+      "title": "Top POI par note",
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 22 },
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT nom, categorie, commune, ROUND(note_moyenne::numeric, 1) as note FROM silver.poi WHERE note_moyenne IS NOT NULL AND note_moyenne > 0 ORDER BY note_moyenne DESC LIMIT 10",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 30,
+      "type": "row",
+      "title": "Machine Learning — Recommandations KNN",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 27 },
+      "collapsed": false
+    },
+
+    {
+      "id": 31,
+      "type": "table",
+      "title": "Top 5 destinations par profil voyageur (KNN)",
+      "gridPos": { "h": 10, "w": 14, "x": 0, "y": 28 },
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "score_reco" }, "properties": [{ "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge" } }, { "id": "custom.width", "value": 120 }] }
+        ]
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT p.nom as profil, r.rang, g.commune as destination, ROUND(r.score_reco::numeric, 3) as score_reco, g.nb_poi_5km FROM gold.recommandations r JOIN gold.dim_profil p ON p.id = r.id_profil JOIN gold.dim_gare g ON g.id = r.id_gare ORDER BY p.nom, r.rang LIMIT 50",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 32,
+      "type": "barchart",
+      "title": "Score moyen des recommandations par profil",
+      "gridPos": { "h": 10, "w": 10, "x": 14, "y": 28 },
+      "options": {
+        "barWidth": 0.6,
+        "fillOpacity": 80,
+        "gradientMode": "opacity",
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": false },
+        "orientation": "vertical",
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "fillOpacity": 80, "gradientMode": "opacity", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineWidth": 1 },
+          "decimals": 3,
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT p.nom as profil, ROUND(AVG(r.score_reco)::numeric, 3) as score_moyen FROM gold.recommandations r JOIN gold.dim_profil p ON p.id = r.id_profil GROUP BY p.nom ORDER BY score_moyen DESC",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 40,
+      "type": "row",
+      "title": "Machine Learning — Clusters KMeans",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 38 },
+      "collapsed": false
+    },
+
+    {
+      "id": 41,
+      "type": "piechart",
+      "title": "Distribution des clusters KMeans",
+      "gridPos": { "h": 10, "w": 10, "x": 0, "y": 39 },
+      "options": {
+        "displayLabels": ["name", "percent"],
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"] },
+        "pieType": "pie",
+        "tooltip": { "mode": "single", "sort": "none" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "palette-classic" },
+          "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT CONCAT('Cluster ', cluster_id) as cluster, COUNT(*) as nb_poi FROM gold.poi_clusters GROUP BY cluster_id ORDER BY cluster_id",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 42,
+      "type": "table",
+      "title": "Resume des clusters (centroide + categorie dominante)",
+      "gridPos": { "h": 10, "w": 14, "x": 10, "y": 39 },
+      "options": {
+        "cellHeight": "sm",
+        "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
+        "showHeader": true
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": { "align": "auto", "cellOptions": { "type": "auto" }, "inspect": false },
+          "mappings": [],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT c.cluster_id, COUNT(*) as nb_poi, ROUND(AVG(p.note_moyenne)::numeric, 2) as note_moy, MODE() WITHIN GROUP (ORDER BY p.categorie) as categorie_dominante FROM gold.poi_clusters c JOIN silver.poi p ON p.id = c.id_poi GROUP BY c.cluster_id ORDER BY c.cluster_id",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 50,
+      "type": "row",
+      "title": "Eco-Impact — Comparaison CO2",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 49 },
+      "collapsed": false
+    },
+
+    {
+      "id": 51,
+      "type": "bargauge",
+      "title": "Emissions CO2 par mode de transport (g/km/passager)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 50 },
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": true },
+        "showUnfilled": true,
+        "text": {}
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "continuous-GrYlRd" },
+          "custom": { "fillOpacity": 80 },
+          "mappings": [],
+          "max": 260,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 50 },
+              { "color": "orange", "value": 150 },
+              { "color": "red", "value": 200 }
+            ]
+          },
+          "unit": "g/km"
+        },
+        "overrides": []
+      },
+      "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+      "targets": [{
+        "datasource": { "uid": "wandrail_pg", "type": "postgres" },
+        "format": "table",
+        "rawSql": "SELECT 'Train TER' as mode, 2 as co2_g_km UNION ALL SELECT 'Bus', 103 UNION ALL SELECT 'Moto', 191 UNION ALL SELECT 'Voiture (seul)', 218 UNION ALL SELECT 'Avion', 258 ORDER BY co2_g_km",
+        "refId": "A"
+      }]
+    },
+
+    {
+      "id": 52,
+      "type": "text",
+      "title": "Impact ecologique du projet",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 50 },
+      "options": {
+        "content": "## Wandrail — Impact CO2\n\nUn trajet **Nantes → Paris** (380 km) :\n\n| Mode | CO2 emis |\n|------|----------|\n| Train TER | **0.8 kg** |\n| Bus | 39 kg |\n| Voiture seul | 83 kg |\n| Avion | 98 kg |\n\nEconomie vs voiture : **−91%**\n\n> Sources : ADEME 2023, SNCF Open Data\n\n---\n**Projet** : M1 BDIA Sup de Vinci  \n**Partenaire** : SNCF Open Data University Saison 3",
+        "mode": "markdown"
+      },
+      "fieldConfig": { "defaults": {}, "overrides": [] }
+    }
+
+  ],
+
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "datasource": { "type": "postgres", "uid": "wandrail_pg" },
+        "definition": "SELECT DISTINCT departement FROM gold.dim_gare WHERE departement IS NOT NULL ORDER BY departement",
+        "hide": 0,
+        "includeAll": true,
+        "multi": false,
+        "name": "departement",
+        "options": [],
+        "query": "SELECT DISTINCT departement FROM gold.dim_gare WHERE departement IS NOT NULL ORDER BY departement",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query",
+        "label": "Departement",
+        "allValue": null
+      },
+      {
+        "current": {},
+        "datasource": { "type": "postgres", "uid": "wandrail_pg" },
+        "definition": "SELECT DISTINCT nom FROM gold.dim_profil ORDER BY nom",
+        "hide": 0,
+        "includeAll": true,
+        "multi": false,
+        "name": "profil",
+        "options": [],
+        "query": "SELECT DISTINCT nom FROM gold.dim_profil ORDER BY nom",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query",
+        "label": "Profil voyageur",
+        "allValue": null
+      }
+    ]
+  },
+
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+
+  "links": []
+}
