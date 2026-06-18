@@ -42,6 +42,20 @@ function haversineKm(a, b) {
 
 const storageKey = (nom) => `wandrail:itin:${nom}`
 
+// Lien Google Maps "directions" a pied : gare -> etapes intermediaires -> derniere.
+function gmapsDirectionsUrl(center, points) {
+  const origin = `${center[0]},${center[1]}`
+  const last = points[points.length - 1]
+  const destination = `${last[0]},${last[1]}`
+  const params = new URLSearchParams({ api: '1', origin, destination, travelmode: 'walking' })
+  const wp = points
+    .slice(0, -1)
+    .map(([la, lo]) => `${la},${lo}`)
+    .join('|')
+  if (wp) params.set('waypoints', wp)
+  return `https://www.google.com/maps/dir/?${params.toString()}`
+}
+
 export default function DestinationDetail() {
   const { nom } = useParams()
   const [data, setData] = useState(null)
@@ -100,6 +114,64 @@ export default function DestinationDetail() {
     [selected, pois],
   )
 
+  // Vrai trace pieton (suivant les rues) via OSRM, recalcule a chaque
+  // changement d'itineraire. Repli sur la ligne directe si indisponible.
+  const [routeGeo, setRouteGeo] = useState(null)
+  const [routeInfo, setRouteInfo] = useState(null)
+  const routeKey = itinerary.map((p) => p.nom).join('|')
+
+  useEffect(() => {
+    if (!data || itinerary.length === 0) {
+      setRouteGeo(null)
+      setRouteInfo(null)
+      return
+    }
+    const c = [data.destination.latitude, data.destination.longitude]
+    const pts = itinerary
+      .filter((p) => p.latitude && p.longitude)
+      .map((p) => [p.latitude, p.longitude])
+    if (pts.length === 0) {
+      setRouteGeo(null)
+      setRouteInfo(null)
+      return
+    }
+    const coordStr = [c, ...pts].map(([la, lo]) => `${lo},${la}`).join(';')
+    let cancelled = false
+    fetch(`https://router.project-osrm.org/route/v1/foot/${coordStr}?overview=full&geometries=geojson`)
+      .then((r) => r.json())
+      .then((j) => {
+        if (cancelled) return
+        const route = j.code === 'Ok' && j.routes && j.routes[0]
+        if (route && route.geometry?.coordinates?.length > 1) {
+          // On garde la distance routiere reelle, mais on recalcule le temps a
+          // pied (le serveur de demo OSRM renvoie des durees de type voiture).
+          const km = route.distance / 1000
+          setRouteGeo(route.geometry.coordinates.map(([lo, la]) => [la, lo]))
+          setRouteInfo({
+            km,
+            min: Math.round(km * WALK_MIN_PER_KM),
+            legs: (route.legs || []).map((l) => {
+              const legKm = l.distance / 1000
+              return { km: legKm, min: Math.round(legKm * WALK_MIN_PER_KM) }
+            }),
+          })
+        } else {
+          setRouteGeo(null)
+          setRouteInfo(null)
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setRouteGeo(null)
+          setRouteInfo(null)
+        }
+      })
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routeKey, data])
+
   if (error) {
     return (
       <div className="mx-auto max-w-page px-6 py-24 text-center text-muted">
@@ -134,6 +206,12 @@ export default function DestinationDetail() {
     .filter((p) => p.latitude && p.longitude)
     .map((p) => [p.latitude, p.longitude])
   const linePositions = [center, ...itinPoints]
+
+  // Totaux affiches : vrai trace OSRM si dispo, sinon estimation a vol d'oiseau.
+  const displayKm = routeInfo ? routeInfo.km : totalKm
+  const displayMin = routeInfo ? routeInfo.min : totalWalk
+  const useRealLegs = routeInfo && routeInfo.legs.length === itinerary.length
+  const directionsUrl = itinPoints.length > 0 ? gmapsDirectionsUrl(center, itinPoints) : null
 
   return (
     <div>
@@ -193,10 +271,12 @@ export default function DestinationDetail() {
                   <Popup>Gare de {ville}</Popup>
                 </Marker>
 
-                {/* Trace de l'itineraire selectionne */}
-                {itinPoints.length > 0 && (
+                {/* Trace de l'itineraire : vrai chemin pieton OSRM, sinon ligne directe */}
+                {routeGeo ? (
+                  <Polyline positions={routeGeo} pathOptions={{ color: '#7c3aed', weight: 4, opacity: 0.9 }} />
+                ) : itinPoints.length > 0 ? (
                   <Polyline positions={linePositions} pathOptions={{ color: '#7c3aed', weight: 3, dashArray: '6 6' }} />
-                )}
+                ) : null}
                 {itinPoints.map((pos, i) => (
                   <CircleMarker
                     key={`it-${i}`}
@@ -296,7 +376,7 @@ export default function DestinationDetail() {
                 <>
                   <div className="mt-2 mb-4 text-xs font-semibold text-muted">
                     {itinerary.length} etape{itinerary.length > 1 ? 's' : ''}
-                    {totalKm > 0 ? ` - ${totalKm.toFixed(1)} km - ~${totalWalk} min de marche` : ''}
+                    {displayKm > 0 ? ` - ${displayKm.toFixed(1)} km - ~${displayMin} min a pied` : ''}
                   </div>
                   <ol className="space-y-0">
                     <li className="flex items-center gap-3 rounded-lg bg-neutral-50 px-3 py-2">
@@ -310,8 +390,10 @@ export default function DestinationDetail() {
                         {/* Troncon depuis l'etape precedente */}
                         <div className="ml-3 flex items-center gap-2 py-1 pl-3 text-[0.7rem] text-muted">
                           <span className="h-4 w-px bg-violet/40" />
-                          {legs[idx].km > 0
-                            ? `${legs[idx].km.toFixed(1)} km - ~${legs[idx].min} min a pied`
+                          {(useRealLegs ? routeInfo.legs[idx].km : legs[idx].km) > 0
+                            ? `${(useRealLegs ? routeInfo.legs[idx].km : legs[idx].km).toFixed(1)} km - ~${
+                                useRealLegs ? routeInfo.legs[idx].min : legs[idx].min
+                              } min a pied`
                             : 'a proximite'}
                         </div>
                         <li className="flex items-start gap-3 rounded-lg border border-line px-3 py-2">
@@ -333,9 +415,22 @@ export default function DestinationDetail() {
                       </div>
                     ))}
                   </ol>
+                  {directionsUrl && (
+                    <a
+                      href={directionsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-violet py-2.5 text-sm font-bold text-white transition hover:bg-violet-dark"
+                    >
+                      Demarrer l'itineraire
+                    </a>
+                  )}
+                  <p className="mt-1.5 text-center text-[0.68rem] text-muted">
+                    Ouvre la navigation a pied dans Google Maps
+                  </p>
                   <button
                     onClick={() => updateSelected([])}
-                    className="mt-4 w-full rounded-lg border border-line py-2 text-sm font-semibold text-muted transition hover:border-violet hover:text-violet"
+                    className="mt-3 w-full rounded-lg border border-line py-2 text-sm font-semibold text-muted transition hover:border-violet hover:text-violet"
                   >
                     Vider l'itineraire
                   </button>
