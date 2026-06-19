@@ -24,4 +24,5 @@ export const api = {
   },
   destination: (nom, rayon) =>
     get(`/api/destinations/${encodeURIComponent(nom)}${rayon ? `?rayon=${rayon}` : ''}`),
+  recommandations: (profil) => get(`/api/recommandations/${encodeURIComponent(profil)}`),
 }

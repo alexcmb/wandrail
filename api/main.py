@@ -193,3 +193,27 @@ def destination_detail(nom_gare: str, rayon: float = Query(10.0, ge=0.5, le=50))
         dest = dict(zip(cols, dest_row))
         pois = rows_to_dicts(conn.execute(sql_poi, {"nom": nom_gare, "rayon": rayon}))
     return {"destination": dest, "pois": pois}
+
+
+@app.get("/api/recommandations/{profil}")
+def recommandations(profil: str):
+    """Destinations recommandees pour un type de voyageur (Famille, Solo, ...).
+
+    Source : gold.recommandations (modele de reco par profil). Renvoie la meme
+    forme que /api/destinations pour reutiliser le meme affichage cote front.
+    """
+    sql = text(
+        """
+        SELECT s.nom_gare, s.commune, s.departement, s.latitude, s.longitude,
+               d.score_attractivite, d.profil_touristique,
+               d.nb_poi_5km, d.nb_categories
+        FROM gold.recommandations r
+        JOIN gold.dim_profil p ON p.id = r.id_profil
+        JOIN gold.dim_gare d ON d.id = r.id_gare
+        JOIN silver.gares s ON s.code_uic = d.code_uic
+        WHERE p.nom = :profil
+        ORDER BY r.rang
+        """
+    )
+    with engine.connect() as conn:
+        return rows_to_dicts(conn.execute(sql, {"profil": profil}))

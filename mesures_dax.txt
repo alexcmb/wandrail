@@ -1,0 +1,223 @@
+========================================================
+MESURES DAX — Tourisme en Train (Pays de la Loire)
+Power BI Desktop — À créer dans l'onglet "Modélisation"
+========================================================
+Pour créer : clic droit sur une table → Nouvelle mesure → coller la formule
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[TABLE : dim_gare]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Nb Gares PDL =
+COUNTROWS(dim_gare)
+
+Score Attractivité Moyen =
+AVERAGE(dim_gare[score_attractivite])
+
+Score Attractivité Max =
+MAX(dim_gare[score_attractivite])
+
+Gare Top Destination =
+FIRSTNONBLANK(
+    TOPN(1, dim_gare, dim_gare[score_attractivite], DESC),
+    dim_gare[nom_gare]
+)
+
+Nb Gares Premium =
+CALCULATE(
+    COUNTROWS(dim_gare),
+    dim_gare[profil_touristique] = "Destination Premium"
+)
+
+Total Voyageurs Annuel =
+SUM(dim_gare[nb_voyageurs_annuel])
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[TABLE : dim_poi]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Nb POI Total =
+COUNTROWS(dim_poi)
+
+Nb Hébergements =
+CALCULATE(
+    COUNTROWS(dim_poi),
+    dim_poi[categorie] = "Hébergement"
+)
+
+Nb Restaurants =
+CALCULATE(
+    COUNTROWS(dim_poi),
+    dim_poi[categorie] = "Restauration"
+)
+
+Nb Sites Culturels =
+CALCULATE(
+    COUNTROWS(dim_poi),
+    dim_poi[categorie] IN {"Culture", "Patrimoine"}
+)
+
+Nb POI Nature =
+CALCULATE(
+    COUNTROWS(dim_poi),
+    dim_poi[categorie] = "Nature"
+)
+
+% Hébergements =
+DIVIDE([Nb Hébergements], [Nb POI Total], 0) * 100
+
+Top Catégorie =
+FIRSTNONBLANK(
+    TOPN(1,
+        SUMMARIZE(dim_poi, dim_poi[categorie], "nb", COUNTROWS(dim_poi)),
+        [nb], DESC
+    ),
+    dim_poi[categorie]
+)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[TABLE : fait_voyage]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Distance Moyenne Gare-POI km =
+AVERAGE(fait_voyage[distance_depart_km])
+
+CO2 Train Total kg =
+SUM(fait_voyage[co2_train_kg])
+
+CO2 Voiture Total kg =
+SUM(fait_voyage[co2_voiture_kg])
+
+CO2 Économisé Total kg =
+SUM(fait_voyage[co2_economise_kg])
+
+CO2 Économisé Moyen kg =
+AVERAGE(fait_voyage[co2_economise_kg])
+
+Nb POI Moyen par Gare (5km) =
+AVERAGE(fait_voyage[nb_poi_5km])
+
+Score Attractivité Moyen Voyage =
+AVERAGE(fait_voyage[score_attractivite])
+
+Coût Billet Moyen € =
+AVERAGE(fait_voyage[cout_billet_estime])
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[TABLE : fait_co2]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CO2 Train (g) =
+CALCULATE(
+    SUM(fait_co2[co2_total_g]),
+    RELATED(dim_transport[nom]) = "Train"
+)
+
+CO2 Voiture (g) =
+CALCULATE(
+    SUM(fait_co2[co2_total_g]),
+    RELATED(dim_transport[nom]) = "Voiture (seul)"
+)
+
+CO2 Avion (g) =
+CALCULATE(
+    SUM(fait_co2[co2_total_g]),
+    RELATED(dim_transport[nom]) = "Avion"
+)
+
+Économie CO2 vs Voiture (g) =
+SUM(fait_co2[economie_vs_voiture_g])
+
+Économie CO2 vs Avion (g) =
+SUM(fait_co2[economie_vs_avion_g])
+
+Nb Arbres Équivalent =
+SUM(fait_co2[nb_arbres_equivalent])
+
+Facteur Train vs Voiture =
+DIVIDE(
+    CALCULATE(SUM(fait_co2[co2_total_g]), RELATED(dim_transport[nom]) = "Voiture (seul)"),
+    CALCULATE(SUM(fait_co2[co2_total_g]), RELATED(dim_transport[nom]) = "Train"),
+    1
+)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[MESURES COMBINÉES — pour KPIs du dashboard]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+(Créer dans une table "Mesures" dédiée)
+
+KPI_Gares =
+"🚉 " & COUNTROWS(dim_gare) & " gares PDL"
+
+KPI_POI =
+"🏛️ " & FORMAT(COUNTROWS(dim_poi), "#,##0") & " points d'intérêt"
+
+KPI_CO2_Economie =
+"🌿 " & FORMAT(
+    CALCULATE(AVERAGE(fait_co2[economie_vs_voiture_g]) / 1000,
+              RELATED(dim_transport[nom]) = "Train"),
+    "#,##0.0"
+) & " kg CO2 économisé en moyenne"
+
+KPI_Score_Moy =
+"⭐ Score attractivité moyen : " & FORMAT(AVERAGE(dim_gare[score_attractivite]), "0.0") & "/10"
+
+Top10_Destinations =
+TOPN(10, dim_gare, dim_gare[score_attractivite], DESC)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+RELATIONS À CRÉER DANS POWER BI (Vue Modèle)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+fait_voyage[id_gare]      → dim_gare[id]         (Many-to-One)
+fait_voyage[id_profil]    → dim_profil[id]        (Many-to-One)
+fait_voyage[id_region]    → dim_region[id]        (Many-to-One)
+fait_voyage[id_temps]     → dim_temps[id]         (Many-to-One)
+
+fait_co2[id_transport]    → dim_transport[id]     (Many-to-One)
+fait_co2[id_region]       → dim_region[id]        (Many-to-One)
+
+poi_clusters[id_poi]      → dim_poi[id]           (Many-to-One)
+recommandations[id_gare]  → dim_gare[id]          (Many-to-One)
+recommandations[id_profil]→ dim_profil[id]        (Many-to-One)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+VISUELS RECOMMANDÉS PAR PAGE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PAGE 1 — Vue Générale
+  - Carte (ArcGIS/Bing) : dim_gare lat/lon, taille=score_attractivite
+  - KPIs : Nb Gares, Nb POI, Score Moy, CO2 Économisé
+  - Histogramme : dim_poi[categorie] + COUNT
+  - Tableau : Top 10 gares par score_attractivite
+
+PAGE 2 — Analyse CO2
+  - Graphique colonnes groupées : fait_co2 distance_km × co2 par transport
+  - Jauge : CO2 économisé total
+  - Carte thermique : distance_km (lignes) × transport (colonnes) × co2 (valeur)
+  - KPI : Nb arbres équivalent
+
+PAGE 3 — Carte Destinations
+  - Carte bulle : dim_gare, taille=nb_poi_5km, couleur=profil_touristique
+  - Segment : dim_poi[categorie]
+  - Histogramme : Top 20 gares nb_poi_5km
+
+PAGE 4 — Profils Voyageurs
+  - Table : recommandations + dim_gare + dim_profil
+  - Segment : dim_profil[nom]
+  - Graphique radar : score par catégorie de POI par profil
+
+PAGE 5 — Mobilités & Accessibilité
+  - Graphique anneau : répartition clusters POI
+  - Matrice : dim_gare[profil_touristique] × catégories POI
+
+PAGE 6 — Temporel
+  - Histogramme : dim_temps[saison] × COUNT faits
+  - Courbe : par mois

@@ -236,6 +236,56 @@ export default function DestinationDetail() {
   const fmtTime = (m) => (m >= 60 ? `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}` : `${m} min`)
   const showCompare = distKm >= 2
 
+  // Carte d'un lieu (reutilisee dans les groupes par centre d'interet).
+  const renderCard = (p, key) => {
+    const isSel = selected.includes(p.nom)
+    return (
+      <button
+        key={key}
+        onClick={() => toggle(p.nom)}
+        className={`group overflow-hidden rounded-xl border bg-white text-left shadow-card transition-all ${
+          isSel ? 'border-violet ring-2 ring-violet/20' : 'border-line hover:border-violet/40'
+        }`}
+      >
+        <div className="relative h-32 overflow-hidden bg-neutral-100">
+          <img
+            src={poiImage(p.categorie, p.nom)}
+            alt={cap(p.nom)}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          <span className="absolute left-2 top-2 rounded-full bg-black/55 px-2 py-0.5 text-[0.65rem] font-semibold text-white backdrop-blur">
+            {p.categorie}
+          </span>
+          <span
+            className={`absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold shadow ${
+              isSel ? 'bg-violet text-white' : 'bg-white/90 text-ink'
+            }`}
+          >
+            {isSel ? '✓' : '+'}
+          </span>
+        </div>
+        <div className="p-3">
+          <div className="truncate font-bold text-ink">{cap(p.nom)}</div>
+          <div className="mt-0.5 text-xs text-muted">
+            {p.distance_gare_km != null ? `${Number(p.distance_gare_km).toFixed(1)} km` : ''}
+            {p.temps_marche_min != null ? ` - ${Math.round(p.temps_marche_min)} min a pied` : ''}
+          </div>
+        </div>
+      </button>
+    )
+  }
+
+  // Groupes par centre d'interet (categorie). En vue "Tout", une section par
+  // categorie ; sinon, uniquement la categorie choisie.
+  const groups =
+    cat === 'Tout'
+      ? cats
+          .filter((c) => c !== 'Tout')
+          .map((c) => ({ cat: c, items: pois.filter((p) => p.categorie === c).slice(0, 12) }))
+          .filter((g) => g.items.length)
+      : [{ cat, items: visible }]
+
   return (
     <div>
       {/* Hero image */}
@@ -274,9 +324,13 @@ export default function DestinationDetail() {
           href={sncfUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-lg bg-[#e2001a] px-5 py-2.5 text-sm font-bold text-white transition hover:opacity-90"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#e2001a] px-6 py-3 text-sm font-bold text-white shadow-lg shadow-[#e2001a]/25 transition hover:bg-[#c4001a]"
         >
-          Reserver un billet sur SNCF Connect
+          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="4" y="3" width="16" height="13" rx="2" />
+            <path d="M4 11h16M8 20l-2 2M16 20l2 2M9 16v2M15 16v2" strokeLinecap="round" />
+          </svg>
+          Acheter mon billet de train (SNCF Connect)
         </a>
 
         {/* Comparaison Train vs Voiture */}
@@ -383,46 +437,21 @@ export default function DestinationDetail() {
               ))}
             </div>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {visible.map((p, i) => {
-                const isSel = selected.includes(p.nom)
-                return (
-                  <button
-                    key={`${p.nom}-${i}`}
-                    onClick={() => toggle(p.nom)}
-                    className={`group overflow-hidden rounded-xl border bg-white text-left shadow-card transition-all ${
-                      isSel ? 'border-violet ring-2 ring-violet/20' : 'border-line hover:border-violet/40'
-                    }`}
-                  >
-                    <div className="relative h-32 overflow-hidden bg-neutral-100">
-                      <img
-                        src={poiImage(p.categorie, p.nom)}
-                        alt={cap(p.nom)}
-                        loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <span className="absolute left-2 top-2 rounded-full bg-black/55 px-2 py-0.5 text-[0.65rem] font-semibold text-white backdrop-blur">
-                        {p.categorie}
-                      </span>
-                      <span
-                        className={`absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold shadow ${
-                          isSel ? 'bg-violet text-white' : 'bg-white/90 text-ink'
-                        }`}
-                      >
-                        {isSel ? '✓' : '+'}
-                      </span>
-                    </div>
-                    <div className="p-3">
-                      <div className="truncate font-bold text-ink">{cap(p.nom)}</div>
-                      <div className="mt-0.5 text-xs text-muted">
-                        {p.distance_gare_km != null ? `${Number(p.distance_gare_km).toFixed(1)} km` : ''}
-                        {p.temps_marche_min != null ? ` - ${Math.round(p.temps_marche_min)} min a pied` : ''}
-                      </div>
-                    </div>
-                  </button>
-                )
-              })}
-            </div>
+            {groups.map((g) => (
+              <div key={g.cat} className="mb-8">
+                {cat === 'Tout' && (
+                  <h3 className="mb-3 text-sm font-black uppercase tracking-wide text-ink">
+                    {g.cat}{' '}
+                    <span className="font-semibold text-muted">
+                      ({pois.filter((p) => p.categorie === g.cat).length})
+                    </span>
+                  </h3>
+                )}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  {g.items.map((p, i) => renderCard(p, `${g.cat}-${p.nom}-${i}`))}
+                </div>
+              </div>
+            ))}
             {pois.length === 0 && <p className="text-sm text-muted">Aucun lieu enregistre a proximite.</p>}
           </div>
 

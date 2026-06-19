@@ -4,6 +4,8 @@ import { api } from '../lib/api'
 import DestinationCard from '../components/DestinationCard'
 import { SkeletonGrid } from '../components/CardSkeleton'
 
+const VOYAGEURS = ['Famille', 'Solo', 'Couple', 'Groupe', 'Eco']
+
 export default function Destinations() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [deps, setDeps] = useState([])
@@ -14,8 +16,9 @@ export default function Destinations() {
   const q = searchParams.get('q') || ''
   const departement = searchParams.get('departement') || ''
   const profil = searchParams.get('profil') || ''
+  const voyageur = searchParams.get('voyageur') || ''
   const sort = searchParams.get('sort') || 'score'
-  const hasFilters = q || departement || profil || sort !== 'score'
+  const hasFilters = q || departement || profil || voyageur || sort !== 'score'
 
   const setParam = (key, value) => {
     const next = new URLSearchParams(searchParams)
@@ -31,12 +34,35 @@ export default function Destinations() {
 
   useEffect(() => {
     setLoading(true)
-    api
-      .destinations({ q, departement, profil, sort, limit: 60 })
-      .then(setDests)
+    // Type de voyageur -> recommandations (modele par profil), filtrees cote
+    // client par departement / recherche / tri. Sinon, recherche serveur.
+    const source = voyageur
+      ? api.recommandations(voyageur)
+      : api.destinations({ q, departement, profil, sort, limit: 60 })
+
+    source
+      .then((rows) => {
+        if (!voyageur) return setDests(rows)
+        let out = rows
+        if (q) {
+          const t = q.toLowerCase()
+          out = out.filter(
+            (d) =>
+              (d.commune || '').toLowerCase().includes(t) ||
+              (d.nom_gare || '').toLowerCase().includes(t),
+          )
+        }
+        if (departement) out = out.filter((d) => d.departement === departement)
+        const cmp = {
+          score: (a, b) => (b.score_attractivite || 0) - (a.score_attractivite || 0),
+          nom: (a, b) => (a.commune || '').localeCompare(b.commune || ''),
+          poi: (a, b) => (b.nb_poi_5km || 0) - (a.nb_poi_5km || 0),
+        }[sort]
+        setDests([...out].sort(cmp))
+      })
       .catch(() => setDests([]))
       .finally(() => setLoading(false))
-  }, [q, departement, profil, sort])
+  }, [q, departement, profil, voyageur, sort])
 
   const selCls =
     'h-11 w-full rounded-xl border-[1.5px] border-black/15 bg-white px-3 text-sm outline-none focus:border-violet'
@@ -69,6 +95,18 @@ export default function Destinations() {
               placeholder="Une ville..."
               className="h-11 w-full rounded-xl border-[1.5px] border-black/15 bg-neutral-50 px-4 text-sm outline-none focus:border-violet"
             />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-muted">Type de voyageur</label>
+            <select value={voyageur} onChange={(e) => setParam('voyageur', e.target.value)} className={selCls}>
+              <option value="">Tous les voyageurs</option>
+              {VOYAGEURS.map((v) => (
+                <option key={v} value={v}>
+                  {v}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -108,7 +146,12 @@ export default function Destinations() {
         {/* Resultats */}
         <div>
           <div className="mb-5 text-sm font-semibold text-ink">
-            {loading ? 'Recherche en cours...' : `${dests.length} destination${dests.length > 1 ? 's' : ''}`}
+            {loading
+              ? 'Recherche en cours...'
+              : `${dests.length} destination${dests.length > 1 ? 's' : ''}`}
+            {voyageur && !loading && (
+              <span className="ml-2 font-normal text-muted">- recommandees pour un voyage {voyageur}</span>
+            )}
           </div>
 
           {loading ? (
