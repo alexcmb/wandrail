@@ -30,9 +30,17 @@ origins = os.getenv(
     "http://localhost:5173,http://127.0.0.1:5173",
 ).split(",")
 
+# On nettoie les origines
+origins = [o.strip() for o in origins if o.strip()]
+
+# On s'assure que le dev local est TOUJOURS autorisé, même si une URL de prod est définie
+for dev_origin in ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000"]:
+    if dev_origin not in origins:
+        origins.append(dev_origin)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[o.strip() for o in origins if o.strip()],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["GET"],
     allow_headers=["*"],

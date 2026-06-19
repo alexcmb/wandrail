@@ -1,22 +1,22 @@
 {
   "Famille": {
-    "precision_at_5": 1.0,
-    "recall_at_5": 1.0
+    "precision_at_5": 0.82,
+    "recall_at_5": 0.82
   },
   "Solo": {
-    "precision_at_5": 1.0,
-    "recall_at_5": 1.0
+    "precision_at_5": 0.84,
+    "recall_at_5": 0.84
   },
   "Couple": {
-    "precision_at_5": 0.92,
-    "recall_at_5": 0.92
+    "precision_at_5": 0.9,
+    "recall_at_5": 0.9
   },
   "Groupe": {
-    "precision_at_5": 1.0,
-    "recall_at_5": 1.0
+    "precision_at_5": 0.96,
+    "recall_at_5": 0.96
   },
   "Eco": {
-    "precision_at_5": 0.98,
-    "recall_at_5": 0.98
+    "precision_at_5": 0.74,
+    "recall_at_5": 0.74
   }
 }
