@@ -109,22 +109,6 @@ services:
       airflow_init:
         condition: service_completed_successfully
 
-  # SERVICE 6 : Application Streamlit
-  streamlit:
-    build: .
-    container_name: tourisme_streamlit
-    ports:
-      - "8501:8501"
-    environment:
-      DB_HOST: tourisme_postgres
-      DB_PORT: 5432
-      DB_NAME: tourisme_train
-      DB_USER: postgres
-      DB_PASSWORD: 00000
-    depends_on:
-      postgres:
-        condition: service_healthy
-
   # SERVICE 7 : Grafana — Analytics Dashboard
   grafana:
     image: grafana/grafana:latest

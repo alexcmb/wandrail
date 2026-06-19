@@ -46,14 +46,8 @@ desktop.ini
 # ── Jupyter ──────────────────────────────────────────────────────
 .ipynb_checkpoints/
 notebooks/.ipynb_checkpoints/
-
-# ── Streamlit cache ──────────────────────────────────────────────
-.streamlit/secrets.toml
-
 # ── Logs ────────────────────────────────────────────────────────
 *.log
-streamlit_out*.txt
-streamlit_err*.txt
 
 # ── MLflow ──────────────────────────────────────────────────────
 mlruns/

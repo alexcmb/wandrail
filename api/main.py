@@ -1,7 +1,7 @@
 """API Wandrail - couche de donnees pour le front React.
 
 Expose en lecture les donnees touristiques de l'architecture Medaillon
-(schemas silver / gold) deja construite pour l'app Streamlit.
+(schemas silver / gold).
 
 Lancement local :
     cd api

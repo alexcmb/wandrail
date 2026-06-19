@@ -1,6 +1,5 @@
 """Connexion a la base PostgreSQL / Supabase.
 
-On reutilise la meme chaine DATABASE_URL que l'application Streamlit.
 La valeur reelle vient du fichier .env (jamais commite) ou des variables
 d'environnement du service cloud (Render, Railway, etc.).
 """

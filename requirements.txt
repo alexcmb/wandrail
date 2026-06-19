@@ -4,9 +4,7 @@ sqlalchemy
 psycopg2-binary
 python-dotenv
 requests
-streamlit
 folium
-streamlit-folium
 plotly
 scikit-learn
 matplotlib

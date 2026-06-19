@@ -32,13 +32,14 @@ Sources open data (SNCF, DATAtourisme, OSM, INSEE)
 └─────────────────────────────────────────┘
         │                    │
         ▼                    ▼
-  Modèles ML            Application
-  (KMeans + KNN)        Streamlit
-  stockés en .pkl       (2 apps)
+  Modèles ML             API REST
+  (KMeans + KNN)         (FastAPI)
+  stockés en .pkl        port 8000
         │                    │
         ▼                    ▼
-  MLflow tracking     app/main.py     → Voyageurs
-                      app/analyst.py  → Analystes
+  MLflow tracking        Interface Web
+                         (React + Vite)
+                         port 5173
 ```
 
 ---
@@ -47,9 +48,8 @@ Sources open data (SNCF, DATAtourisme, OSM, INSEE)
 
 ```
 tourisme_train/
-├── app/
-│   ├── main.py          # App voyageurs (port 8501)
-│   └── analyst.py       # App data analysts (port 8507)
+├── api/                 # API REST FastAPI (port 8000)
+├── web/                 # Interface Web React (port 5173)
 ├── scripts/
 │   ├── 00_init_db.py    # Création des schémas Bronze/Silver/Gold
 │   ├── 01_gares.py      # Ingestion gares SNCF (SNCF Open Data)
@@ -71,8 +71,7 @@ tourisme_train/
 │       └── liste-des-gares.csv
 ├── docs/
 │   └── audit_donnees.md     # Rapport qualité des données
-├── docker-compose.yml       # PostgreSQL + Airflow + Streamlit
-├── Dockerfile               # Image Streamlit
+├── docker-compose.yml       # PostgreSQL + Airflow + Grafana
 ├── requirements.txt
 ├── .env.example             # Variables d'environnement (template)
 └── README.md
@@ -109,39 +108,62 @@ tourisme_train/
 
 ### Prérequis
 - Python 3.10+
+- Node.js 18+ & npm
 - Docker Desktop (pour PostgreSQL + Airflow)
 
 ### Démarrage rapide
+
+#### 1. Ingestion & Base de données
 
 ```bash
 # 1. Cloner le projet
 git clone <url-repo>
 cd tourisme_train
 
-# 2. Copier les variables d'environnement
+# 2. Copier les variables d'environnement globales
 cp .env.example .env
-# Éditer .env avec tes valeurs
+# Éditer .env avec tes valeurs locales
 
-# 3. Installer les dépendances Python
+# 3. Installer les dépendances Python du projet
 pip install -r requirements.txt
 
-# 4. Lancer PostgreSQL
-docker-compose up postgres -d
+# 4. Lancer les services (PostgreSQL, Airflow, Grafana)
+docker-compose up -d
 
 # 5. Initialiser la base de données
 python scripts/00_init_db.py
 
-# 6. Lancer le pipeline ETL complet
+# 6. Lancer le pipeline ETL complet & ML
 python scripts/01_gares.py
 python scripts/02_datatourisme.py
 python scripts/04_enrichissement.py
 python scripts/05_gold_layer.py
 python scripts/06_ml_clustering.py
 python scripts/07_ml_recommandation.py
-
-# 7. Lancer l'application
-streamlit run app/main.py
 ```
+
+#### 2. Lancer l'API FastAPI
+
+```bash
+cd api
+python -m venv .venv
+.venv\Scripts\activate        # Sur Windows
+# source .venv/bin/activate   # Sur macOS/Linux
+pip install -r requirements.txt
+cp .env.example .env         # Renseigner DATABASE_URL dans le .env créé
+uvicorn main:app --reload --port 8000
+```
+L'API sera disponible sur : http://localhost:8000
+Documentation interactive : http://localhost:8000/docs
+
+#### 3. Lancer l'interface Web (React)
+
+```bash
+cd web
+npm install
+npm run dev
+```
+L'application web sera disponible sur : http://localhost:5173
 
 ---
 
