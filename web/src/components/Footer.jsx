@@ -1,22 +1,24 @@
+import { Link } from 'react-router-dom'
+import Logo from './Logo'
+
 export default function Footer() {
   return (
-    <footer className="mt-16 bg-[#111111] px-6 py-12 text-center text-white/40">
-      <div className="mb-3 text-lg font-extrabold tracking-tight text-white/70">
-        Wand<span className="text-violet">rail</span>
+    <footer className="mt-16 border-t border-line bg-neutral-50 px-6 py-14 text-center">
+      <div className="flex justify-center">
+        <Logo textClass="text-3xl" />
       </div>
-      <p className="mx-auto max-w-xl text-sm leading-relaxed">
-        Projet M1 Big Data &amp; IA - Sup de Vinci - Partenariat SNCF Open Data University Saison 3
+      <p className="mx-auto mt-4 max-w-md text-sm italic text-muted">
+        Laissez une escale devenir une aventure.
       </p>
-      <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs">
-        <span>SNCF Open Data</span>
-        <span className="text-white/15">|</span>
-        <span>Donnees ADEME CO2</span>
-        <span className="text-white/15">|</span>
-        <span>Picsum Photos</span>
+      <div className="mt-6 flex justify-center gap-7 text-sm font-medium text-muted">
+        <Link to="/" className="hover:text-violet">
+          Accueil
+        </Link>
+        <Link to="/destinations" className="hover:text-violet">
+          Destinations
+        </Link>
       </div>
-      <p className="mt-6 text-xs text-white/25">
-        RNCP40167 - Sup de Vinci - 2026 Thilissa Amara
-      </p>
+      <p className="mt-8 text-xs text-muted/70">© 2026 Wandrail - Tous droits reserves</p>
     </footer>
   )
 }

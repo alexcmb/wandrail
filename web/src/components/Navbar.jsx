@@ -1,4 +1,7 @@
+import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
+import Logo from './Logo'
+import LoginModal from './LoginModal'
 
 const links = [
   { to: '/', label: 'Accueil', end: true },
@@ -6,15 +9,18 @@ const links = [
 ]
 
 export default function Navbar() {
+  const [loginOpen, setLoginOpen] = useState(false)
+
   return (
     <header className="sticky top-0 z-50 border-b border-line bg-white/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-page items-center justify-between px-6">
-        <Link to="/" className="flex items-center gap-2 text-lg font-extrabold tracking-tight">
-          <span className="h-2 w-2 rounded-full bg-gradient-to-br from-violet to-orange-500" />
-          Wand<span className="text-violet">rail</span>
+      <div className="mx-auto grid h-16 max-w-page grid-cols-[1fr_auto_1fr] items-center px-6">
+        {/* Gauche : logo */}
+        <Link to="/" className="justify-self-start">
+          <Logo textClass="text-2xl" />
         </Link>
 
-        <nav className="flex items-center gap-1">
+        {/* Milieu : navigation */}
+        <nav className="hidden items-center gap-1 justify-self-center md:flex">
           {links.map((l) => (
             <NavLink
               key={l.to}
@@ -32,7 +38,19 @@ export default function Navbar() {
             </NavLink>
           ))}
         </nav>
+
+        {/* Droite : connexion */}
+        <div className="justify-self-end">
+          <button
+            onClick={() => setLoginOpen(true)}
+            className="rounded-full bg-violet px-5 py-2 text-sm font-semibold text-white transition hover:bg-violet-dark"
+          >
+            Se connecter
+          </button>
+        </div>
       </div>
+
+      <LoginModal open={loginOpen} onClose={() => setLoginOpen(false)} />
     </header>
   )
 }
