@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 st.set_page_config(page_title="Wandrail", page_icon="images/logo.png" if os.path.exists("images/logo.png") else None,
-                   layout="wide", initial_sidebar_state="expanded")
+                   layout="wide", initial_sidebar_state="collapsed")
 
 for k, v in {
     "dark_mode": False, "page": "accueil", "dest_sel": None,
@@ -74,7 +74,7 @@ st.markdown(f"""<style>
 
 *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
 html,body,[class*="css"]{{font-family:'Space Grotesk','Plus Jakarta Sans',sans-serif!important}}
-[data-testid="stSidebar"]{{background:{SBARBG}!important;border-right:1px solid {BORDER}!important;padding-top:0!important}}
+[data-testid="stSidebar"]{{display:none!important}}
 [data-testid="stHeader"]{{display:none!important}}
 .main .block-container{{padding:0!important;max-width:100%!important}}
 body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
@@ -107,26 +107,26 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 /* NAVBAR — style SNCF Connect */
 .tvnav{{position:sticky;top:0;z-index:999;background:{NAVBG};backdrop-filter:blur(20px);
   border-bottom:1px solid {BORDER};padding:0 2.2rem;display:flex;align-items:center;
-  justify-content:space-between;height:58px;box-shadow:0 2px 12px rgba(0,0,0,.06)}}
+  justify-content:space-between;height:68px;box-shadow:0 2px 12px rgba(0,0,0,.06)}}
 .tv-brand{{display:flex;align-items:center;gap:10px;font-size:1.08rem;font-weight:800;color:{TEXT};letter-spacing:-.03em;text-decoration:none}}
 .tv-brand-dot{{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,{BLUE},{ACCENT});animation:heroPulse 3s ease-in-out infinite}}
-.tv-nav{{display:flex;align-items:center;gap:0}}
-.tv-nav-lnk{{padding:0 14px;height:58px;display:flex;align-items:center;font-size:.82rem;
+.tv-nav{{display:flex;align-items:center;gap:0;flex:1;justify-content:center}}
+.tv-nav-lnk{{padding:0 14px;height:68px;display:flex;align-items:center;font-size:.82rem;
   font-weight:600;color:{TEXT2};text-decoration:none;border-bottom:3px solid transparent;
   transition:all .18s;cursor:pointer;white-space:nowrap}}
 .tv-nav-lnk:hover{{color:{BLUE};border-bottom-color:{BLUE}30}}
 .tv-nav-lnk.cur{{color:{BLUE};border-bottom-color:{BLUE};font-weight:700}}
-.tv-right{{display:flex;align-items:center;gap:10px}}
+.tv-right{{display:flex;align-items:center;gap:12px;margin-left:auto}}
+.auth-btn{{background:{BLUE};color:#fff;padding:8px 16px;border-radius:8px;border:none;font-weight:600;font-size:.8rem;cursor:pointer;transition:all .2s}}
+.auth-btn:hover{{background:{BLDARK};box-shadow:0 2px 8px {BLUE}40}}
+.user-chip{{background:linear-gradient(135deg,{BLUE},{BLDARK});color:#fff;padding:6px 14px;border-radius:20px;font-size:.8rem;font-weight:600;display:flex;align-items:center;gap:7px}}
 
-/* CATEGORY CHIPS — style Airbnb */
-.cat-scroll{{display:flex;gap:.65rem;overflow-x:auto;padding:1.6rem 2.5rem 1rem;
-  scrollbar-width:none;border-bottom:1px solid {BORDER}}}
-.cat-scroll::-webkit-scrollbar{{display:none}}
-.cat-chip{{display:inline-flex;align-items:center;padding:9px 22px;border-radius:24px;
-  border:1.5px solid {BORDER2};background:{CARD};color:{TEXT2};font-size:.8rem;font-weight:600;
-  cursor:pointer;white-space:nowrap;transition:all .18s;text-decoration:none;flex-shrink:0}}
-.cat-chip:hover{{border-color:{BLUE};color:{BLUE}}}
-.cat-chip.active{{border-color:{BLUE};color:#fff;background:{BLUE}}}
+/* FILTERS CENTER SECTION */
+.filters-container{{max-width:1200px;margin:2rem auto;padding:0 2.5rem}}
+.filters-header{{font-size:1.3rem;font-weight:800;color:{TEXT};margin-bottom:1.5rem;letter-spacing:-.02em}}
+.filters-grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem;margin-bottom:2rem}}
+.filter-box{{border:1px solid {BORDER};border-radius:12px;padding:1.2rem;background:{CARD};box-shadow:{SHADOW2}}}
+.filter-label{{font-size:.75rem;font-weight:700;color:{TEXT2};text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem}}
 
 /* ACTIVITY CARD */
 .acard{{border:1px solid {BORDER};border-radius:12px;overflow:hidden;background:{CARD};transition:all .2s}}
@@ -137,10 +137,6 @@ body,.main,[data-testid="stAppViewContainer"]{{background:{BG}!important}}
 .acard-body{{padding:.7rem .85rem .85rem}}
 .acard-nm{{font-weight:700;font-size:.81rem;color:{TEXT};margin:0 0 4px;line-height:1.3}}
 .acard-mt{{font-size:.68rem;color:{TEXT2};line-height:1.75;margin:0}}
-
-/* TRAVELER TYPE BADGE */
-.traveler-badge{{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:16px;
-  font-size:.7rem;font-weight:600;margin-right:4px}}
 
 /* SNCF CTA BUTTON */
 .sncf-cta{{display:inline-flex;align-items:center;gap:8px;background:{SNCF};color:#fff;
@@ -293,32 +289,6 @@ def register_user(email, pseudo, pw, ville):
         if "duplicate" in str(e).lower() or "unique" in str(e).lower(): return False, "Email déjà utilisé"
         return False, str(e)
 
-# ── Weather ─────────────────────────────────────────────────────
-@st.cache_data(ttl=1800)
-def get_weather(commune):
-    try:
-        r = requests.get(f"https://wttr.in/{commune.replace(' ','+')},France?format=j1", timeout=5)
-        d = r.json()
-        c = d['current_condition'][0]
-        fc = d.get('weather', [])
-        code = str(c.get('weatherCode', '116'))
-        ICONS = {
-            "113":("fa-solid fa-sun","#f59e0b"), "116":("fa-solid fa-cloud-sun","#f59e0b"),
-            "119":("fa-solid fa-cloud","#8a9fc0"), "122":("fa-solid fa-cloud","#64748b"),
-            "176":("fa-solid fa-cloud-rain","#3b82f6"), "200":("fa-solid fa-bolt","#f59e0b"),
-            "227":("fa-solid fa-snowflake","#7dd3fc"), "266":("fa-solid fa-cloud-drizzle","#60a5fa"),
-            "302":("fa-solid fa-cloud-rain","#3b82f6"), "308":("fa-solid fa-cloud-showers-heavy","#1d4ed8"),
-        }
-        ico, col = ICONS.get(code, ("fa-solid fa-cloud-sun","#f59e0b"))
-        days = []
-        for day in fc[:3]:
-            days.append({"date":day.get('date',''), "max":day.get('maxtempC','--'),
-                         "min":day.get('mintempC','--'),
-                         "desc":day['hourly'][4]['weatherDesc'][0]['value'] if day.get('hourly') else ""})
-        return {"temp":c['temp_C'],"feels":c['FeelsLikeC'],"desc":c['weatherDesc'][0]['value'],
-                "humidity":c['humidity'],"wind":c['windspeedKmph'],"icon":ico,"color":col,"days":days}
-    except: return None
-
 # ── Images ─────────────────────────────────────────────────────
 def uimg(seed, w=800, h=500):
     clean = seed.replace(' ', '').replace(',', '').replace('+', '').replace("'", '')[:20]
@@ -340,64 +310,11 @@ DEST_META = {
                           "tags":["Château","Vin d'Anjou","Loire"],"icon":"fa-solid fa-chess-rook","color":"#60a5fa"},
     "le mans":           {"img": pimg(175), "grad": "linear-gradient(135deg,#1a1a1a,#3d3d3d)",
                           "tags":["Circuit 24H","Cathédrale","Sport"],"icon":"fa-solid fa-flag-checkered","color":"#fca5a5"},
-    "angers-st-laud":    {"img": pimg(192), "grad": "linear-gradient(135deg,#3d1f06,#7a3d0d)",
-                          "tags":["Château","Tapisserie","Maine"],"icon":"fa-solid fa-landmark","color":"#fcd34d"},
-    "angers":            {"img": pimg(192), "grad": "linear-gradient(135deg,#3d1f06,#7a3d0d)",
-                          "tags":["Château","Tapisserie","Maine"],"icon":"fa-solid fa-landmark","color":"#fcd34d"},
-    "nantes":            {"img": pimg(130), "grad": "linear-gradient(135deg,#052e16,#065f46)",
-                          "tags":["Machines île","Culture","Gastronomie"],"icon":"fa-solid fa-masks-theater","color":"#6ee7b7"},
-    "st-nazaire":        {"img": pimg(116), "grad": "linear-gradient(135deg,#0a1a35,#1e3a6e)",
-                          "tags":["Pont","Mer","Chantiers navals"],"icon":"fa-solid fa-bridge-water","color":"#a5b4fc"},
-    "saint-nazaire":     {"img": pimg(116), "grad": "linear-gradient(135deg,#0a1a35,#1e3a6e)",
-                          "tags":["Pont","Mer","Chantiers navals"],"icon":"fa-solid fa-bridge-water","color":"#a5b4fc"},
-    "la baule-escoublac":{"img": pimg(169), "grad": "linear-gradient(135deg,#062040,#0d4580)",
-                          "tags":["Grande Plage","Mer","Casino"],"icon":"fa-solid fa-umbrella-beach","color":"#7dd3fc"},
-    "le pouliguen":      {"img": pimg(76),  "grad": "linear-gradient(135deg,#063a3a,#0d6e6e)",
-                          "tags":["Port","Voile","Côte sauvage"],"icon":"fa-solid fa-sailboat","color":"#67e8f9"},
-    "laval":             {"img": pimg(181), "grad": "linear-gradient(135deg,#1e0a40,#3b1580)",
-                          "tags":["Château","Art naïf","Mayenne"],"icon":"fa-solid fa-palette","color":"#c4b5fd"},
-    "le croisic":        {"img": pimg(74),  "grad": "linear-gradient(135deg,#06253a,#0d4d6b)",
-                          "tags":["Port","Pêche","Sel Guérande"],"icon":"fa-solid fa-fish","color":"#7dd3fc"},
-    "cholet":            {"img": pimg(583), "grad": "linear-gradient(135deg,#2a0615,#5c0e30)",
-                          "tags":["Histoire Vendée","Textiles","Musées"],"icon":"fa-solid fa-building-columns","color":"#f9a8d4"},
-    "pornic":            {"img": pimg(76),  "grad": "linear-gradient(135deg,#062040,#0d4580)",
-                          "tags":["Plage","Château","Atlantique"],"icon":"fa-solid fa-umbrella-beach","color":"#7dd3fc"},
-    "les sables-d'olonne":{"img": pimg(169),"grad": "linear-gradient(135deg,#062040,#0d4580)",
-                          "tags":["Plage","Vendée Globe","Mer"],"icon":"fa-solid fa-sailboat","color":"#67e8f9"},
-    "la roche-sur-yon":  {"img": pimg(103), "grad": "linear-gradient(135deg,#1a1a2e,#16213e)",
-                          "tags":["Ville napoléonienne","Vendée","Histoire"],"icon":"fa-solid fa-landmark","color":"#a5b4fc"},
-    "clisson":           {"img": pimg(40),  "grad": "linear-gradient(135deg,#2d1b00,#5c3800)",
-                          "tags":["Château","Muscadet","Toscane"],"icon":"fa-solid fa-chess-rook","color":"#fcd34d"},
-    "fontenay-le-comte": {"img": pimg(826), "grad": "linear-gradient(135deg,#0a2a0a,#155215)",
-                          "tags":["Marais poitevin","Renaissance","Nature"],"icon":"fa-solid fa-leaf","color":"#6ee7b7"},
 }
 
 DEST_PHRASES = {
     "nantes":             "La Venise de l'Ouest — vibrante, créative et gastronomique",
     "saumur":             "Le Joyau de l'Anjou — châteaux, vins de Loire et équitation",
-    "le mans":            "Ville de Légende — là où l'histoire prend de la vitesse",
-    "angers-st-laud":     "Capitale de l'Anjou — douceur de vivre et patrimoine d'exception",
-    "angers":             "Capitale de l'Anjou — douceur de vivre et patrimoine d'exception",
-    "st-nazaire":         "Porte de l'Atlantique — entre océan infini et épopée industrielle",
-    "saint-nazaire":      "Porte de l'Atlantique — entre océan infini et épopée industrielle",
-    "la baule-escoublac": "La Plus Belle Baie d'Europe — sable blanc à l'infini",
-    "le pouliguen":       "Perle de la Côte d'Amour — ports de pêche, criques et authenticité",
-    "laval":              "Cité des Arts Naïfs — étonnante, secrète et pleine de surprises",
-    "le croisic":         "Presqu'île de Guérande — sel, mer et saveurs de l'estuaire",
-    "cholet":             "Cœur de Vendée — caractère, histoire et esprit de conquête",
-    "la roche-sur-yon":   "Ville Napoléonienne — architecture et vitalité vendéenne",
-    "les sables-d'olonne":"Station Emblématique — plages infinies et vendée globe",
-    "les sables":         "Station Emblématique — plages infinies et vendée globe",
-    "pornic":             "Cité Balnéaire de Charme — falaises, plages et château médiéval",
-    "ancenis":            "Porte de Bretagne — vignobles, Loire et art de vivre",
-    "clisson":            "La Petite Toscane — château médiéval et vignes muscadet",
-    "fontenay-le-comte":  "Cité de la Renaissance — histoire, nature et marais poitevin",
-    "challans":           "Pays des Variétés — bocage, marais et gastronomie typique",
-    "pontchâteau":        "Terre de Pèlerinage — calvaire, nature et traditions bretonnes",
-    "redon":              "Carrefour des Rivières — canaux, châtaignes et architecture",
-    "blain":              "Presqu'île de Bretagne — château, forêt de Gavre et authenticité",
-    "paimboeuf":          "Estuaire Mystérieux — bord de Loire, pêcheurs et patrimoine",
-    "sainte-luce-sur-loire": "Porte Est de Nantes — vignobles et berges de Loire",
 }
 
 PROFIL_META = {
@@ -454,59 +371,95 @@ except Exception as e:
     st.error(f"Connexion base de données impossible : {e}")
     st.stop()
 
-# ════════════════════════════════════════════════════════════════
-# PAGE : DESTINATIONS (Enhanced)
-# ════════════════════════════════════════════════════════════════
 page = st.session_state.get("page", "accueil")
 user = st.session_state.get("user")
 
+# ── NAVBAR WITH CENTERED NAV + RIGHT AUTH ──────────────────────
+auth_chip = ""
+if user:
+    initials = "".join([w[0].upper() for w in user['pseudo'].split()[:2]])
+    auth_chip = f'<div class="user-chip">{fi("fa-solid fa-user", "#fff", "0.8rem")} {user["pseudo"]}</div>'
+else:
+    auth_chip = f'<button class="auth-btn" onclick="document.getElementById(\"auth_btn\").click()">Se connecter</button>'
+
+nav_links_html = ""
+for lbl, pg, ico in [("Accueil","accueil","fa-solid fa-house"), ("Destinations","destinations","fa-solid fa-map"), ("Carte","carte","fa-solid fa-earth-europe")]:
+    is_active = page == pg
+    nav_links_html += f'<span class="tv-nav-lnk {"cur" if is_active else "}">{lbl}</span>'
+
+st.markdown(f"""<div class="tvnav">
+  <div class="tv-brand">
+    <div class="tv-brand-dot"></div>
+    <span>Wand<span style="color:{BLUE};">rail</span></span>
+    <span style="font-weight:400;color:{TEXT2};font-size:.72rem;margin-left:2px;">PDL</span>
+  </div>
+  <nav class="tv-nav">{nav_links_html}</nav>
+  <div class="tv-right">{auth_chip}</div>
+</div>""", unsafe_allow_html=True)
+
+# ════════════════════════════════════════════════════════════════
+# PAGE : DESTINATIONS (Enhanced - Centered Filters)
+# ════════════════════════════════════════════════════════════════
 if page == "destinations":
     deps_list = sorted([d for d in df_dest['departement'].dropna().unique() if d])
     profs_list = sorted([p for p in df_dest['profil_touristique'].dropna().unique() if p])
     traveler_list = list(TRAVELER_TYPES.keys())
     
-    st.markdown("<h2>Explorez les Pays de la Loire</h2>", unsafe_allow_html=True)
+    # CENTERED FILTERS SECTION
+    st.markdown(f'<div class="filters-container"><div class="filters-header">Explorez les Pays de la Loire</div>', unsafe_allow_html=True)
     
-    # ✅ 1. NEW: Traveler Type Filter
-    st.markdown("### Type de voyageur")
-    traveler_sel = st.multiselect("Quel type de voyageur êtes-vous?", traveler_list,
-                                   default=st.session_state.get("f_traveler", []),
-                                   key="ds_traveler")
-    st.session_state.f_traveler = traveler_sel
+    # Create responsive filter grid
+    fc1, fc2, fc3, fc4 = st.columns(4)
     
-    # Existing filters
-    fb1, fb2, fb3 = st.columns(3)
-    with fb1:
+    with fc1:
+        st.markdown(f'<div class="filter-label">Type de voyageur</div>', unsafe_allow_html=True)
+        traveler_sel = st.multiselect("Type de voyageur", traveler_list,
+                                       default=st.session_state.get("f_traveler", []),
+                                       key="ds_traveler", label_visibility="collapsed")
+        st.session_state.f_traveler = traveler_sel
+    
+    with fc2:
+        st.markdown(f'<div class="filter-label">Département</div>', unsafe_allow_html=True)
         dep_sel = st.multiselect("Département", deps_list,
                                  default=st.session_state.get("f_dep", []),
-                                 key="ds_dep")
-    with fb2:
+                                 key="ds_dep", label_visibility="collapsed")
+        st.session_state.f_dep = dep_sel
+    
+    with fc3:
+        st.markdown(f'<div class="filter-label">Profil touristique</div>', unsafe_allow_html=True)
         prof_sel = st.multiselect("Profil touristique", profs_list,
                                   default=st.session_state.get("f_prof", []),
-                                  key="ds_prf")
-    with fb3:
+                                  key="ds_prf", label_visibility="collapsed")
+        st.session_state.f_prof = prof_sel
+    
+    with fc4:
+        st.markdown(f'<div class="filter-label">Trier par</div>', unsafe_allow_html=True)
         srt = st.selectbox("Trier par", ["Score", "Activités", "A → Z"],
-                          key="ds_srt")
+                          key="ds_srt", label_visibility="collapsed")
+        st.session_state.f_sort = srt
     
-    st.session_state.f_dep = dep_sel
-    st.session_state.f_prof = prof_sel
-    st.session_state.f_sort = srt
+    st.markdown('</div>', unsafe_allow_html=True)
     
-    # Display destination cards with traveler type badge
-    st.markdown("### Résultats")
-    for _, row in df_dest.head(12).iterrows():
+    # Display results
+    st.markdown(f'<div style="max-width:1200px;margin:2rem auto;padding:0 2.5rem;font-size:1.1rem;font-weight:700;color:{TEXT};">{len(df_dest)} destinations trouvées</div>', unsafe_allow_html=True)
+    
+    for idx, (_, row) in enumerate(df_dest.head(12).iterrows()):
+        if idx % 3 == 0:
+            cols = st.columns(3)
+        
         gk = str(row['nom_gare']).lower()
         vil = str(row.get('commune', gk)).title()
         
-        col1, col2 = st.columns([3, 1])
-        with col1:
-            st.markdown(f"**{vil}** - {row.get('departement', 'N/A')}")
-            st.caption(f"{int(row.get('nb_poi_5km', 0))} activités | Score: {float(row.get('score_attractivite', 0)):.1f}/10")
-        with col2:
-            if st.button("Explorer", key=f"dest_{gk}"):
-                st.session_state.dest_sel = gk
-                st.session_state.page = "destination"
-                st.rerun()
+        with cols[idx % 3]:
+            col1, col2 = st.columns([3, 1])
+            with col1:
+                st.markdown(f"**{vil}**")
+                st.caption(f"📍 {row.get('departement', 'N/A')} · {int(row.get('nb_poi_5km', 0))} activités")
+            with col2:
+                if st.button("→", key=f"dest_{gk}", help="Explorer"):
+                    st.session_state.dest_sel = gk
+                    st.session_state.page = "destination"
+                    st.rerun()
 
 # ════════════════════════════════════════════════════════════════
 # PAGE : DESTINATION DETAIL (Enhanced)
@@ -529,18 +482,15 @@ elif page == "destination":
     co2_train = round(2.4 * dist_km / 1000, 2)
     co2_car = round(218 * dist_km / 1000, 2)
     
-    st.markdown(f"## {vil}")
-    st.markdown(f"*{dep}*")
+    st.markdown(f"<h2 style='padding:2rem 2.5rem 0;'>{vil} - {dep}</h2>", unsafe_allow_html=True)
     
-    # ✅ 2. ENHANCED: Activities organized by category/interest
-    st.markdown("### Activités par centre d'intérêt")
+    # ACTIVITES
+    st.markdown("<h3 style='padding:1rem 2.5rem 0;'>Activités par centre d'intérêt</h3>", unsafe_allow_html=True)
     with st.spinner("Chargement des activités..."):
         df_poi = load_poi(gk)
     
     if not df_poi.empty:
-        # Group activities by category
         categories = sorted(df_poi['categorie'].dropna().unique())
-        
         for cat in categories:
             cat_activities = df_poi[df_poi['categorie'] == cat]
             icon, color = CAT_FA.get(cat, ("fa-solid fa-map-pin", "#6b7280"))
@@ -557,21 +507,17 @@ elif page == "destination":
                             </div>
                         </div>""", unsafe_allow_html=True)
     
-    # ✅ 3. ENHANCED: Prominent SNCF CTA + CO2 Comparison
+    # SNCF CTA + CO2
     st.markdown("---")
-    st.markdown("### Voyager responsable")
+    st.markdown("<h3 style='padding:0 2.5rem;'>Voyager responsable</h3>", unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown(f"<a href='https://www.sncf-connect.com' target='_blank' class='sncf-cta'>"
-                   f"{fi('fa-solid fa-train', '#fff', '1.2rem')} Acheter sur SNCF Connect"
-                   f"</a>", unsafe_allow_html=True)
-        st.markdown(f"<p style='font-size:0.8rem; margin-top: 1rem;'>Trajets directs optimisés vers {vil}</p>", unsafe_allow_html=True)
+        st.markdown(f"<div style='padding:0 2.5rem;'><a href='https://www.sncf-connect.com' target='_blank' class='sncf-cta'>{fi('fa-solid fa-train', '#fff', '1.2rem')} Acheter sur SNCF Connect</a></div>", unsafe_allow_html=True)
     
     with col2:
-        # ✅ 4. CO2 Comparison: Train vs Car
-        st.markdown(f"""<div class='co2-compare'>
+        st.markdown(f"""<div style='padding:0 2.5rem;' class='co2-compare'>
             <div class='co2-item train'>
                 <div class='co2-num' style='color:{CO2GB};'>{co2_train:.1f}</div>
                 <div style='font-size:0.7rem;'>{fi('fa-solid fa-train', CO2GB)} Train TER</div>
@@ -580,14 +526,11 @@ elif page == "destination":
                 <div class='co2-num' style='color:{CO2BB};'>{co2_car:.1f}</div>
                 <div style='font-size:0.7rem;'>{fi('fa-solid fa-car', CO2BB)} Voiture</div>
             </div>
-        </div>
-        <div style='text-align:center; font-size:0.85rem; font-weight:700; color:{GREEN};'>
-            {fi('fa-solid fa-leaf', GREEN)} Vous économisez {co2_car - co2_train:.1f} kg CO₂
         </div>""", unsafe_allow_html=True)
     
-    # ✅ 5. NEW: Local Mobility & How to Get Around
+    # LOCAL MOBILITY
     st.markdown("---")
-    st.markdown("### Comment se déplacer sur place?")
+    st.markdown("<h3 style='padding:0 2.5rem;'>Comment se déplacer sur place?</h3>", unsafe_allow_html=True)
     
     mobility_cols = st.columns(len(MOBILITY_OPTIONS))
     for idx, (mode, details) in enumerate(MOBILITY_OPTIONS.items()):
@@ -600,12 +543,13 @@ elif page == "destination":
                 <div class='mobility-desc'>{details['desc']}</div>
             </div>""", unsafe_allow_html=True)
     
-    st.info("💡 Conseil: Consultez les offices de tourisme locaux pour les bons plans sur la mobilité douce et les tarifs réduits avec votre billet SNCF.")
+    st.info("💡 Conseil: Consultez les offices de tourisme locaux pour les bons plans et tarifs réduits.")
 
 else:
-    st.markdown(f"<h1>Bienvenue sur Wandrail</h1>", unsafe_allow_html=True)
+    st.markdown(f"<div style='padding:4rem 2.5rem;text-align:center;'><h1>Bienvenue sur Wandrail</h1>", unsafe_allow_html=True)
     st.markdown("Découvrez les Pays de la Loire en train de manière responsable.")
     
-    if st.button("Explorer les destinations"):
+    if st.button("Explorer les destinations", use_container_width=False):
         st.session_state.page = "destinations"
         st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
