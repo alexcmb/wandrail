@@ -108,6 +108,23 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Profils */}
+      <section className="bg-neutral-100 px-6 py-14">
+        <div className="mx-auto max-w-page">
+          <h2 className="text-3xl font-black tracking-tighter text-ink">
+            Quel type de voyageur etes-vous ?
+          </h2>
+          <p className="mb-8 mt-1 text-sm text-muted">
+            Votre profil - des recommandations sur mesure
+          </p>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+            {PROFILS.map((p) => (
+              <ProfilCard key={p.nom} nom={p.nom} desc={p.desc} />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Filtres rapides par departement */}
       <CategoryChips
         items={[
@@ -148,23 +165,6 @@ export default function Home() {
             ))}
           </div>
         )}
-      </section>
-
-      {/* Profils */}
-      <section className="bg-neutral-100 px-6 py-14">
-        <div className="mx-auto max-w-page">
-          <h2 className="text-3xl font-black tracking-tighter text-ink">
-            Quel type de voyageur etes-vous ?
-          </h2>
-          <p className="mb-8 mt-1 text-sm text-muted">
-            Votre profil - des recommandations sur mesure
-          </p>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-            {PROFILS.map((p) => (
-              <ProfilCard key={p.nom} nom={p.nom} desc={p.desc} />
-            ))}
-          </div>
-        </div>
       </section>
     </div>
   )
