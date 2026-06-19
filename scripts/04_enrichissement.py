@@ -119,23 +119,30 @@ print(f"  Temps marche moyen    : {df_enrichi['temps_marche_min'].mean():.1f} mi
 print("\nInsertion dans silver.poi_enrichi...")
 with engine.connect() as conn:
     conn.execute(text("TRUNCATE TABLE silver.poi_enrichi RESTART IDENTITY"))
+    records_e = []
     for _, row in df_enrichi.iterrows():
+        records_e.append({
+            "poi" : int(row['id_poi']),
+            "g1"  : int(row['id_gare_1']) if pd.notna(row['id_gare_1']) else None,
+            "g2"  : int(row['id_gare_2']) if pd.notna(row['id_gare_2']) else None,
+            "g3"  : int(row['id_gare_3']) if pd.notna(row['id_gare_3']) else None,
+            "nom" : row['nom_gare'] if pd.notna(row['nom_gare']) else None,
+            "dist": float(row['distance_gare_km']),
+            "tps" : float(row['temps_marche_min']),
+            "cat" : row['categorie'],
+            "reg" : row['region'],
+        })
+    
+    # Bulk insert
+    batch_size = 1000
+    for i in range(0, len(records_e), batch_size):
+        batch = records_e[i:i+batch_size]
         conn.execute(text("""
             INSERT INTO silver.poi_enrichi
               (id_poi, id_gare_1, id_gare_2, id_gare_3, nom_gare,
                distance_gare_km, temps_marche_min, categorie, region)
             VALUES (:poi, :g1, :g2, :g3, :nom, :dist, :tps, :cat, :reg)
-        """), {
-            "poi" : row['id_poi'],
-            "g1"  : row['id_gare_1'],
-            "g2"  : row['id_gare_2'],
-            "g3"  : row['id_gare_3'],
-            "nom" : row['nom_gare'],
-            "dist": row['distance_gare_km'],
-            "tps" : row['temps_marche_min'],
-            "cat" : row['categorie'],
-            "reg" : row['region'],
-        })
+        """), batch)
     conn.commit()
 
 nb = pd.read_sql("SELECT COUNT(*) as n FROM silver.poi_enrichi", engine).iloc[0]['n']

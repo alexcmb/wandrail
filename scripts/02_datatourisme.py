@@ -115,7 +115,7 @@ except Exception as e:
 print("\nBronze - insertion donnees brutes...")
 with engine.connect() as conn:
     conn.execute(text("TRUNCATE TABLE bronze.poi_raw RESTART IDENTITY"))
-    count_b = 0
+    records = []
     for item in graph:
         try:
             ident = item.get("@id", "")
@@ -135,20 +135,26 @@ with engine.connect() as conn:
                 types = [types]
             type_raw = "|".join(types[:5])
 
-            conn.execute(text("""
-                INSERT INTO bronze.poi_raw (json_brut, identifiant, nom, type_raw, region)
-                VALUES (:json, :id, :nom, :type, :reg)
-            """), {
+            records.append({
                 "json": json.dumps(item, ensure_ascii=False)[:5000],
                 "id"  : ident,
                 "nom" : str(nom_b)[:200],
                 "type": type_raw[:200],
                 "reg" : "Pays de la Loire",
             })
-            count_b += 1
         except Exception:
             continue
+
+    # Bulk insert
+    batch_size = 1000
+    for i in range(0, len(records), batch_size):
+        batch = records[i:i+batch_size]
+        conn.execute(text("""
+            INSERT INTO bronze.poi_raw (json_brut, identifiant, nom, type_raw, region)
+            VALUES (:json, :id, :nom, :type, :reg)
+        """), batch)
     conn.commit()
+    count_b = len(records)
 
 print(f"  {count_b} lignes dans bronze.poi_raw")
 
@@ -380,7 +386,29 @@ print(f"  POI avec score > 0 : {(df_silver['note_moyenne'] > 0).sum()}")
 print("\nInsertion dans silver.poi...")
 with engine.connect() as conn:
     conn.execute(text("TRUNCATE TABLE silver.poi RESTART IDENTITY CASCADE"))
+    records_s = []
     for _, row in df_silver.iterrows():
+        records_s.append({
+            "nom" : row["nom"],
+            "cat" : row["categorie"],
+            "scat": row["sous_categorie"] if pd.notna(row["sous_categorie"]) else None,
+            "com" : row["commune"] if pd.notna(row["commune"]) else None,
+            "cp"  : row["code_postal"] if pd.notna(row["code_postal"]) else None,
+            "dep" : None,
+            "lat" : float(row["latitude"]) if pd.notna(row["latitude"]) else None,
+            "lon" : float(row["longitude"]) if pd.notna(row["longitude"]) else None,
+            "tel" : row["telephone"] if pd.notna(row["telephone"]) else None,
+            "web" : row["site_web"] if pd.notna(row["site_web"]) else None,
+            "note": float(row["note_moyenne"]) if pd.notna(row["note_moyenne"]) else 0.0,
+            "reg" : row["region"] if pd.notna(row["region"]) else None,
+            "src" : row["source"],
+            "dmaj": row["date_maj"] if pd.notna(row["date_maj"]) else None,
+        })
+    
+    # Bulk insert
+    batch_size = 1000
+    for i in range(0, len(records_s), batch_size):
+        batch = records_s[i:i+batch_size]
         conn.execute(text("""
             INSERT INTO silver.poi
               (nom, categorie, sous_categorie, commune, code_postal, departement,
@@ -388,22 +416,7 @@ with engine.connect() as conn:
                region, source, date_maj)
             VALUES (:nom, :cat, :scat, :com, :cp, :dep, :lat, :lon,
                     :tel, :web, :note, :reg, :src, :dmaj)
-        """), {
-            "nom" : row["nom"],
-            "cat" : row["categorie"],
-            "scat": row["sous_categorie"],
-            "com" : row["commune"],
-            "cp"  : row.get("code_postal"),
-            "dep" : None,
-            "lat" : row["latitude"],
-            "lon" : row["longitude"],
-            "tel" : row["telephone"],
-            "web" : row["site_web"],
-            "note": float(row["note_moyenne"]),
-            "reg" : row["region"],
-            "src" : row["source"],
-            "dmaj": row["date_maj"],
-        })
+        """), batch)
     conn.commit()
 
 nb = pd.read_sql("SELECT COUNT(*) as n FROM silver.poi", engine).iloc[0]["n"]
