@@ -7,15 +7,6 @@ import CategoryChips from '../components/CategoryChips'
 import ProfilCard from '../components/ProfilCard'
 import { HERO_IMAGE } from '../lib/images'
 
-const CATEGORIES = [
-  { label: 'Tout', value: null },
-  { label: 'Nature', value: 'Nature' },
-  { label: 'Mer & Plage', value: 'Mer' },
-  { label: 'Patrimoine', value: 'Patrimoine' },
-  { label: 'Culture', value: 'Culture' },
-  { label: 'Gastronomie', value: 'Gastronomie' },
-]
-
 const PROFILS = [
   { nom: 'Famille', desc: 'Parcs, activites enfants, nature, grands espaces' },
   { nom: 'Solo', desc: 'Culture, patrimoine, aventure en liberte' },
@@ -24,24 +15,18 @@ const PROFILS = [
   { nom: 'Eco', desc: 'Nature, mobilite douce, empreinte minimale' },
 ]
 
-function StatCard({ value, label }) {
-  return (
-    <div className="rounded-2xl border border-white/20 bg-white/10 px-4 py-4 text-center backdrop-blur-md">
-      <div className="text-2xl font-black leading-none tracking-tighter text-white md:text-3xl">{value}</div>
-      <div className="mt-1.5 text-xs font-medium text-white/70">{label}</div>
-    </div>
-  )
-}
-
 export default function Home() {
   const navigate = useNavigate()
   const [stats, setStats] = useState(null)
+  const [deps, setDeps] = useState([])
   const [dests, setDests] = useState([])
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
+  const [dep, setDep] = useState('')
 
   useEffect(() => {
     api.stats().then(setStats).catch(() => {})
+    api.departements().then(setDeps).catch(() => {})
     api
       .destinations({ limit: 9 })
       .then(setDests)
@@ -50,7 +35,11 @@ export default function Home() {
   }, [])
 
   const search = () => {
-    navigate(`/destinations${query ? `?q=${encodeURIComponent(query)}` : ''}`)
+    const params = new URLSearchParams()
+    if (query) params.set('q', query)
+    if (dep) params.set('departement', dep)
+    const qs = params.toString()
+    navigate(`/destinations${qs ? `?${qs}` : ''}`)
   }
 
   return (
@@ -74,19 +63,32 @@ export default function Home() {
               <br />
               aller <span className="text-violet-light">en train ?</span>
             </h1>
-            <p className="mb-10 text-base leading-relaxed text-white/85 drop-shadow">
+            <p className="mb-9 text-base leading-relaxed text-white/85 drop-shadow">
               Decouvrez les Pays de la Loire a travers ses gares, ses paysages et ses lieux uniques.
             </p>
 
-            {/* Recherche */}
-            <div className="mx-auto flex max-w-xl items-center gap-1.5 rounded-2xl border border-white/10 bg-white p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
+            {/* Barre de recherche + filtres */}
+            <div className="mx-auto flex max-w-2xl flex-col gap-2 rounded-2xl border border-white/10 bg-white p-2 shadow-[0_8px_32px_rgba(0,0,0,0.25)] sm:flex-row sm:items-center">
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && search()}
-                placeholder="Nantes, Le Mans, Saumur, La Baule..."
-                className="h-12 flex-1 rounded-xl bg-transparent px-4 text-sm outline-none placeholder:text-muted"
+                placeholder="Une ville : Nantes, Le Mans, Saumur..."
+                className="h-12 flex-1 rounded-xl bg-transparent px-4 text-sm text-ink outline-none placeholder:text-muted"
               />
+              <div className="hidden h-7 w-px bg-black/10 sm:block" />
+              <select
+                value={dep}
+                onChange={(e) => setDep(e.target.value)}
+                className="h-12 rounded-xl bg-transparent px-3 text-sm text-ink outline-none"
+              >
+                <option value="">Tous les departements</option>
+                {deps.map((d) => (
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
+                ))}
+              </select>
               <button
                 onClick={search}
                 className="h-12 rounded-xl bg-violet px-7 text-sm font-semibold text-white transition hover:bg-violet-dark"
@@ -94,26 +96,27 @@ export default function Home() {
                 Rechercher
               </button>
             </div>
-          </div>
 
-          {/* Stats en cartes vitrees */}
-          {stats && (
-            <div className="mx-auto mt-12 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4">
-              <StatCard value={stats.nb_gares} label="Gares PDL" />
-              <StatCard value={stats.nb_lieux?.toLocaleString('fr-FR')} label="Lieux a explorer" />
-              <StatCard value={`-${stats.co2_vs_voiture_pct}%`} label="CO2 vs voiture" />
-              <StatCard value={stats.nb_profils} label="Profils de voyage" />
-            </div>
-          )}
+            {/* Chiffres cles, en discret */}
+            {stats && (
+              <p className="mt-6 text-sm font-medium text-white/75">
+                {stats.nb_gares} gares &nbsp;·&nbsp; {stats.nb_lieux?.toLocaleString('fr-FR')} lieux
+                &nbsp;·&nbsp; -{stats.co2_vs_voiture_pct}% CO2 vs voiture
+              </p>
+            )}
+          </div>
         </div>
       </section>
 
-      {/* Chips categories */}
+      {/* Filtres rapides par departement */}
       <CategoryChips
-        items={CATEGORIES}
+        items={[
+          { label: 'Toutes les destinations', value: null },
+          ...deps.map((d) => ({ label: d, value: d })),
+        ]}
         active={null}
         onSelect={(v) =>
-          navigate(`/destinations${v ? `?profil=${encodeURIComponent(v)}` : ''}`)
+          navigate(`/destinations${v ? `?departement=${encodeURIComponent(v)}` : ''}`)
         }
       />
 
