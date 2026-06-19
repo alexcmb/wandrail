@@ -43,8 +43,12 @@ export default function Navbar() {
         <div className="justify-self-end">
           <button
             onClick={() => setLoginOpen(true)}
-            className="rounded-full bg-violet px-5 py-2 text-sm font-semibold text-white transition hover:bg-violet-dark"
+            className="inline-flex items-center gap-2 rounded-full bg-violet px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-violet/30 ring-1 ring-violet/20 transition hover:bg-violet-dark hover:shadow-violet/50"
           >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.2">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 21c0-4 4-6 8-6s8 2 8 6" strokeLinecap="round" />
+            </svg>
             Se connecter
           </button>
         </div>

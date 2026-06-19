@@ -12,6 +12,12 @@ import {
 import L from 'leaflet'
 import { api } from '../lib/api'
 import { destImage, poiImage } from '../lib/images'
+import { usePlaceImage } from '../lib/usePlaceImage'
+
+// Gare de reference (hub regional) pour la comparaison train / voiture.
+const HUB = { nom: 'Nantes', lat: 47.218371, lon: -1.541362 }
+const CAR_G_PER_KM = 218 // gCO2/km (voiture, ADEME)
+const TRAIN_RATIO = 0.09 // le train emet ~91% de CO2 en moins
 
 // Corrige les icones Leaflet (chemins casses par le bundler Vite).
 const icon = new L.Icon({
@@ -94,6 +100,10 @@ export default function DestinationDetail() {
     )
 
   const pois = data?.pois || []
+
+  // Vraie photo de la ville (Wikipedia) avec repli picsum.
+  const communeName = data?.destination?.commune || data?.destination?.nom_gare || ''
+  const heroImg = usePlaceImage(communeName, destImage(communeName, 1600, 700))
 
   const cats = useMemo(
     () => ['Tout', ...new Set(pois.map((p) => p.categorie).filter(Boolean))],
@@ -213,11 +223,24 @@ export default function DestinationDetail() {
   const useRealLegs = routeInfo && routeInfo.legs.length === itinerary.length
   const directionsUrl = itinPoints.length > 0 ? gmapsDirectionsUrl(center, itinPoints) : null
 
+  // Comparaison train vs voiture, aller-retour depuis le hub (Nantes).
+  const distKm = haversineKm([HUB.lat, HUB.lon], center)
+  const distAR = distKm * 2
+  const carCo2 = (CAR_G_PER_KM * distAR) / 1000 // kg
+  const trainCo2 = carCo2 * TRAIN_RATIO
+  const co2Saved = carCo2 - trainCo2
+  const carTimeMin = Math.round((distAR / 75) * 60) // ~75 km/h porte a porte
+  const trainTimeMin = Math.round((distAR / 80) * 60) // ~80 km/h moyenne TER
+  const carCost = distAR * 0.25 // EUR (carburant + usure)
+  const trainCost = distAR * 0.13 // EUR (estimation billet TER)
+  const fmtTime = (m) => (m >= 60 ? `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}` : `${m} min`)
+  const showCompare = distKm >= 2
+
   return (
     <div>
       {/* Hero image */}
       <div className="relative h-80 overflow-hidden bg-neutral-900">
-        <img src={destImage(d.commune || d.nom_gare, 1600, 700)} alt={ville} className="h-full w-full object-cover" />
+        <img src={heroImg} alt={ville} className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 mx-auto max-w-page px-6 pb-7">
           <Link to="/destinations" className="mb-3 inline-block text-sm font-semibold text-white/70 hover:text-white">
@@ -255,6 +278,48 @@ export default function DestinationDetail() {
         >
           Reserver un billet sur SNCF Connect
         </a>
+
+        {/* Comparaison Train vs Voiture */}
+        {showCompare && (
+          <div className="mt-10">
+            <h2 className="mb-1 text-2xl font-black tracking-tighter text-ink">Train ou voiture ?</h2>
+            <p className="mb-4 text-sm text-muted">
+              Aller-retour depuis {HUB.nom} ({Math.round(distAR)} km) - estimations indicatives.
+            </p>
+            <div className="overflow-hidden rounded-2xl border border-line shadow-card">
+              <div className="grid grid-cols-3 border-b border-line bg-neutral-50 text-xs font-bold uppercase tracking-wide text-muted">
+                <div className="p-3" />
+                <div className="p-3 text-center text-violet">Train</div>
+                <div className="p-3 text-center">Voiture</div>
+              </div>
+              {[
+                {
+                  label: 'CO2 emis',
+                  train: `${trainCo2.toFixed(1)} kg`,
+                  car: `${carCo2.toFixed(1)} kg`,
+                  good: true,
+                },
+                { label: 'Temps estime', train: fmtTime(trainTimeMin), car: fmtTime(carTimeMin) },
+                {
+                  label: 'Budget estime',
+                  train: `~${trainCost.toFixed(0)} EUR`,
+                  car: `~${carCost.toFixed(0)} EUR`,
+                },
+              ].map((row) => (
+                <div key={row.label} className="grid grid-cols-3 border-b border-line text-sm last:border-0">
+                  <div className="p-3 font-semibold text-ink">{row.label}</div>
+                  <div className={`p-3 text-center font-bold ${row.good ? 'text-green-600' : 'text-ink'}`}>
+                    {row.train}
+                  </div>
+                  <div className="p-3 text-center text-muted">{row.car}</div>
+                </div>
+              ))}
+              <div className="bg-violet/5 p-3 text-center text-sm font-bold text-violet">
+                En train : {co2Saved.toFixed(0)} kg de CO2 economises (~91% de moins)
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Carte */}
         {d.latitude && d.longitude && (

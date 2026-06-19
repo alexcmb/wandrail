@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
 import { destImage } from '../lib/images'
+import { usePlaceImage } from '../lib/usePlaceImage'
 
 const cap = (s) => String(s || '').replace(/\b\w/g, (c) => c.toUpperCase())
 
 export default function DestinationCard({ dest }) {
   const ville = cap(dest.commune || dest.nom_gare)
   const score = dest.score_attractivite != null ? Number(dest.score_attractivite) : null
+  const img = usePlaceImage(dest.commune || dest.nom_gare, destImage(dest.commune || dest.nom_gare))
 
   return (
     <Link
@@ -14,7 +16,7 @@ export default function DestinationCard({ dest }) {
     >
       <div className="relative h-60 overflow-hidden bg-neutral-100">
         <img
-          src={destImage(dest.commune || dest.nom_gare)}
+          src={img}
           alt={ville}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-[600ms] ease-out group-hover:scale-[1.06]"
