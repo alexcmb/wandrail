@@ -28,6 +28,7 @@ export default function LoginModal({ open, onClose }) {
 
       {/* Panneau latéral (Drawer) */}
       <div
+        style={{ backgroundColor: '#ffffff' }}
         className={`fixed inset-y-0 right-0 z-[101] flex h-full w-full max-w-sm flex-col justify-between bg-white p-7 shadow-2xl transition-transform duration-300 ease-in-out transform ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
